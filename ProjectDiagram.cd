@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="OrderProcessor.Models.OrderModel">
+  <Class Name="OrderProcessor.BO.OrderModel">
     <Position X="0.5" Y="4" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAEDAAAEQAAAAAAAAAAAAAAAAAAAAAAAAAAggAAIAAA=</HashCode>

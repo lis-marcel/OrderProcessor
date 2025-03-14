@@ -1,10 +1,12 @@
-﻿namespace OrderProcessor
+﻿using OrderProcessor.Service;
+
+namespace OrderProcessor
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            ConsoleService service = new();
         }
     }
 }

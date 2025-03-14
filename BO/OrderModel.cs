@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using OrderProcessor.OrderOptions;
 
-namespace OrderProcessor.Models
+namespace OrderProcessor.BO
 {
     public class OrderModel
     {
