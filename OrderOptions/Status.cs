@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace OrderProcessor.OptionsEnums
+namespace OrderProcessor.OrderOptions
 {
-    public enum Satus
+    public enum Status
     {
         New,
         InStock,
         InShipping,
-        ReturnedToSender,
+        ReturnedToClient,
         Error,
         Closed
     }

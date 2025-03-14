@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace OrderProcessor.OptionsEnums
+namespace OrderProcessor.OrderOptions
 {
     public enum Operation
     {
         NewOrder,
-        TransferToStock,
-        TransferToShipping,
+        MoveToStock,
+        MoveToShipping,
         GetAllOrders,
         Exit
     }

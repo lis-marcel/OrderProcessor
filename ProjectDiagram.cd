@@ -1,38 +1,38 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="OrderProcessor.Order">
-    <Position X="0.75" Y="2.75" Width="1.5" />
+  <Class Name="OrderProcessor.Models.OrderModel">
+    <Position X="0.5" Y="4" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAEDAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAggAAIAAA=</HashCode>
-      <FileName>Order.cs</FileName>
+      <HashCode>AAEDAAAEQAAAAAAAAAAAAAAAAAAAAAAAAAAggAAIAAA=</HashCode>
+      <FileName>BO\OrderModel.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Enum Name="OrderProcessor.OrderSatus">
-    <Position X="0.75" Y="0.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAASAAAAAAAgAAAAAAAAACAAQAAACAAAA=</HashCode>
-      <FileName>OrderSatus.cs</FileName>
-    </TypeIdentifier>
-  </Enum>
-  <Enum Name="OrderProcessor.Operation">
-    <Position X="2.5" Y="0.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>EAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAIAAAAQAAAAg=</HashCode>
-      <FileName>Operation.cs</FileName>
-    </TypeIdentifier>
-  </Enum>
-  <Enum Name="OrderProcessor.ClientType">
-    <Position X="4.25" Y="0.75" Width="1.5" />
+  <Enum Name="OrderProcessor.OrderOptions.ClientType" Collapsed="true">
+    <Position X="0.5" Y="1" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
-      <FileName>ClientType.cs</FileName>
+      <FileName>OrderOptions\ClientType.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="OrderProcessor.PaymentMethod">
-    <Position X="6" Y="0.75" Width="1.5" />
+  <Enum Name="OrderProcessor.OrderOptions.Operation" Collapsed="true">
+    <Position X="2.25" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAIAgAAAAIAAAAAAAAAg=</HashCode>
+      <FileName>OrderOptions\Operation.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="OrderProcessor.OrderOptions.PaymentMethod" Collapsed="true">
+    <Position X="4" Y="1" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AABAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>PaymentMethod.cs</FileName>
+      <FileName>OrderOptions\PaymentMethod.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="OrderProcessor.OrderOptions.Status" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAASAAAAAAAAAAAAAAAAACAAQAAACAAAA=</HashCode>
+      <FileName>OrderOptions\Status.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Font Name="Segoe UI" Size="9" />
