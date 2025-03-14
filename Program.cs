@@ -6,7 +6,15 @@ namespace OrderProcessor
     {
         static void Main(string[] args)
         {
-            ConsoleService service = new();
+            try
+            {
+                ConsoleService service = new();
+                service.Start();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }

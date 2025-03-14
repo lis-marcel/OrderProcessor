@@ -42,5 +42,11 @@ namespace OrderProcessor.Service
         {
             return dbContext.Set<T>().Find(id);
         }
+
+        public List<T> GetAll<T>() where T : class
+        {
+            return dbContext.Set<T>().ToList();
+        }
+
     }
 }
