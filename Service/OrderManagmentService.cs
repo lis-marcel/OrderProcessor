@@ -71,14 +71,63 @@ namespace OrderProcessor.Service
             Console.WriteLine("Order moved to shipping successfully");
         }
 
-        public static void GetOrderById(DbStorage dbStorageContext)
+        public static void ShowSpecificOrder(DbStorage dbStorageContext)
         {
-            throw new NotImplementedException();
+            int orderId = GetOrderId();
+
+            var order = dbStorageContext.Orders.Find(orderId);
+
+            if (order is null)
+            {
+                Console.WriteLine("No orders found.");
+                return;
+            }
+
+            Console.WriteLine("--------------------------------------------------------------------------------------------");
+            Console.WriteLine("| ID  | Value   | Product Name         | Address              | Qty | Status    | Payment  |");
+            Console.WriteLine("+------------------------------------------------------------------------------------------+");
+
+            Console.WriteLine(
+                $"| {order.Id,-4}|" +
+                $" {order.Value,-8}|" +
+                $" {order.ProductName,-21}|" +
+                $" {order.ShippingAddress,-21}|" +
+                $" {order.Quantity,-4}|" +
+                $" {order.Status,-10}|" +
+                $" {order.PaymentMethod,-8} |"
+            );
+
+            Console.WriteLine("--------------------------------------------------------------------------------------------");
         }
 
         public static void ShowAllOrders(DbStorage dbStorageContext)
         {
-            throw new NotImplementedException();
+            var orders = dbStorageContext.Orders.ToList();
+
+            if (orders.Count == 0)
+            {
+                Console.WriteLine("No orders found.");
+                return;
+            }
+
+            Console.WriteLine("--------------------------------------------------------------------------------------------");
+            Console.WriteLine("| ID  | Value   | Product Name         | Address              | Qty | Status    | Payment  |");
+            Console.WriteLine("+------------------------------------------------------------------------------------------+");
+
+            foreach (var order in orders)
+            {
+                Console.WriteLine(
+                    $"| {order.Id,-4}|" +
+                    $" {order.Value,-8}|" +
+                    $" {order.ProductName,-21}|" +
+                    $" {order.ShippingAddress,-21}|" +
+                    $" {order.Quantity,-4}|" +
+                    $" {order.Status,-10}|" +
+                    $" {order.PaymentMethod,-8} |"
+                );
+            }
+
+            Console.WriteLine("--------------------------------------------------------------------------------------------");
         }
 
         #endregion
@@ -101,7 +150,7 @@ namespace OrderProcessor.Service
         {
             while (true)
             {
-                Console.Write("Enter Order ID:");
+                Console.Write("Enter Order ID: ");
                 string input = Console.ReadLine();
                 if (int.TryParse(input, out int orderId))
                 {
@@ -109,7 +158,7 @@ namespace OrderProcessor.Service
                 }
                 else
                 {
-                    Console.WriteLine("Invalid input");
+                    Console.WriteLine("Invalid input. Enter intiger type value.");
                 }
             }
         }
@@ -141,7 +190,6 @@ namespace OrderProcessor.Service
             return order;
         }
         #endregion
-
 
     }
 }

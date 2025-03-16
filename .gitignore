@@ -365,3 +365,5 @@ FodyWeavers.xsd
 # Database project files
 *.db
 *.sqlite
+*.db-shm
+*.db-wal

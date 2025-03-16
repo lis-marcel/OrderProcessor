@@ -64,7 +64,6 @@ namespace OrderProcessor.Service
             }
         }
 
-
         public static PaymentMethod GetPaymentMethod()
         {
             while (true)

@@ -49,9 +49,12 @@ namespace OrderProcessor.Service
                         OrderManagmentService.ChangeOrderStatus(dbStorageContext);
                         break;
                     case "5":
-                        OrderManagmentService.ShowAllOrders(dbStorageContext);
+                        OrderManagmentService.ShowSpecificOrder(dbStorageContext);
                         break;
                     case "6":
+                        OrderManagmentService.ShowAllOrders(dbStorageContext);
+                        break;
+                    case "7":
                         ExitApp();
                         return;
                 }
@@ -88,8 +91,9 @@ namespace OrderProcessor.Service
                 "2. Move to stock \n" +
                 "3. Move to shipping \n" +
                 "4. Change order status \n" +
-                "5. Show all orders \n" +
-                "6. Exit application");
+                "5. Show specific order \n" +
+                "6. Show all orders \n" +
+                "7. Exit application");
         }
                         
         private static void ExitApp()

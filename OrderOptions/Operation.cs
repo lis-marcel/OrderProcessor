@@ -10,6 +10,7 @@ namespace OrderProcessor.OrderOptions
         NewOrder,
         MoveToStock,
         MoveToShipping,
+        ShowSpecificOrder,
         GetAllOrders,
         ChangeOrderStatus,
         Exit
