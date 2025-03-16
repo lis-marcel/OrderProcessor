@@ -10,41 +10,44 @@ namespace OrderProcessor.Service
     class OrderDetalisService
     {
         #region Public Methods
-        public static double GetOrderValue()
+        public static double GetDoubleValue(string fieldName)
         {
             while (true)
             {
-                Console.Write("Enter order value: ");
+                Console.Write($"Enter {fieldName} value: ");
                 if (double.TryParse(Console.ReadLine(), out double value) && value >= 0)
                 {
                     return value;
                 }
-                Console.WriteLine("Invalid input. Please enter a correct value.");
+                Console.WriteLine($"Invalid input. Please enter a correct {fieldName} value.");
             }
         }
 
-        public static string GetProductName()
-        {
-            Console.Write("Enter product name: ");
-            return Console.ReadLine();
-        }
-
-        public static string GetShippingAddress()
-        {
-            Console.Write("Enter shipping address: ");
-            return Console.ReadLine();
-        }
-
-        public static int GetQuantity()
+        public static string GetStringValue(string fieldName)
         {
             while (true)
             {
-                Console.Write("Enter quantity: ");
+                Console.Write($"Enter {fieldName}: ");
+                string? productName = Console.ReadLine();
+                if (!string.IsNullOrEmpty(productName))
+                {
+                    return productName;
+                }
+                Console.Clear();
+                Console.WriteLine($"Invalid input. {fieldName} can not be empty.");
+            }
+        }
+
+        public static int GetIntValue(string fieldName)
+        {
+            while (true)
+            {
+                Console.Write($"Enter {fieldName}: ");
                 if (int.TryParse(Console.ReadLine(), out int quantity) && quantity > 0)
                 {
                     return quantity;
                 }
-                Console.WriteLine("Invalid input. Please enter a correct quantity.");
+                Console.WriteLine($"Invalid input. Please enter a correct {fieldName}.");
             }
         }
 
@@ -61,11 +64,6 @@ namespace OrderProcessor.Service
             }
         }
 
-        public static string GetCustomerName()
-        {
-            Console.Write("Enter customer name: ");
-            return Console.ReadLine();
-        }
 
         public static PaymentMethod GetPaymentMethod()
         {

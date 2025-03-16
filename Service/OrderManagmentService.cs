@@ -14,7 +14,7 @@ namespace OrderProcessor.Service
         #region Public Methods
         public static void CreateOrder(DbStorage dbStorageContext)
         {
-            var orderData = GetOrderDetalis();
+            var orderData = CreateOrderDetails();
 
             int orderId = DbStorageService.GetHighestOrderId(dbStorageContext) + 1;
 
@@ -71,10 +71,16 @@ namespace OrderProcessor.Service
             Console.WriteLine("Order moved to shipping successfully");
         }
 
+        public static void GetOrderById(DbStorage dbStorageContext)
+        {
+            throw new NotImplementedException();
+        }
+
         public static void ShowAllOrders(DbStorage dbStorageContext)
         {
             throw new NotImplementedException();
         }
+
         #endregion
 
         #region Private Methods
@@ -108,27 +114,28 @@ namespace OrderProcessor.Service
             }
         }
 
-        private static OrderData GetOrderDetalis()
+        private static OrderData CreateOrderDetails()
         {
-            double value = OrderDetalisService.GetOrderValue();
-            string productName = OrderDetalisService.GetProductName();
-            string shippingAddress = OrderDetalisService.GetShippingAddress();
-            int quantity = OrderDetalisService.GetQuantity();
+            string productName = OrderDetalisService.GetStringValue("Product name");
+            double value = OrderDetalisService.GetDoubleValue("order");
+            int quantity = OrderDetalisService.GetIntValue("quantity");
+            string customerName = OrderDetalisService.GetStringValue("Customer name");
+            string shippingAddress = OrderDetalisService.GetStringValue("Shipping address");
             CustomerType customerType = OrderDetalisService.GetCustomerType();
-            string customerName = OrderDetalisService.GetCustomerName();
             PaymentMethod paymentMethod = OrderDetalisService.GetPaymentMethod();
 
             OrderData order = new()
             {
-                Value = value,
                 ProductName = productName,
-                ShippingAddress = shippingAddress,
+                Value = value,
                 Quantity = quantity,
+                CustomerName = customerName,
+                ShippingAddress = shippingAddress,
+                CustomerType = customerType,
+                PaymentMethod = paymentMethod,
+
                 CreationTime = DateTime.Now,
                 Status = Status.New,
-                CustomerType = customerType,
-                CustomerName = customerName,
-                PaymentMethod = paymentMethod
             };
 
             return order;
