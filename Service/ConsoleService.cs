@@ -28,30 +28,40 @@ namespace OrderProcessor.Service
         #region Public Methods
         public void Start()
         {
-            var input = SelectedOption();
+            Console.WriteLine("Welcome to Order Processor");
 
-            switch (input)
+            while (true)
             {
-                case "1":
-                    OrderManagmentService.CreateOrder(dbStorageContext);
-                    break;
-                case "2":
-                    OrderManagmentService.MoveToStock(dbStorageContext);
-                    break;
-                case "3":
-                    OrderManagmentService.MoveToShipping(dbStorageContext);
-                    break;
-                case "4":
-                    OrderManagmentService.ChangeOrderStatus(dbStorageContext);
-                    break;
-                case "5":
-                    OrderManagmentService.ShowAllOrders(dbStorageContext);
-                    break;
-                case "6":
-                    ExitApp();
-                    break;
+                var input = SelectedOption();
+
+                switch (input)
+                {
+                    case "1":
+                        OrderManagmentService.CreateOrder(dbStorageContext);
+                        break;
+                    case "2":
+                        OrderManagmentService.MoveToStock(dbStorageContext);
+                        break;
+                    case "3":
+                        OrderManagmentService.MoveToShipping(dbStorageContext);
+                        break;
+                    case "4":
+                        OrderManagmentService.ChangeOrderStatus(dbStorageContext);
+                        break;
+                    case "5":
+                        OrderManagmentService.ShowAllOrders(dbStorageContext);
+                        break;
+                    case "6":
+                        ExitApp();
+                        return;
+                }
+
+                Console.WriteLine("\nPress any key to return to the main menu...\n");
+                Console.ReadKey();
+                Console.Clear();
             }
         }
+
         #endregion
 
         #region Private Methods
@@ -62,7 +72,7 @@ namespace OrderProcessor.Service
                 ShowMenu();
 
                 Console.Write("Enter option number: ");
-                if (int.TryParse(Console.ReadLine(), out int value) && value >= 0 && value < Enum.GetNames(typeof(Operation)).Length)
+                if (int.TryParse(Console.ReadLine(), out int value) && value >= 0 && value <= Enum.GetNames(typeof(Operation)).Length)
                 {
                     return value.ToString();
                 }
@@ -73,20 +83,20 @@ namespace OrderProcessor.Service
 
         private static void ShowMenu()
         {
-            Console.WriteLine("Welcome to Order Processor\n" +
-                "1. Create Order\n" +
-                "2. Move to Stock\n" +
-                "3. Move to Shipping\n" +
-                "4. Show All Orders\n" +
-                "5. Exit");
+            Console.WriteLine("Select an option: \n" +
+                "1. Create order \n" +
+                "2. Move to stock \n" +
+                "3. Move to shipping \n" +
+                "4. Change order status \n" +
+                "5. Show all orders \n" +
+                "6. Exit application");
         }
                         
-        private void ExitApp()
+        private static void ExitApp()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Exiting the application...");
+            Environment.Exit(0);
         }
-
-        
 
         #endregion
 

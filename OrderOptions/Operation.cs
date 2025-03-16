@@ -11,6 +11,7 @@ namespace OrderProcessor.OrderOptions
         MoveToStock,
         MoveToShipping,
         GetAllOrders,
+        ChangeOrderStatus,
         Exit
     }
 }
