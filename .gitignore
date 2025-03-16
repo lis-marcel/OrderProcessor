@@ -361,4 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/Db/OrderProcessor.db
+
+# Database project files
+*.db
+*.sqlite
