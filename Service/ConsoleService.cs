@@ -13,7 +13,7 @@ namespace OrderProcessor.Service
 {
     internal class ConsoleService
     {
-        private DbStorage dbStorageContext;
+        private readonly DbStorage dbStorageContext;
 
         public ConsoleService() 
         {
@@ -49,9 +49,6 @@ namespace OrderProcessor.Service
                     break;
                 case "6":
                     ExitApp();
-                    break;
-                default:
-                    Console.WriteLine("Invalid input");
                     break;
             }
         }
