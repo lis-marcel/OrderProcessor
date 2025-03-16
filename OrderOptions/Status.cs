@@ -10,7 +10,7 @@ namespace OrderProcessor.OrderOptions
         New,
         InStock,
         InShipping,
-        ReturnedToClient,
+        ReturnedToCustomer,
         Error,
         Closed
     }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace OrderProcessor.OrderOptions
 {
-    public enum ClientType
+    public enum CustomerType
     {
         Company,
         Individual,

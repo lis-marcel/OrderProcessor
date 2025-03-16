@@ -5,54 +5,47 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using OrderProcessor.BO;
-using OrderProcessor.Db;
+using OrderProcessor.Service.DTO;
 using Microsoft.EntityFrameworkCore.Sqlite;
+using OrderProcessor.OrderOptions;
 
 namespace OrderProcessor.Service
 {
-    public class ConsoleService
+    internal class ConsoleService
     {
-        private DatabaseService databaseService;
         private DbStorage dbStorageContext;
 
         public ConsoleService() 
         {
-            dbStorageContext = new DbStorage(new DbContextOptionsBuilder<DbStorage>()
-                .UseSqlite("Data Source=C:\\temp\\OrderProcessor.db").Options);
+            var dbPath = DbStorageService.PrepareDb();
 
-            databaseService = new DatabaseService(dbStorageContext);
+            dbStorageContext = 
+                new DbStorage(new DbContextOptionsBuilder<DbStorage>()
+                .UseSqlite($"Data Source={dbPath}")
+                .Options);
         }
 
         #region Public Methods
         public void Start()
         {
-            Console.WriteLine("Welcome to Order Processor\n" +
-                "1. Create Order\n" +
-                "2. Move to Stock\n" +
-                "3. Move to Shipping\n" +
-                "4. Show All Orders\n" +
-                "5. Exit");
-
-            string input = Console.ReadLine();
-
-            Console.Clear();
+            var input = SelectedOption();
 
             switch (input)
             {
                 case "1":
-                    CreateOrder();
+                    OrderManagmentService.CreateOrder(dbStorageContext);
                     break;
                 case "2":
-                    MoveToStock();
+                    OrderManagmentService.MoveToStock(dbStorageContext);
                     break;
                 case "3":
-                    MoveToShipping();
+                    OrderManagmentService.MoveToShipping(dbStorageContext);
                     break;
                 case "4":
-                    ChangeOrderStatus();
+                    OrderManagmentService.ChangeOrderStatus(dbStorageContext);
                     break;
                 case "5":
-                    ShowAllOrders();
+                    OrderManagmentService.ShowAllOrders(dbStorageContext);
                     break;
                 case "6":
                     ExitApp();
@@ -65,35 +58,39 @@ namespace OrderProcessor.Service
         #endregion
 
         #region Private Methods
-        private void CreateOrder()
+        private static string SelectedOption()
         {
-            throw new NotImplementedException();
+            while (true)
+            {
+                ShowMenu();
+
+                Console.Write("Enter option number: ");
+                if (int.TryParse(Console.ReadLine(), out int value) && value >= 0 && value < Enum.GetNames(typeof(Operation)).Length)
+                {
+                    return value.ToString();
+                }
+                Console.Clear();
+                Console.WriteLine("Invalid input. Please enter a correct value.");
+            }
         }
 
-        private void MoveToStock()
+        private static void ShowMenu()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Welcome to Order Processor\n" +
+                "1. Create Order\n" +
+                "2. Move to Stock\n" +
+                "3. Move to Shipping\n" +
+                "4. Show All Orders\n" +
+                "5. Exit");
         }
-
-        private void MoveToShipping()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void ChangeOrderStatus()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void ShowAllOrders()
-        {
-            throw new NotImplementedException();
-        }
-
+                        
         private void ExitApp()
         {
             throw new NotImplementedException();
         }
+
+        
+
         #endregion
 
     }
