@@ -21,7 +21,7 @@ namespace OrderProcessor.Service.DTO
         public string CustomerName { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
 
-        public static Order OrderDataToOrder(OrderData order)
+        public static Order ToOrder(OrderData order)
         {
             return new Order
             {
@@ -38,6 +38,22 @@ namespace OrderProcessor.Service.DTO
             };
         }
 
-        
+        public static OrderData ToOrderData(Order order)
+        {
+            return new OrderData
+            {
+                Id = order.Id,
+                Value = order.Value,
+                ProductName = order.ProductName,
+                ShippingAddress = order.ShippingAddress,
+                Quantity = order.Quantity,
+                CreationTime = order.CreationTime,
+                Status = order.Status,
+                CustomerType = order.CustomerType,
+                CustomerName = order.CustomerName,
+                PaymentMethod = order.PaymentMethod
+            };
+        }
+
     }
 }

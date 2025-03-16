@@ -20,7 +20,7 @@ namespace OrderProcessor.Service
 
             orderData.Id = orderId;
 
-            dbStorageContext.Orders.Add(OrderData.OrderDataToOrder(orderData));
+            dbStorageContext.Orders.Add(OrderData.ToOrder(orderData));
             dbStorageContext.SaveChanges();
             Console.WriteLine($"Order created successfully with ID: {orderId}");
         }
@@ -79,22 +79,24 @@ namespace OrderProcessor.Service
 
             if (order is null)
             {
-                Console.WriteLine("No orders found.");
+                Console.WriteLine("No order found for given ID.");
                 return;
             }
+
+            var orderData = OrderData.ToOrderData(order);
 
             Console.WriteLine("--------------------------------------------------------------------------------------------");
             Console.WriteLine("| ID  | Value   | Product Name         | Address              | Qty | Status    | Payment  |");
             Console.WriteLine("+------------------------------------------------------------------------------------------+");
 
             Console.WriteLine(
-                $"| {order.Id,-4}|" +
-                $" {order.Value,-8}|" +
-                $" {order.ProductName,-21}|" +
-                $" {order.ShippingAddress,-21}|" +
-                $" {order.Quantity,-4}|" +
-                $" {order.Status,-10}|" +
-                $" {order.PaymentMethod,-8} |"
+                $"| {orderData.Id,-4}|" +
+                $" {orderData.Value,-8}|" +
+                $" {orderData.ProductName,-21}|" +
+                $" {orderData.ShippingAddress,-21}|" +
+                $" {orderData.Quantity,-4}|" +
+                $" {orderData.Status,-10}|" +
+                $" {orderData.PaymentMethod,-8} |"
             );
 
             Console.WriteLine("--------------------------------------------------------------------------------------------");
@@ -189,6 +191,7 @@ namespace OrderProcessor.Service
 
             return order;
         }
+
         #endregion
 
     }

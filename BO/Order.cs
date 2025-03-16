@@ -19,23 +19,5 @@ namespace OrderProcessor.BO
         public CustomerType CustomerType { get; set; }
         public string CustomerName { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
-
-        public static OrderData OrderToOrderData(Order order)
-        {
-            return new OrderData
-            {
-                Id = order.Id,
-                Value = order.Value,
-                ProductName = order.ProductName,
-                ShippingAddress = order.ShippingAddress,
-                Quantity = order.Quantity,
-                CreationTime = order.CreationTime,
-                Status = order.Status,
-                CustomerType = order.CustomerType,
-                CustomerName = order.CustomerName,
-                PaymentMethod = order.PaymentMethod
-            };
-        }
-
     }
 }
