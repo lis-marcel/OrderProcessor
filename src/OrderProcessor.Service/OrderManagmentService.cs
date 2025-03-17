@@ -72,15 +72,9 @@ namespace OrderProcessor.Service
 
         public static void MoveToShipping(DbStorage dbStorageContext)
         {
-            var order = GetOrder(dbStorageContext);
-            if (order == null)
-            {
-                return;
-            }
+            var orderId = GetOrderId();
 
-            var orderData = OrderData.ToDTO(order);
-
-            Task.Run(async () => await OrderBusinessLogic.MarkOrderAsShippedAfterDelay(dbStorageContext, order, orderData));
+            Task.Run(async () => await OrderBusinessLogic.MarkOrderAsShippedAfterDelay(dbStorageContext, orderId));
         }
 
         public static void ShowSpecificOrder(DbStorage dbStorageContext)

@@ -25,9 +25,19 @@ namespace OrderProcessor.Service
             return isEligible;
         }
 
-        public static async Task MarkOrderAsShippedAfterDelay(DbStorage dbStorageConetxt, Order order, OrderData orderData)
+        public static async Task MarkOrderAsShippedAfterDelay(DbStorage dbStorageConetxt, int orderId)
         {
+            var order = dbStorageConetxt.Orders.Find(orderId);
+
+            if (order == null)
+            {
+                messageLogger.WriteError("Order not found.");
+                return;
+            }
+
             await Task.Delay(4500);
+
+            var orderData = OrderData.ToDTO(order);
 
             orderData.Status = Status.InShipping;
             order.Status = orderData.Status;
