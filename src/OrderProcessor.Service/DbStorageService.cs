@@ -13,8 +13,16 @@ namespace OrderProcessor.Service
         public static string PrepareDb()
         {
             var basePath = AppDomain.CurrentDomain.BaseDirectory;
-            var parentPath = Directory.GetParent(basePath).Parent.Parent.Parent.FullName;
-            var dbPath = Path.Combine(parentPath, "Db", "OrderProcessor.db");
+            var parentPath = Directory.GetParent(basePath).Parent.Parent.Parent.Parent.FullName;
+
+            var dbDirectory = Path.Combine(parentPath, "OrderProcessor.BO\\Db");
+
+            if (!Directory.Exists(dbDirectory))
+            {
+                Directory.CreateDirectory(dbDirectory);
+            }
+
+            var dbPath = Path.Combine(dbDirectory, "OrderProcessor.db");
 
             return dbPath;
         }

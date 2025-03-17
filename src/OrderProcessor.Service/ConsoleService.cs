@@ -11,7 +11,7 @@ using OrderProcessor.OrderOptions;
 
 namespace OrderProcessor.Service
 {
-    internal class ConsoleService
+    public class ConsoleService
     {
         private readonly DbStorage dbStorageContext;
 
@@ -23,11 +23,20 @@ namespace OrderProcessor.Service
                 new DbStorage(new DbContextOptionsBuilder<DbStorage>()
                 .UseSqlite($"Data Source={dbPath}")
                 .Options);
+
+            if (dbStorageContext.Database.EnsureCreated())
+            {
+                Console.WriteLine("Connected to database successfully.");
+            }
+            Console.WriteLine("Failed to connect to database!");
+
+            return;
         }
 
         #region Public Methods
         public void Start()
         {
+            Console.Clear();
             Console.WriteLine("Welcome to Order Processor");
 
             while (true)

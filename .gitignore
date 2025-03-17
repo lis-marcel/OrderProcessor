@@ -363,7 +363,7 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Database project files
-*.db
-*.sqlite
+# *.db
+# *.sqlite
 *.db-shm
 *.db-wal

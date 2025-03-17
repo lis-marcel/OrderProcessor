@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace OrderProcessor.BO
 {
-    internal class DbStorage : DbContext
+    public class DbStorage : DbContext
     {
         public DbSet<Order> Orders { get; set; }
 
