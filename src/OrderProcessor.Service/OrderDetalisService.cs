@@ -1,25 +1,23 @@
-﻿using OrderProcessor.OrderOptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OrderProcessor.BO.OrderOptions;
+using OrderProcessor.Common;
 
 namespace OrderProcessor.Service
 {
-    class OrderDetalisService
+    public class OrderDetalisService
     {
+        private static readonly MessageLogger messageLogger = new();
+
         #region Public Methods
         public static double GetDoubleValue(string fieldName)
         {
             while (true)
             {
-                Console.Write($"Enter {fieldName} value: ");
+                messageLogger.WriteMessage($"Enter {fieldName} value: ");
                 if (double.TryParse(Console.ReadLine(), out double value) && value >= 0)
                 {
                     return value;
                 }
-                Console.WriteLine($"Invalid input. Please enter a correct {fieldName} value.");
+                messageLogger.WriteWarning($"Invalid input. Please enter a correct {fieldName} value.");
             }
         }
 
@@ -27,14 +25,14 @@ namespace OrderProcessor.Service
         {
             while (true)
             {
-                Console.Write($"Enter {fieldName}: ");
+                messageLogger.WriteMessage($"Enter {fieldName}: ");
                 string? productName = Console.ReadLine();
                 if (!string.IsNullOrEmpty(productName))
                 {
                     return productName;
                 }
                 Console.Clear();
-                Console.WriteLine($"Invalid input. {fieldName} can not be empty.");
+                messageLogger.WriteWarning($"Invalid input. {fieldName} can not be empty.");
             }
         }
 
@@ -42,12 +40,12 @@ namespace OrderProcessor.Service
         {
             while (true)
             {
-                Console.Write($"Enter {fieldName}: ");
+                messageLogger.WriteMessage($"Enter {fieldName}: ");
                 if (int.TryParse(Console.ReadLine(), out int quantity) && quantity > 0)
                 {
                     return quantity;
                 }
-                Console.WriteLine($"Invalid input. Please enter a correct {fieldName}.");
+                messageLogger.WriteWarning($"Invalid input. Please enter a correct {fieldName}.");
             }
         }
 
@@ -55,12 +53,12 @@ namespace OrderProcessor.Service
         {
             while (true)
             {
-                Console.Write("Enter customer type (0 - Individual, 1 - Company): ");
+                messageLogger.WriteMessage("Enter customer type (0 - Individual, 1 - Company): ");
                 if (int.TryParse(Console.ReadLine(), out int customerType) && Enum.IsDefined(typeof(CustomerType), customerType))
                 {
                     return (CustomerType)customerType;
                 }
-                Console.WriteLine("Invalid input. Please enter a correct customer type.");
+                messageLogger.WriteWarning("Invalid input. Please enter a correct customer type.");
             }
         }
 
@@ -68,12 +66,12 @@ namespace OrderProcessor.Service
         {
             while (true)
             {
-                Console.Write("Enter payment method (0 - Cash, 1 - Credit card, 2 - On delivery): ");
+                messageLogger.WriteMessage("Enter payment method (0 - Cash, 1 - Credit card, 2 - On delivery): ");
                 if (int.TryParse(Console.ReadLine(), out int paymentMethod) && Enum.IsDefined(typeof(PaymentMethod), paymentMethod))
                 {
                     return (PaymentMethod)paymentMethod;
                 }
-                Console.WriteLine("Invalid input. Please enter a correct payment method.");
+                messageLogger.WriteWarning("Invalid input. Please enter a correct payment method.");
             }
         }
         #endregion

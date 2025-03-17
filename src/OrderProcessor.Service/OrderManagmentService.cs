@@ -1,16 +1,14 @@
 ﻿using OrderProcessor.BO;
-using OrderProcessor.OrderOptions;
+using OrderProcessor.BO.OrderOptions;
+using OrderProcessor.Common;
 using OrderProcessor.Service.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OrderProcessor.Service
 {
     public class OrderManagmentService
     {
+        private static readonly MessageLogger messageLogger = new();
+
         #region Public Methods
         public static void CreateOrder(DbStorage dbStorageContext)
         {
@@ -20,48 +18,43 @@ namespace OrderProcessor.Service
 
             orderData.Id = orderId;
 
-            dbStorageContext.Orders.Add(OrderData.ToOrder(orderData));
+            dbStorageContext.Orders.Add(OrderData.ToBO(orderData));
             dbStorageContext.SaveChanges();
-            Console.WriteLine($"Order created successfully with ID: {orderId}");
+            messageLogger.WriteSuccess($"Order created successfully with ID: {orderId}");
         }
 
-        public static int ChangeOrderStatus(DbStorage dbStorageContext)
+        public static void ChangeOrderStatus(DbStorage dbStorageContext)
         {
-            int orderId = GetOrderId();
-
-            var order = dbStorageContext.Orders.Find(orderId);
+            var order = GetOrder(dbStorageContext);
             if (order == null)
             {
-                Console.WriteLine("Order not found.");
-                return -1;
+                return;
             }
 
-            var orderData = OrderData.ToOrderData(order);
+            var orderData = OrderData.ToDTO(order);
+
             orderData.Status = (Status)GetValidOrderStatus();
 
             order.Status = orderData.Status;
 
             dbStorageContext.SaveChanges();
-            Console.WriteLine("Order status changed successfully.");
-            return 0;
+            messageLogger.WriteSuccess("Order status changed successfully.");
         }
 
         public static void MoveToStock(DbStorage dbStorageContext)
         {
-            int orderId = GetOrderId();
-
-            var order = dbStorageContext.Orders.Find(orderId);
+            var order = GetOrder(dbStorageContext);
             if (order == null)
             {
-                Console.WriteLine("Order not found.");
                 return;
             }
 
-            var orderData = OrderData.ToOrderData(order);
+            var orderData = OrderData.ToDTO(order);
+
             bool isEligible = OrderBusinessLogic.IsOrderEligibleForWarehouseProcessing(orderData);
             if (!isEligible)
             {
-                Console.WriteLine("Order is not eligible for moving to warehouse.\n" +
+                messageLogger.WriteWarning("Order is not eligible for moving to warehouse.\n" +
                     "Returning order to customer.");
 
                 orderData.Status = Status.ReturnedToCustomer;
@@ -69,7 +62,7 @@ namespace OrderProcessor.Service
             else 
             { 
                 orderData.Status = Status.InStock;
-                Console.WriteLine("Order moved to stock successfully.");
+                messageLogger.WriteSuccess("Order moved to stock successfully.");
             }
 
             order.Status = orderData.Status;
@@ -79,39 +72,32 @@ namespace OrderProcessor.Service
 
         public static void MoveToShipping(DbStorage dbStorageContext)
         {
-            int orderId = GetOrderId();
-
-            var order = dbStorageContext.Orders.Find(orderId);
+            var order = GetOrder(dbStorageContext);
             if (order == null)
             {
-                Console.WriteLine("Order not found.");
                 return;
             }
 
-            var orderData = OrderData.ToOrderData(order);
+            var orderData = OrderData.ToDTO(order);
 
             Task.Run(async () => await OrderBusinessLogic.MarkOrderAsShippedAfterDelay(dbStorageContext, order, orderData));
         }
 
         public static void ShowSpecificOrder(DbStorage dbStorageContext)
         {
-            int orderId = GetOrderId();
-
-            var order = dbStorageContext.Orders.Find(orderId);
-
-            if (order is null)
+            var order = GetOrder(dbStorageContext);
+            if (order == null)
             {
-                Console.WriteLine("No order found for given ID.");
                 return;
             }
 
-            var orderData = OrderData.ToOrderData(order);
+            var orderData = OrderData.ToDTO(order);
 
-            Console.WriteLine("--------------------------------------------------------------------------------------------");
-            Console.WriteLine("| ID  | Value   | Product Name         | Address              | Qty | Status    | Payment  |");
-            Console.WriteLine("+------------------------------------------------------------------------------------------+");
+            messageLogger.WriteMessageLine("--------------------------------------------------------------------------------------------");
+            messageLogger.WriteMessageLine("| ID  | Value   | Product Name         | Address              | Qty | Status    | Payment  |");
+            messageLogger.WriteMessageLine("+------------------------------------------------------------------------------------------+");
 
-            Console.WriteLine(
+            messageLogger.WriteMessageLine(
                 $"| {orderData.Id,-4}|" +
                 $" {orderData.Value,-8}|" +
                 $" {orderData.ProductName,-21}|" +
@@ -121,7 +107,7 @@ namespace OrderProcessor.Service
                 $" {orderData.PaymentMethod,-8} |"
             );
 
-            Console.WriteLine("--------------------------------------------------------------------------------------------");
+            messageLogger.WriteMessageLine("--------------------------------------------------------------------------------------------");
         }
 
         public static void ShowAllOrders(DbStorage dbStorageContext)
@@ -130,17 +116,17 @@ namespace OrderProcessor.Service
 
             if (orders.Count == 0)
             {
-                Console.WriteLine("No orders found.");
+                messageLogger.WriteError("No orders found.");
                 return;
             }
 
-            Console.WriteLine("--------------------------------------------------------------------------------------------");
-            Console.WriteLine("| ID  | Value   | Product Name         | Address              | Qty | Status    | Payment  |");
-            Console.WriteLine("+------------------------------------------------------------------------------------------+");
+            messageLogger.WriteMessageLine("--------------------------------------------------------------------------------------------");
+            messageLogger.WriteMessageLine("| ID  | Value   | Product Name         | Address              | Qty | Status    | Payment  |");
+            messageLogger.WriteMessageLine("+------------------------------------------------------------------------------------------+");
 
             foreach (var order in orders)
             {
-                Console.WriteLine(
+                messageLogger.WriteMessageLine(
                     $"| {order.Id,-4}|" +
                     $" {order.Value,-8}|" +
                     $" {order.ProductName,-21}|" +
@@ -151,22 +137,36 @@ namespace OrderProcessor.Service
                 );
             }
 
-            Console.WriteLine("--------------------------------------------------------------------------------------------");
+            messageLogger.WriteMessageLine("--------------------------------------------------------------------------------------------");
         }
 
         #endregion
 
         #region Private Methods
+        private static Order GetOrder(DbStorage dbStorageContext)
+        {
+            int orderId = GetOrderId();
+
+            var order = dbStorageContext.Orders.Find(orderId);
+            if (order == null)
+            {
+                messageLogger.WriteError("Order not found.");
+                return null;
+            }
+
+            return order;
+        }
+
         private static int GetValidOrderStatus()
         {
             while (true)
             {
-                Console.Write("Enter order status (0 - New, 1 - InStock, 2 - InShipping, 3 - ReturnedToCustomer, 4 - Error, 5 - Closed): ");
+                messageLogger.WriteMessage("Enter order status (0 - New, 1 - InStock, 2 - InShipping, 3 - ReturnedToCustomer, 4 - Error, 5 - Closed): ");
                 if (int.TryParse(Console.ReadLine(), out int status) && Enum.IsDefined(typeof(Status), status))
                 {
                     return status;
                 }
-                Console.WriteLine("Invalid input. Please enter a correct order status.");
+                messageLogger.WriteError("Invalid input. Please enter a correct order status.");
             }
         }
 
@@ -174,7 +174,7 @@ namespace OrderProcessor.Service
         {
             while (true)
             {
-                Console.Write("Enter Order ID: ");
+                messageLogger.WriteMessage("Enter Order ID: ");
                 string input = Console.ReadLine();
                 if (int.TryParse(input, out int orderId))
                 {
@@ -182,20 +182,20 @@ namespace OrderProcessor.Service
                 }
                 else
                 {
-                    Console.WriteLine("Invalid input. Enter intiger type value.");
+                    messageLogger.WriteError("Invalid input. Enter intiger type value.");
                 }
             }
         }
 
         private static OrderData CreateOrderDetails()
         {
-            string productName = OrderDetalisService.GetStringValue("Product name");
-            double value = OrderDetalisService.GetDoubleValue("order");
-            int quantity = OrderDetalisService.GetIntValue("quantity");
-            string customerName = OrderDetalisService.GetStringValue("Customer name");
-            string shippingAddress = OrderDetalisService.GetStringValue("Shipping address");
-            CustomerType customerType = OrderDetalisService.GetCustomerType();
-            PaymentMethod paymentMethod = OrderDetalisService.GetPaymentMethod();
+            var productName = OrderDetalisService.GetStringValue("Product name");
+            var value = OrderDetalisService.GetDoubleValue("order");
+            var quantity = OrderDetalisService.GetIntValue("quantity");
+            var customerName = OrderDetalisService.GetStringValue("Customer name");
+            var shippingAddress = OrderDetalisService.GetStringValue("Shipping address");
+            var customerType = OrderDetalisService.GetCustomerType();
+            var paymentMethod = OrderDetalisService.GetPaymentMethod();
 
             OrderData order = new()
             {

@@ -1,5 +1,5 @@
 ﻿using OrderProcessor.BO;
-using OrderProcessor.OrderOptions;
+using OrderProcessor.BO.OrderOptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +21,7 @@ namespace OrderProcessor.Service.DTO
         public string CustomerName { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
 
-        public static Order ToOrder(OrderData order)
+        public static Order ToBO(OrderData order)
         {
             return new Order
             {
@@ -38,7 +38,7 @@ namespace OrderProcessor.Service.DTO
             };
         }
 
-        public static OrderData ToOrderData(Order order)
+        public static OrderData ToDTO(Order order)
         {
             return new OrderData
             {

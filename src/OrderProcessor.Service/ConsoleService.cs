@@ -7,13 +7,15 @@ using Microsoft.EntityFrameworkCore;
 using OrderProcessor.BO;
 using OrderProcessor.Service.DTO;
 using Microsoft.EntityFrameworkCore.Sqlite;
-using OrderProcessor.OrderOptions;
+using OrderProcessor.BO.OrderOptions;
+using OrderProcessor.Common;
 
 namespace OrderProcessor.Service
 {
     public class ConsoleService
     {
         private readonly DbStorage dbStorageContext;
+        private static readonly MessageLogger messageLogger = new();
 
         public ConsoleService() 
         {
@@ -24,19 +26,17 @@ namespace OrderProcessor.Service
                 .UseSqlite($"Data Source={dbPath}")
                 .Options);
 
-            if (dbStorageContext.Database.EnsureCreated())
+            if (!dbStorageContext.Database.CanConnect())
             {
-                Console.WriteLine("Connected to database successfully.");
+                messageLogger.WriteError("Failed to connect to database!");
             }
-            Console.WriteLine("Failed to connect to database!");
-
-            return;
+            messageLogger.WriteSuccess("Connected to database successfully.");
         }
 
         #region Public Methods
         public void Start()
         {
-            Console.WriteLine("Welcome to Order Processor");
+            messageLogger.WriteMessageLine("Welcome to Order Processor");
 
             while (true)
             {
@@ -67,7 +67,7 @@ namespace OrderProcessor.Service
                         return;
                 }
 
-                Console.WriteLine("\nPress any key to return to the main menu...\n");
+                messageLogger.WriteMessage("\nPress any key to return to the main menu...\n");
                 Console.ReadKey();
                 Console.Clear();
             }
@@ -82,19 +82,19 @@ namespace OrderProcessor.Service
             {
                 ShowMenu();
 
-                Console.Write("Enter option number: ");
+                messageLogger.WriteMessage("Enter option number: ");
                 if (int.TryParse(Console.ReadLine(), out int value) && value >= 0 && value <= Enum.GetNames(typeof(Operation)).Length)
                 {
                     return value.ToString();
                 }
                 Console.Clear();
-                Console.WriteLine("Invalid input. Please enter a correct value.");
+                messageLogger.WriteWarning("Invalid input. Please enter a correct value.");
             }
         }
 
         private static void ShowMenu()
         {
-            Console.WriteLine("Select an option: \n" +
+            messageLogger.WriteMessageLine("Select an option: \n" +
                 "1. Create order \n" +
                 "2. Move to stock \n" +
                 "3. Move to shipping \n" +
@@ -106,7 +106,8 @@ namespace OrderProcessor.Service
                         
         private static void ExitApp()
         {
-            Console.WriteLine("Exiting the application...");
+            Console.Clear();
+            messageLogger.WriteMessageLine("Exiting the application...");
             Environment.Exit(0);
         }
 

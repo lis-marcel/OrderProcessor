@@ -1,17 +1,14 @@
 ﻿using OrderProcessor.BO;
-using OrderProcessor.OrderOptions;
+using OrderProcessor.BO.OrderOptions;
+using OrderProcessor.Common;
 using OrderProcessor.Service.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OrderProcessor.Service
 {
     public class OrderBusinessLogic
     {
         private static readonly double cashPaymentThreshold = 2500;
+        private static readonly MessageLogger messageLogger = new();
 
         public OrderBusinessLogic() { }
 
@@ -37,7 +34,7 @@ namespace OrderProcessor.Service
 
             dbStorageConetxt.SaveChanges();
 
-            Console.WriteLine($"\n[INFO] Order with ID: {orderData.Id} moved to shipping successfully. Follow the instruction above.\n");
+            messageLogger.WriteSuccess($"\n Order with ID: {orderData.Id} moved to shipping successfully. Follow the instruction above.\n");
         }
 
         #endregion

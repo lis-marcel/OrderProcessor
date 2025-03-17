@@ -1,9 +1,12 @@
-﻿using OrderProcessor.Service;
+﻿using OrderProcessor.Common;
+using OrderProcessor.Service;
 
 namespace OrderProcessor
 {
     internal class Program
     {
+        private static readonly MessageLogger messageLogger = new();
+
         static void Main(string[] args)
         {
             try
@@ -13,7 +16,7 @@ namespace OrderProcessor
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                messageLogger.WriteError(ex.Message);
             }
         }
     }

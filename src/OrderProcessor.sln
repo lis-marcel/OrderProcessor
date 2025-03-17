@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor", "OrderProcessor.csproj", "{56F472AD-2276-41B4-AD0D-B068DA0072F9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor", "..\src\OrderProcessor\OrderProcessor.csproj", "{56F472AD-2276-41B4-AD0D-B068DA0072F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor.BO", "..\OrderProcessor\src\OrderProcessor.BO\OrderProcessor.BO.csproj", "{BA87ECD6-EF88-4219-8DA9-F7B44EFEC027}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor.BO", "..\src\OrderProcessor.BO\OrderProcessor.BO.csproj", "{BA87ECD6-EF88-4219-8DA9-F7B44EFEC027}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor.Common", "..\OrderProcessor\src\OrderProcessor.Common\OrderProcessor.Common.csproj", "{5252367A-DC20-45C4-AE9C-AE1DFAF8A77F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor.Common", "..\src\OrderProcessor.Common\OrderProcessor.Common.csproj", "{5252367A-DC20-45C4-AE9C-AE1DFAF8A77F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor.Service", "..\OrderProcessor\src\OrderProcessor.Service\OrderProcessor.Service.csproj", "{B60D412D-41B3-4FED-83EA-57776EEF2CF0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor.Service", "..\src\OrderProcessor.Service\OrderProcessor.Service.csproj", "{B60D412D-41B3-4FED-83EA-57776EEF2CF0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
