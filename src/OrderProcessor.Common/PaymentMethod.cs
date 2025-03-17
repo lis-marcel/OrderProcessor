@@ -8,6 +8,7 @@ namespace OrderProcessor.OrderOptions
     public enum PaymentMethod
     {
         Card,
-        Cash
+        Cash,
+        OnDelivery,
     }
 }

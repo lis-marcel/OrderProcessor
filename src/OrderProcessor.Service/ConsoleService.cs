@@ -36,7 +36,6 @@ namespace OrderProcessor.Service
         #region Public Methods
         public void Start()
         {
-            Console.Clear();
             Console.WriteLine("Welcome to Order Processor");
 
             while (true)

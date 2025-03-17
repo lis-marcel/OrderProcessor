@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OrderProcessor.Service
 {
-    class OrderManagmentService
+    public class OrderManagmentService
     {
         #region Public Methods
         public static void CreateOrder(DbStorage dbStorageContext)
@@ -32,12 +32,17 @@ namespace OrderProcessor.Service
             var order = dbStorageContext.Orders.Find(orderId);
             if (order == null)
             {
-                Console.WriteLine("Order not found");
+                Console.WriteLine("Order not found.");
                 return -1;
             }
-            order.Status = (Status)GetValidOrderStatus();
+
+            var orderData = OrderData.ToOrderData(order);
+            orderData.Status = (Status)GetValidOrderStatus();
+
+            order.Status = orderData.Status;
+
             dbStorageContext.SaveChanges();
-            Console.WriteLine("Order status changed successfully");
+            Console.WriteLine("Order status changed successfully.");
             return 0;
         }
 
@@ -48,12 +53,28 @@ namespace OrderProcessor.Service
             var order = dbStorageContext.Orders.Find(orderId);
             if (order == null)
             {
-                Console.WriteLine("Order not found");
+                Console.WriteLine("Order not found.");
                 return;
             }
-            order.Status = Status.InStock;
+
+            var orderData = OrderData.ToOrderData(order);
+            bool isEligible = OrderBusinessLogic.IsOrderEligibleForWarehouseProcessing(orderData);
+            if (!isEligible)
+            {
+                Console.WriteLine("Order is not eligible for moving to warehouse.\n" +
+                    "Returning order to customer.");
+
+                orderData.Status = Status.ReturnedToCustomer;
+            }
+            else 
+            { 
+                orderData.Status = Status.InStock;
+                Console.WriteLine("Order moved to stock successfully.");
+            }
+
+            order.Status = orderData.Status;
+
             dbStorageContext.SaveChanges();
-            Console.WriteLine("Order moved to stock successfully");
         }
 
         public static void MoveToShipping(DbStorage dbStorageContext)
@@ -63,12 +84,13 @@ namespace OrderProcessor.Service
             var order = dbStorageContext.Orders.Find(orderId);
             if (order == null)
             {
-                Console.WriteLine("Order not found");
+                Console.WriteLine("Order not found.");
                 return;
             }
-            order.Status = Status.InShipping;
-            dbStorageContext.SaveChanges();
-            Console.WriteLine("Order moved to shipping successfully");
+
+            var orderData = OrderData.ToOrderData(order);
+
+            Task.Run(async () => await OrderBusinessLogic.MarkOrderAsShippedAfterDelay(dbStorageContext, order, orderData));
         }
 
         public static void ShowSpecificOrder(DbStorage dbStorageContext)

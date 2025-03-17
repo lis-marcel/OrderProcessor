@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OrderProcessor.Service.DTO
 {
-    class OrderData
+    public class OrderData
     {
         public int Id { get; set; }
         public double Value { get; set; }
