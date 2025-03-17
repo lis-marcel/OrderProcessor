@@ -25,7 +25,8 @@ namespace OrderProcessor.Service
                 ["4"] = ("Change order status", OrderManagmentService.ChangeOrderStatus),
                 ["5"] = ("Show specific order", OrderManagmentService.ShowSpecificOrder),
                 ["6"] = ("Show all orders", OrderManagmentService.ShowAllOrders),
-                ["7"] = ("Exit application", _ => ExitApp())
+                ["7"] = ("Delete order", OrderManagmentService.DeleteOrder),
+                ["8"] = ("Exit application", _ => ExitApp())
             };
 
         public ConsoleService() 

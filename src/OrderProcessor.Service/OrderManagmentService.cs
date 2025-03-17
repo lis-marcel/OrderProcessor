@@ -134,6 +134,19 @@ namespace OrderProcessor.Service
             messageLogger.WriteMessageLine("--------------------------------------------------------------------------------------------");
         }
 
+        public static void DeleteOrder(DbStorage dbStorageContext)
+        {
+            var order = GetOrder(dbStorageContext);
+            if (order == null)
+            {
+                return;
+            }
+
+            dbStorageContext.Orders.Remove(order);
+            dbStorageContext.SaveChanges();
+            messageLogger.WriteSuccess("Order deleted successfully.");
+        }
+
         #endregion
 
         #region Private Methods
@@ -183,11 +196,13 @@ namespace OrderProcessor.Service
 
         private static OrderData CreateOrderDetails()
         {
-            var productName = OrderDetalisService.GetStringValue("Product name");
+            Console.Clear();
+
+            var productName = OrderDetalisService.GetStringValue("product name");
             var value = OrderDetalisService.GetDoubleValue("order");
             var quantity = OrderDetalisService.GetIntValue("quantity");
-            var customerName = OrderDetalisService.GetStringValue("Customer name");
-            var shippingAddress = OrderDetalisService.GetStringValue("Shipping address");
+            var customerName = OrderDetalisService.GetStringValue("customer name");
+            var shippingAddress = OrderDetalisService.GetStringValue("shipping address");
             var customerType = OrderDetalisService.GetCustomerType();
             var paymentMethod = OrderDetalisService.GetPaymentMethod();
 

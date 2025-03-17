@@ -21,7 +21,14 @@ namespace OrderProcessor.Common
         public void WriteSuccess(string message)
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"[Success]: {message}");
+            Console.WriteLine($"[SUCCESS]: {message}");
+            Console.ResetColor();
+        }
+
+        public void WriteInfo(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine($"[INFO]: {message}");
             Console.ResetColor();
         }
 

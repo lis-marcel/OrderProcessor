@@ -44,7 +44,7 @@ namespace OrderProcessor.Service
 
             dbStorageConetxt.SaveChanges();
 
-            messageLogger.WriteSuccess($"\n Order with ID: {orderData.Id} moved to shipping successfully. Follow the instruction above.\n");
+            messageLogger.WriteInfo($"Order with ID: {orderData.Id} moved to shipping successfully. Follow the instruction above.\n");
         }
 
         #endregion
