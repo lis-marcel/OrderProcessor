@@ -16,6 +16,17 @@ namespace OrderProcessor.Service
     {
         private readonly DbStorage dbStorageContext;
         private static readonly MessageLogger messageLogger = new();
+        private static readonly Dictionary<string, (string Description, Action<DbStorage> Action)> MenuItems =
+            new()
+            {
+                ["1"] = ("Create order", OrderManagmentService.CreateOrder),
+                ["2"] = ("Move to stock", OrderManagmentService.MoveToStock),
+                ["3"] = ("Move to shipping", OrderManagmentService.MoveToShipping),
+                ["4"] = ("Change order status", OrderManagmentService.ChangeOrderStatus),
+                ["5"] = ("Show specific order", OrderManagmentService.ShowSpecificOrder),
+                ["6"] = ("Show all orders", OrderManagmentService.ShowAllOrders),
+                ["7"] = ("Exit application", _ => ExitApp())
+            };
 
         public ConsoleService() 
         {
@@ -42,29 +53,13 @@ namespace OrderProcessor.Service
             {
                 var input = SelectedOption();
 
-                switch (input)
+                if (input != null && MenuItems.TryGetValue(input, out var menuEntry))
                 {
-                    case "1":
-                        OrderManagmentService.CreateOrder(dbStorageContext);
-                        break;
-                    case "2":
-                        OrderManagmentService.MoveToStock(dbStorageContext);
-                        break;
-                    case "3":
-                        OrderManagmentService.MoveToShipping(dbStorageContext);
-                        break;
-                    case "4":
-                        OrderManagmentService.ChangeOrderStatus(dbStorageContext);
-                        break;
-                    case "5":
-                        OrderManagmentService.ShowSpecificOrder(dbStorageContext);
-                        break;
-                    case "6":
-                        OrderManagmentService.ShowAllOrders(dbStorageContext);
-                        break;
-                    case "7":
-                        ExitApp();
-                        return;
+                    menuEntry.Action(dbStorageContext);
+                }
+                else
+                {
+                    messageLogger.WriteWarning("Invalid input. Please enter a correct value.");
                 }
 
                 messageLogger.WriteMessage("\nPress any key to return to the main menu...\n");
@@ -83,7 +78,8 @@ namespace OrderProcessor.Service
                 ShowMenu();
 
                 messageLogger.WriteMessage("Enter option number: ");
-                if (int.TryParse(Console.ReadLine(), out int value) && value >= 0 && value <= Enum.GetNames(typeof(Operation)).Length)
+                if (int.TryParse(Console.ReadLine(), out int value) 
+                    && value >= 1 && value <= MenuItems.Count)
                 {
                     return value.ToString();
                 }
@@ -94,14 +90,11 @@ namespace OrderProcessor.Service
 
         private static void ShowMenu()
         {
-            messageLogger.WriteMessageLine("Select an option: \n" +
-                "1. Create order \n" +
-                "2. Move to stock \n" +
-                "3. Move to shipping \n" +
-                "4. Change order status \n" +
-                "5. Show specific order \n" +
-                "6. Show all orders \n" +
-                "7. Exit application");
+            messageLogger.WriteMessageLine("Select an option:");
+            foreach (var entry in MenuItems)
+            {
+                messageLogger.WriteMessageLine($"{entry.Key}. {entry.Value.Description}");
+            }
         }
                         
         private static void ExitApp()
