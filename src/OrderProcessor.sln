@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor", "..\src\OrderProcessor\OrderProcessor.csproj", "{56F472AD-2276-41B4-AD0D-B068DA0072F9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor", "OrderProcessor\OrderProcessor.csproj", "{56F472AD-2276-41B4-AD0D-B068DA0072F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor.BO", "..\src\OrderProcessor.BO\OrderProcessor.BO.csproj", "{BA87ECD6-EF88-4219-8DA9-F7B44EFEC027}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor.BO", "OrderProcessor.BO\OrderProcessor.BO.csproj", "{BA87ECD6-EF88-4219-8DA9-F7B44EFEC027}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor.Common", "..\src\OrderProcessor.Common\OrderProcessor.Common.csproj", "{5252367A-DC20-45C4-AE9C-AE1DFAF8A77F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor.Common", "OrderProcessor.Common\OrderProcessor.Common.csproj", "{5252367A-DC20-45C4-AE9C-AE1DFAF8A77F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor.Service", "..\src\OrderProcessor.Service\OrderProcessor.Service.csproj", "{B60D412D-41B3-4FED-83EA-57776EEF2CF0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor.Service", "OrderProcessor.Service\OrderProcessor.Service.csproj", "{B60D412D-41B3-4FED-83EA-57776EEF2CF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor.Service.Test", "OrderProcessor.Test\OrderProcessor.Service.Test.csproj", "{FE010DE5-C3D0-4D08-9E93-C7F250E16337}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{B60D412D-41B3-4FED-83EA-57776EEF2CF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B60D412D-41B3-4FED-83EA-57776EEF2CF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B60D412D-41B3-4FED-83EA-57776EEF2CF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE010DE5-C3D0-4D08-9E93-C7F250E16337}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE010DE5-C3D0-4D08-9E93-C7F250E16337}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE010DE5-C3D0-4D08-9E93-C7F250E16337}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE010DE5-C3D0-4D08-9E93-C7F250E16337}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,12 +8,13 @@ using System.Threading.Tasks;
 
 namespace OrderProcessor.Service
 {
-    class DbStorageService
+    public class DbStorageService
     {
         public static string PrepareDb()
         {
             var basePath = AppDomain.CurrentDomain.BaseDirectory;
-            var parentPath = Directory.GetParent(basePath).Parent.Parent.Parent.Parent.FullName; //TODO: Find a better way to access the database
+            // TODO: Find a better way to access the database
+            var parentPath = Directory.GetParent(basePath).Parent.Parent.Parent.Parent.FullName;
 
             var dbDirectory = Path.Combine(parentPath, "OrderProcessor.BO\\Db");
 

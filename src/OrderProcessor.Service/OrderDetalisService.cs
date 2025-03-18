@@ -31,7 +31,6 @@ namespace OrderProcessor.Service
                 {
                     return productName;
                 }
-                Console.Clear();
                 messageLogger.WriteWarning($"Invalid input. {fieldName} can not be empty.");
             }
         }

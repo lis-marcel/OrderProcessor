@@ -253,7 +253,11 @@ namespace OrderProcessor.Service
 
         private static OrderData CreateOrderDetails()
         {
-            Console.Clear();
+            // Condition for runnig tests
+            if (Environment.UserInteractive && !Console.IsOutputRedirected)
+            {
+                Console.Clear();
+            }
 
             while (true)
             {
@@ -295,7 +299,11 @@ namespace OrderProcessor.Service
 
         private static bool ShowOrderSummaryAndConfirm(OrderData orderData)
         {
-            Console.Clear();
+            // Condition for runnig tests
+            if (Environment.UserInteractive && !Console.IsOutputRedirected)
+            {
+                Console.Clear();
+            }
             messageLogger.WriteMessageLine("Order Summary:");
             messageLogger.WriteMessageLine($"Product Name: {orderData.ProductName}");
             messageLogger.WriteMessageLine($"Value: {orderData.Value}");

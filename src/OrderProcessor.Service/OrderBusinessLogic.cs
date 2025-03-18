@@ -8,6 +8,7 @@ namespace OrderProcessor.Service
     public class OrderBusinessLogic
     {
         private static readonly double cashPaymentThreshold = 2500;
+        private static readonly int updateDelay = 4500;
         private static readonly MessageLogger messageLogger = new();
 
         public OrderBusinessLogic() { }
@@ -35,7 +36,7 @@ namespace OrderProcessor.Service
                 return;
             }
 
-            await Task.Delay(4500);
+            await Task.Delay(updateDelay);
 
             var orderData = OrderData.ToDTO(order);
 
