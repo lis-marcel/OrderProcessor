@@ -66,7 +66,7 @@ namespace OrderProcessor.Service
         {
             while (true)
             {
-                messageLogger.WriteMessage("Enter payment method (0 - Cash, 1 - Credit card, 2 - On delivery): ");
+                messageLogger.WriteMessage("Enter payment method (0 - Cash on delivery, 1 - Credit card): ");
                 if (int.TryParse(Console.ReadLine(), out int paymentMethod) && Enum.IsDefined(typeof(PaymentMethod), paymentMethod))
                 {
                     return (PaymentMethod)paymentMethod;

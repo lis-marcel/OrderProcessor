@@ -2,6 +2,7 @@
 using OrderProcessor.BO.OrderOptions;
 using OrderProcessor.Common;
 using OrderProcessor.Service.DTO;
+using System.Reflection;
 
 namespace OrderProcessor.Service
 {
@@ -13,6 +14,12 @@ namespace OrderProcessor.Service
         public static void CreateOrder(DbStorage dbStorageContext)
         {
             var orderData = CreateOrderDetails();
+
+            if (orderData == null)
+            {
+                messageLogger.WriteWarning("Order creation cancelled.");
+                return;
+            }
 
             int orderId = DbStorageService.GetHighestOrderId(dbStorageContext) + 1;
 
@@ -75,6 +82,56 @@ namespace OrderProcessor.Service
             var orderId = GetOrderId();
 
             Task.Run(async () => await OrderBusinessLogic.MarkOrderAsShippedAfterDelay(dbStorageContext, orderId));
+        }
+
+        public static void EditOrderDetails(DbStorage dbStorageContext)
+        {
+            var order = GetOrder(dbStorageContext);
+            if (order == null)
+            {
+                return;
+            }
+
+            var orderData = OrderData.ToDTO(order);
+            var orderProperties = typeof(OrderData).GetProperties();
+
+            // Clear the console before displaying the order details for editing
+            Console.Clear();
+
+            foreach (var property in orderProperties)
+            {
+                if (property.Name == "Id" || property.Name == "CreationTime" || property.Name == "Status")
+                {
+                    continue;
+                }
+
+                object oldValue = property.GetValue(orderData);
+
+                messageLogger.WriteMessageLine($"Current {property.Name}: {oldValue}");
+
+                if (AskUserForConfirmation("Do you want to edit this field?"))
+                {
+                    property.SetValue(orderData, ParsePropertyValue(property));
+                }
+            }
+
+            if (ShowOrderSummaryAndConfirm(orderData))
+            {
+                var updated = OrderData.ToBO(orderData);
+
+                order.Value = updated.Value;
+                order.ProductName = updated.ProductName;
+                order.ShippingAddress = updated.ShippingAddress;
+                order.Quantity = updated.Quantity;
+                order.CustomerType = updated.CustomerType;
+                order.CustomerName = updated.CustomerName;
+                order.PaymentMethod = updated.PaymentMethod;
+
+                dbStorageContext.SaveChanges();
+                messageLogger.WriteSuccess("Order details updated successfully.");
+            }
+
+            messageLogger.WriteWarning("Order update cancelled.");
         }
 
         public static void ShowSpecificOrder(DbStorage dbStorageContext)
@@ -198,29 +255,101 @@ namespace OrderProcessor.Service
         {
             Console.Clear();
 
-            var productName = OrderDetalisService.GetStringValue("product name");
-            var value = OrderDetalisService.GetDoubleValue("order");
-            var quantity = OrderDetalisService.GetIntValue("quantity");
-            var customerName = OrderDetalisService.GetStringValue("customer name");
-            var shippingAddress = OrderDetalisService.GetStringValue("shipping address");
-            var customerType = OrderDetalisService.GetCustomerType();
-            var paymentMethod = OrderDetalisService.GetPaymentMethod();
-
-            OrderData order = new()
+            while (true)
             {
-                ProductName = productName,
-                Value = value,
-                Quantity = quantity,
-                CustomerName = customerName,
-                ShippingAddress = shippingAddress,
-                CustomerType = customerType,
-                PaymentMethod = paymentMethod,
+                var productName = OrderDetalisService.GetStringValue("product name");
+                var value = OrderDetalisService.GetDoubleValue("order");
+                var quantity = OrderDetalisService.GetIntValue("quantity");
+                var customerName = OrderDetalisService.GetStringValue("customer name");
+                var shippingAddress = OrderDetalisService.GetStringValue("shipping address");
+                var customerType = OrderDetalisService.GetCustomerType();
+                var paymentMethod = OrderDetalisService.GetPaymentMethod();
 
-                CreationTime = DateTime.Now,
-                Status = Status.New,
-            };
 
-            return order;
+                var orderData = new OrderData
+                {
+                    ProductName = productName,
+                    Value = value,
+                    Quantity = quantity,
+                    CustomerName = customerName,
+                    ShippingAddress = shippingAddress,
+                    CustomerType = customerType,
+                    PaymentMethod = paymentMethod,
+                    CreationTime = DateTime.Now,
+                    Status = Status.New,
+                };
+
+                if (ShowOrderSummaryAndConfirm(orderData))
+                {
+                    return orderData;
+                }
+
+                if (AskUserForConfirmation("Do you want to return to the main menu?"))
+                {
+                    return null;
+                }
+
+                messageLogger.WriteInfo("Order creation cancelled. Restarting the entry process.");
+            }
+        }
+
+        private static bool ShowOrderSummaryAndConfirm(OrderData orderData)
+        {
+            Console.Clear();
+            messageLogger.WriteMessageLine("Order Summary:");
+            messageLogger.WriteMessageLine($"Product Name: {orderData.ProductName}");
+            messageLogger.WriteMessageLine($"Value: {orderData.Value}");
+            messageLogger.WriteMessageLine($"Quantity: {orderData.Quantity}");
+            messageLogger.WriteMessageLine($"Customer Name: {orderData.CustomerName}");
+            messageLogger.WriteMessageLine($"Shipping Address: {orderData.ShippingAddress}");
+            messageLogger.WriteMessageLine($"Customer Type: {orderData.CustomerType}");
+            messageLogger.WriteMessageLine($"Payment Method: {orderData.PaymentMethod}");
+
+            return AskUserForConfirmation("Do you confirm the order details?");
+        }
+
+        private static bool AskUserForConfirmation(string message)
+        {
+            while (true)
+            {
+                messageLogger.WriteMessageLine(
+                    $"{message} [Press ENTER to confirm, any other key to cancel]: "
+                );
+                var input = Console.ReadKey(intercept: true);
+
+                // Enter = true, anything else = false
+                return input.Key == ConsoleKey.Enter;
+            }
+        }
+
+        private static object ParsePropertyValue(PropertyInfo property)
+        {
+            if (property.PropertyType == typeof(int))
+            {
+                int newValue = OrderDetalisService.GetIntValue(property.Name);
+                return newValue;
+            }
+            else if (property.PropertyType == typeof(string))
+            {
+                string newValue = OrderDetalisService.GetStringValue(property.Name);
+                return newValue;
+            }
+            else if (property.PropertyType == typeof(double))
+            {
+                double newValue = OrderDetalisService.GetDoubleValue(property.Name);
+                return newValue;
+            }
+            else if (property.PropertyType == typeof(CustomerType))
+            {
+                CustomerType customerType = OrderDetalisService.GetCustomerType();
+                return customerType;
+            }
+            else if (property.PropertyType == typeof(PaymentMethod))
+            {
+                PaymentMethod paymentMethod = OrderDetalisService.GetPaymentMethod();
+                return paymentMethod;
+            }
+            return null;
         }
 
         #endregion

@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using OrderProcessor.BO;
-using OrderProcessor.Service.DTO;
-using Microsoft.EntityFrameworkCore.Sqlite;
-using OrderProcessor.BO.OrderOptions;
 using OrderProcessor.Common;
 
 namespace OrderProcessor.Service
@@ -23,10 +15,11 @@ namespace OrderProcessor.Service
                 ["2"] = ("Move to stock", OrderManagmentService.MoveToStock),
                 ["3"] = ("Move to shipping", OrderManagmentService.MoveToShipping),
                 ["4"] = ("Change order status", OrderManagmentService.ChangeOrderStatus),
-                ["5"] = ("Show specific order", OrderManagmentService.ShowSpecificOrder),
-                ["6"] = ("Show all orders", OrderManagmentService.ShowAllOrders),
-                ["7"] = ("Delete order", OrderManagmentService.DeleteOrder),
-                ["8"] = ("Exit application", _ => ExitApp())
+                ["5"] = ("Edit order details", OrderManagmentService.EditOrderDetails),
+                ["6"] = ("Show specific order", OrderManagmentService.ShowSpecificOrder),
+                ["7"] = ("Show all orders", OrderManagmentService.ShowAllOrders),
+                ["8"] = ("Delete order", OrderManagmentService.DeleteOrder),
+                ["9"] = ("Exit application", _ => ExitApp())
             };
 
         public ConsoleService() 
@@ -97,7 +90,7 @@ namespace OrderProcessor.Service
                 messageLogger.WriteMessageLine($"{entry.Key}. {entry.Value.Description}");
             }
         }
-                        
+
         private static void ExitApp()
         {
             Console.Clear();

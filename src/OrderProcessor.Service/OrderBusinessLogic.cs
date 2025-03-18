@@ -17,7 +17,7 @@ namespace OrderProcessor.Service
         {
             bool isEligible = true;
 
-            if (orderData.Value > cashPaymentThreshold && orderData.PaymentMethod == PaymentMethod.OnDelivery)
+            if (orderData.Value > cashPaymentThreshold && orderData.PaymentMethod == PaymentMethod.Cash)
             {
                 isEligible = false;
             }

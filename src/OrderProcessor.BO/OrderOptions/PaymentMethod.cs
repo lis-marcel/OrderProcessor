@@ -7,8 +7,7 @@ namespace OrderProcessor.BO.OrderOptions
 {
     public enum PaymentMethod
     {
-        Card,
         Cash,
-        OnDelivery,
+        CreditCard,
     }
 }
