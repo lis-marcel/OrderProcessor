@@ -13,195 +13,251 @@ namespace OrderProcessor.Service
         #region Public Methods
         public static void CreateOrder(DbStorage dbStorageContext)
         {
-            var orderData = CreateOrderDetails();
-
-            if (orderData == null)
+            try
             {
-                messageLogger.WriteWarning("Order creation cancelled.");
-                return;
+                var orderData = CreateOrderDetails();
+
+                if (orderData == null)
+                {
+                    messageLogger.WriteWarning("Order creation cancelled.");
+                    return;
+                }
+
+                int orderId = DbStorageService.GetHighestOrderId(dbStorageContext) + 1;
+
+                orderData.Id = orderId;
+
+                dbStorageContext.Orders.Add(OrderData.ToBO(orderData));
+                dbStorageContext.SaveChanges();
+                messageLogger.WriteSuccess($"Order created successfully with ID: {orderId}");
             }
-
-            int orderId = DbStorageService.GetHighestOrderId(dbStorageContext) + 1;
-
-            orderData.Id = orderId;
-
-            dbStorageContext.Orders.Add(OrderData.ToBO(orderData));
-            dbStorageContext.SaveChanges();
-            messageLogger.WriteSuccess($"Order created successfully with ID: {orderId}");
+            catch (Exception ex)
+            {
+                messageLogger.WriteError(ex.Message);
+            }
         }
 
         public static void ChangeOrderStatus(DbStorage dbStorageContext)
         {
-            var order = GetOrder(dbStorageContext);
-            if (order == null)
+            try
             {
-                return;
+                var order = GetOrder(dbStorageContext);
+                if (order == null)
+                {
+                    return;
+                }
+
+                var orderData = OrderData.ToDTO(order);
+
+                orderData.Status = (Status)GetValidOrderStatus();
+
+                order.Status = orderData.Status;
+
+                dbStorageContext.SaveChanges();
+                messageLogger.WriteSuccess("Order status changed successfully.");
             }
-
-            var orderData = OrderData.ToDTO(order);
-
-            orderData.Status = (Status)GetValidOrderStatus();
-
-            order.Status = orderData.Status;
-
-            dbStorageContext.SaveChanges();
-            messageLogger.WriteSuccess("Order status changed successfully.");
+            catch (Exception ex)
+            {
+                messageLogger.WriteError(ex.Message);
+            }
         }
 
         public static void MoveToStock(DbStorage dbStorageContext)
         {
-            var order = GetOrder(dbStorageContext);
-            if (order == null)
+            try
             {
-                return;
+                var order = GetOrder(dbStorageContext);
+                if (order == null)
+                {
+                    return;
+                }
+
+                var orderData = OrderData.ToDTO(order);
+
+                bool isEligible = OrderBusinessLogic.IsOrderEligibleForWarehouseProcessing(orderData);
+                if (!isEligible)
+                {
+                    messageLogger.WriteWarning("Order is not eligible for moving to warehouse.\n" +
+                        "Returning order to customer.");
+
+                    orderData.Status = Status.ReturnedToCustomer;
+                }
+                else
+                {
+                    orderData.Status = Status.InStock;
+                    messageLogger.WriteSuccess("Order moved to stock successfully.");
+                }
+
+                order.Status = orderData.Status;
+
+                dbStorageContext.SaveChanges();
             }
-
-            var orderData = OrderData.ToDTO(order);
-
-            bool isEligible = OrderBusinessLogic.IsOrderEligibleForWarehouseProcessing(orderData);
-            if (!isEligible)
+            catch (Exception ex)
             {
-                messageLogger.WriteWarning("Order is not eligible for moving to warehouse.\n" +
-                    "Returning order to customer.");
-
-                orderData.Status = Status.ReturnedToCustomer;
+                messageLogger.WriteError(ex.Message);
             }
-            else 
-            { 
-                orderData.Status = Status.InStock;
-                messageLogger.WriteSuccess("Order moved to stock successfully.");
-            }
-
-            order.Status = orderData.Status;
-
-            dbStorageContext.SaveChanges();
         }
 
         public static void MoveToShipping(DbStorage dbStorageContext)
         {
-            var orderId = GetOrderId();
+            try
+            {
+                var orderId = GetOrderId();
 
-            Task.Run(async () => await OrderBusinessLogic.MarkOrderAsShippedAfterDelay(dbStorageContext, orderId));
+                Task.Run(async () => await OrderBusinessLogic.MarkOrderAsShippedAfterDelay(dbStorageContext, orderId));
+            }
+            catch (Exception ex)
+            {
+                messageLogger.WriteError(ex.Message);
+            }
         }
 
         public static void EditOrderDetails(DbStorage dbStorageContext)
         {
-            var order = GetOrder(dbStorageContext);
-            if (order == null)
+            try
             {
-                return;
-            }
-
-            var orderData = OrderData.ToDTO(order);
-            var orderProperties = typeof(OrderData).GetProperties();
-
-            // Clear the console before displaying the order details for editing
-            Console.Clear();
-
-            foreach (var property in orderProperties)
-            {
-                if (property.Name == "Id" || property.Name == "CreationTime" || property.Name == "Status")
+                var order = GetOrder(dbStorageContext);
+                if (order == null)
                 {
-                    continue;
+                    return;
                 }
 
-                object oldValue = property.GetValue(orderData);
+                var orderData = OrderData.ToDTO(order);
+                var orderProperties = typeof(OrderData).GetProperties();
 
-                messageLogger.WriteMessageLine($"Current {property.Name}: {oldValue}");
+                // Clear the console before displaying the order details for editing
+                Console.Clear();
 
-                if (AskUserForConfirmation("Do you want to edit this field?"))
+                foreach (var property in orderProperties)
                 {
-                    property.SetValue(orderData, ParsePropertyValue(property));
+                    if (property.Name == "Id" || property.Name == "CreationTime" || property.Name == "Status")
+                    {
+                        continue;
+                    }
+
+                    object oldValue = property.GetValue(orderData);
+
+                    messageLogger.WriteMessageLine($"Current {property.Name}: {oldValue}");
+
+                    if (AskUserForConfirmation("Do you want to edit this field?"))
+                    {
+                        property.SetValue(orderData, ParsePropertyValue(property));
+                    }
                 }
-            }
 
-            if (ShowOrderSummaryAndConfirm(orderData))
+                if (ShowOrderSummaryAndConfirm(orderData))
+                {
+                    var updated = OrderData.ToBO(orderData);
+
+                    order.Value = updated.Value;
+                    order.ProductName = updated.ProductName;
+                    order.ShippingAddress = updated.ShippingAddress;
+                    order.Quantity = updated.Quantity;
+                    order.CustomerType = updated.CustomerType;
+                    order.CustomerName = updated.CustomerName;
+                    order.PaymentMethod = updated.PaymentMethod;
+
+                    dbStorageContext.SaveChanges();
+                    messageLogger.WriteSuccess("Order details updated successfully.");
+                }
+
+                messageLogger.WriteWarning("Order update cancelled.");
+            }
+            catch (Exception ex)
             {
-                var updated = OrderData.ToBO(orderData);
-
-                order.Value = updated.Value;
-                order.ProductName = updated.ProductName;
-                order.ShippingAddress = updated.ShippingAddress;
-                order.Quantity = updated.Quantity;
-                order.CustomerType = updated.CustomerType;
-                order.CustomerName = updated.CustomerName;
-                order.PaymentMethod = updated.PaymentMethod;
-
-                dbStorageContext.SaveChanges();
-                messageLogger.WriteSuccess("Order details updated successfully.");
+                messageLogger.WriteError(ex.Message);
             }
-
-            messageLogger.WriteWarning("Order update cancelled.");
         }
 
         public static void ShowSpecificOrder(DbStorage dbStorageContext)
         {
-            var order = GetOrder(dbStorageContext);
-            if (order == null)
+            try
             {
-                return;
+                var order = GetOrder(dbStorageContext);
+                if (order == null)
+                {
+                    return;
+                }
+
+                var orderData = OrderData.ToDTO(order);
+
+                messageLogger.WriteMessageLine("--------------------------------------------------------------------------------------------");
+                messageLogger.WriteMessageLine("| ID  | Value   | Product Name         | Address              | Qty | Status    | Payment  |");
+                messageLogger.WriteMessageLine("+------------------------------------------------------------------------------------------+");
+
+                messageLogger.WriteMessageLine(
+                    $"| {orderData.Id,-4}|" +
+                    $" {orderData.Value,-8}|" +
+                    $" {orderData.ProductName,-21}|" +
+                    $" {orderData.ShippingAddress,-21}|" +
+                    $" {orderData.Quantity,-4}|" +
+                    $" {orderData.Status,-10}|" +
+                    $" {orderData.PaymentMethod,-8} |"
+                );
+
+                messageLogger.WriteMessageLine("--------------------------------------------------------------------------------------------");
             }
-
-            var orderData = OrderData.ToDTO(order);
-
-            messageLogger.WriteMessageLine("--------------------------------------------------------------------------------------------");
-            messageLogger.WriteMessageLine("| ID  | Value   | Product Name         | Address              | Qty | Status    | Payment  |");
-            messageLogger.WriteMessageLine("+------------------------------------------------------------------------------------------+");
-
-            messageLogger.WriteMessageLine(
-                $"| {orderData.Id,-4}|" +
-                $" {orderData.Value,-8}|" +
-                $" {orderData.ProductName,-21}|" +
-                $" {orderData.ShippingAddress,-21}|" +
-                $" {orderData.Quantity,-4}|" +
-                $" {orderData.Status,-10}|" +
-                $" {orderData.PaymentMethod,-8} |"
-            );
-
-            messageLogger.WriteMessageLine("--------------------------------------------------------------------------------------------");
+            catch (Exception ex)
+            {
+                messageLogger.WriteError(ex.Message);
+            }
         }
 
         public static void ShowAllOrders(DbStorage dbStorageContext)
         {
-            var orders = dbStorageContext.Orders.ToList();
-
-            if (orders.Count == 0)
+            try
             {
-                messageLogger.WriteError("No orders found.");
-                return;
+                var orders = dbStorageContext.Orders.ToList();
+
+                if (orders.Count == 0)
+                {
+                    messageLogger.WriteError("No orders found.");
+                    return;
+                }
+
+                messageLogger.WriteMessageLine("--------------------------------------------------------------------------------------------");
+                messageLogger.WriteMessageLine("| ID  | Value   | Product Name         | Address              | Qty | Status    | Payment  |");
+                messageLogger.WriteMessageLine("+------------------------------------------------------------------------------------------+");
+
+                foreach (var order in orders)
+                {
+                    messageLogger.WriteMessageLine(
+                        $"| {order.Id,-4}|" +
+                        $" {order.Value,-8}|" +
+                        $" {order.ProductName,-21}|" +
+                        $" {order.ShippingAddress,-21}|" +
+                        $" {order.Quantity,-4}|" +
+                        $" {order.Status,-10}|" +
+                        $" {order.PaymentMethod,-8} |"
+                    );
+                }
+
+                messageLogger.WriteMessageLine("--------------------------------------------------------------------------------------------");
             }
-
-            messageLogger.WriteMessageLine("--------------------------------------------------------------------------------------------");
-            messageLogger.WriteMessageLine("| ID  | Value   | Product Name         | Address              | Qty | Status    | Payment  |");
-            messageLogger.WriteMessageLine("+------------------------------------------------------------------------------------------+");
-
-            foreach (var order in orders)
+            catch (Exception ex)
             {
-                messageLogger.WriteMessageLine(
-                    $"| {order.Id,-4}|" +
-                    $" {order.Value,-8}|" +
-                    $" {order.ProductName,-21}|" +
-                    $" {order.ShippingAddress,-21}|" +
-                    $" {order.Quantity,-4}|" +
-                    $" {order.Status,-10}|" +
-                    $" {order.PaymentMethod,-8} |"
-                );
+                messageLogger.WriteError(ex.Message);
             }
-
-            messageLogger.WriteMessageLine("--------------------------------------------------------------------------------------------");
         }
 
         public static void DeleteOrder(DbStorage dbStorageContext)
         {
-            var order = GetOrder(dbStorageContext);
-            if (order == null)
+            try
             {
-                return;
-            }
+                var order = GetOrder(dbStorageContext);
+                if (order == null)
+                {
+                    return;
+                }
 
-            dbStorageContext.Orders.Remove(order);
-            dbStorageContext.SaveChanges();
-            messageLogger.WriteSuccess("Order deleted successfully.");
+                dbStorageContext.Orders.Remove(order);
+                dbStorageContext.SaveChanges();
+                messageLogger.WriteSuccess("Order deleted successfully.");
+            }
+            catch (Exception ex)
+            {
+                messageLogger.WriteError(ex.Message);
+            }
         }
 
         #endregion
