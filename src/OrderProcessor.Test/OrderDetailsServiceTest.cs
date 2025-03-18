@@ -18,7 +18,7 @@ namespace OrderProcessor.Service.Test
             Console.SetIn(new StringReader(input));
 
             // Act
-            double result = OrderDetalisService.GetDoubleValue("TestField");
+            double result = OrderDetalisService.EnterDoubleValue("TestField");
 
             // Assert
             Assert.Equal(12.34, result);
@@ -32,7 +32,7 @@ namespace OrderProcessor.Service.Test
             Console.SetIn(new StringReader(input));
 
             // Act
-            double result = OrderDetalisService.GetDoubleValue("TestField");
+            double result = OrderDetalisService.EnterDoubleValue("TestField");
 
             // Assert
             Assert.Equal(12.34, result);
@@ -46,7 +46,7 @@ namespace OrderProcessor.Service.Test
             Console.SetIn(new StringReader(input));
 
             // Act
-            string result = OrderDetalisService.GetStringValue("TestField");
+            string result = OrderDetalisService.EnterStringValue("TestField");
 
             // Assert
             Assert.Equal("TestValue", result);
@@ -60,7 +60,7 @@ namespace OrderProcessor.Service.Test
             Console.SetIn(new StringReader(input));
 
             // Act
-            string result = OrderDetalisService.GetStringValue("TestField");
+            string result = OrderDetalisService.EnterStringValue("TestField");
 
             // Assert
             Assert.Equal("TestValue", result);
@@ -74,7 +74,7 @@ namespace OrderProcessor.Service.Test
             Console.SetIn(new StringReader(input));
 
             // Act
-            int result = OrderDetalisService.GetIntValue("TestField");
+            int result = OrderDetalisService.EnterIntValue("TestField");
 
             // Assert
             Assert.Equal(42, result);
@@ -88,7 +88,7 @@ namespace OrderProcessor.Service.Test
             Console.SetIn(new StringReader(input));
 
             // Act
-            int result = OrderDetalisService.GetIntValue("TestField");
+            int result = OrderDetalisService.EnterIntValue("TestField");
 
             // Assert
             Assert.Equal(42, result);
@@ -102,7 +102,7 @@ namespace OrderProcessor.Service.Test
             Console.SetIn(new StringReader(input));
 
             // Act
-            CustomerType result = OrderDetalisService.GetCustomerType();
+            CustomerType result = OrderDetalisService.EnterCustomerType();
 
             // Assert
             Assert.Equal(CustomerType.Company, result);
@@ -116,7 +116,7 @@ namespace OrderProcessor.Service.Test
             Console.SetIn(new StringReader(input));
 
             // Act
-            CustomerType result = OrderDetalisService.GetCustomerType();
+            CustomerType result = OrderDetalisService.EnterCustomerType();
 
             // Assert
             Assert.Equal(CustomerType.Individual, result);
@@ -130,7 +130,7 @@ namespace OrderProcessor.Service.Test
             Console.SetIn(new StringReader(input));
 
             // Act
-            PaymentMethod result = OrderDetalisService.GetPaymentMethod();
+            PaymentMethod result = OrderDetalisService.EnterPaymentMethod();
 
             // Assert
             Assert.Equal(PaymentMethod.Cash, result);
@@ -144,7 +144,7 @@ namespace OrderProcessor.Service.Test
             Console.SetIn(new StringReader(input));
 
             // Act
-            PaymentMethod result = OrderDetalisService.GetPaymentMethod();
+            PaymentMethod result = OrderDetalisService.EnterPaymentMethod();
 
             // Assert
             Assert.Equal(PaymentMethod.Cash, result);

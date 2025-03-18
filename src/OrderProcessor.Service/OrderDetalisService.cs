@@ -8,7 +8,7 @@ namespace OrderProcessor.Service
         private static readonly MessageLogger messageLogger = new();
 
         #region Public Methods
-        public static double GetDoubleValue(string fieldName)
+        public static double EnterDoubleValue(string fieldName)
         {
             while (true)
             {
@@ -21,7 +21,7 @@ namespace OrderProcessor.Service
             }
         }
 
-        public static string GetStringValue(string fieldName)
+        public static string EnterStringValue(string fieldName)
         {
             while (true)
             {
@@ -35,7 +35,7 @@ namespace OrderProcessor.Service
             }
         }
 
-        public static int GetIntValue(string fieldName)
+        public static int EnterIntValue(string fieldName)
         {
             while (true)
             {
@@ -48,7 +48,7 @@ namespace OrderProcessor.Service
             }
         }
 
-        public static CustomerType GetCustomerType()
+        public static CustomerType EnterCustomerType()
         {
             while (true)
             {
@@ -61,7 +61,7 @@ namespace OrderProcessor.Service
             }
         }
 
-        public static PaymentMethod GetPaymentMethod()
+        public static PaymentMethod EnterPaymentMethod()
         {
             while (true)
             {
@@ -73,6 +73,7 @@ namespace OrderProcessor.Service
                 messageLogger.WriteWarning("Invalid input. Please enter a correct payment method.");
             }
         }
+
         #endregion
 
     }

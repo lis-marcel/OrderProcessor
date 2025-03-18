@@ -11,14 +11,14 @@ namespace OrderProcessor.Service
         private static readonly Dictionary<string, (string Description, Action<DbStorage> Action)> MenuItems =
             new()
             {
-                ["1"] = ("Create order", OrderManagmentService.CreateOrder),
-                ["2"] = ("Move to stock", OrderManagmentService.MoveToStock),
-                ["3"] = ("Move to shipping", OrderManagmentService.MoveToShipping),
-                ["4"] = ("Change order status", OrderManagmentService.ChangeOrderStatus),
-                ["5"] = ("Edit order details", OrderManagmentService.EditOrderDetails),
-                ["6"] = ("Show specific order", OrderManagmentService.ShowSpecificOrder),
-                ["7"] = ("Show all orders", OrderManagmentService.ShowAllOrders),
-                ["8"] = ("Delete order", OrderManagmentService.DeleteOrder),
+                ["1"] = ("Create order", OrderManagmentFacade.CreateOrder),
+                ["2"] = ("Move to stock", OrderManagmentFacade.MoveToStock),
+                ["3"] = ("Move to shipping", OrderManagmentFacade.MoveToShipping),
+                ["4"] = ("Change order status", OrderManagmentFacade.ChangeOrderStatus),
+                ["5"] = ("Edit order details", OrderManagmentFacade.EditOrderDetails),
+                ["6"] = ("Show specific order", OrderPrintingService.ShowSpecificOrder),
+                ["7"] = ("Show all orders", OrderPrintingService.ShowAllOrders),
+                ["8"] = ("Delete order", OrderManagmentFacade.DeleteOrder),
                 ["9"] = ("Exit application", _ => ExitApp())
             };
 
