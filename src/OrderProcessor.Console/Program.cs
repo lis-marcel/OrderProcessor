@@ -9,6 +9,9 @@ namespace OrderProcessor.Console
 
         static void Main(string[] args)
         {
+            AppDomain currentDomain = AppDomain.CurrentDomain;
+            currentDomain.UnhandledException += new UnhandledExceptionEventHandler(MyHandler);
+
             try
             {
                 ConsoleService service = new();
@@ -18,6 +21,13 @@ namespace OrderProcessor.Console
             {
                 consoleLogger.WriteError(ex.Message);
             }
+        }
+
+        static void MyHandler(object sender, UnhandledExceptionEventArgs args)
+        {
+            Exception e = (Exception)args.ExceptionObject;
+            System.Console.WriteLine("MyHandler caught : " + e.Message);
+            System.Console.WriteLine("Runtime terminating: {0}", args.IsTerminating);
         }
     }
 }

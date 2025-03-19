@@ -16,7 +16,12 @@ namespace OrderProcessor.Service
             // TODO: Find a better way to access the database
             var basePath = AppDomain.CurrentDomain.BaseDirectory;
 
-            var dbPath = Path.Combine(basePath, "OrderProcessor.db");
+            if (!Directory.Exists(Path.Combine(basePath, "Db")))
+            {
+                Directory.CreateDirectory(Path.Combine(basePath, "Db"));
+            }
+
+            var dbPath = Path.Combine(basePath, "Db\\OrderProcessorDatabase.db");
 
             return dbPath;
         }

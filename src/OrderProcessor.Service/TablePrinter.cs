@@ -14,32 +14,6 @@ namespace OrderProcessor.Service
         private readonly List<List<string>> rows = new();
 
         #region Public Methods
-        public static TablePrinter CreateTable(OrderData order)
-        {
-            var printer = new TablePrinter();
-
-            // Add columns
-            printer.AddColumn("ID");
-            printer.AddColumn("Value");
-            printer.AddColumn("Product Name");
-            printer.AddColumn("Address");
-            printer.AddColumn("Qty");
-            printer.AddColumn("Status");
-            printer.AddColumn("Payment");
-
-            printer.AddRow(
-                order.Id,
-                order.Value,
-                order.ProductName,
-                order.ShippingAddress,
-                order.Quantity,
-                order.Status,
-                order.PaymentMethod
-            );
-
-            return printer;
-        }
-
         public static TablePrinter CreateTable(IEnumerable<OrderData> orders)
         {
             var printer = new TablePrinter();

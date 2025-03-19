@@ -23,7 +23,7 @@ namespace OrderProcessor.Service
 
                 var orderData = OrderData.ToDTO(order);
 
-                var tablePrinter = TablePrinter.CreateTable(orderData);
+                var tablePrinter = TablePrinter.CreateTable((IEnumerable<OrderData>)orderData);
                 tablePrinter.PrintTable();
             }
             catch (Exception ex)

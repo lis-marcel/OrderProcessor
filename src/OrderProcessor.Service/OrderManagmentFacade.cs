@@ -48,6 +48,12 @@ namespace OrderProcessor.Service
                     return;
                 }
 
+                if (!OrderUtility.AskUserForConfirmation($"Are you sure you want to delete Order {order.Id}?", messageLogger))
+                {
+                    messageLogger.WriteInfo("Order deletion canceled.");
+                    return;
+                }
+
                 dbStorageContext.Orders.Remove(order);
                 dbStorageContext.SaveChanges();
                 messageLogger.WriteSuccess("Order deleted successfully.");
