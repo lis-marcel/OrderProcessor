@@ -7,7 +7,7 @@ namespace OrderProcessor.Service
     public class ConsoleService
     {
         private readonly DbStorage dbStorageContext;
-        private static readonly MessageLogger messageLogger = new();
+        private static readonly ConsoleLogger consoleLogger = new();
         private static readonly Dictionary<string, (string Description, Action<DbStorage> Action)> MenuItems =
             new()
             {
@@ -33,30 +33,32 @@ namespace OrderProcessor.Service
 
             if (!dbStorageContext.Database.CanConnect())
             {
-                messageLogger.WriteError("Failed to connect to database!");
+                consoleLogger.WriteError($"Failed to connect to database located in path {dbPath}");
+                consoleLogger.WriteInfo($"Created new database in path {dbPath}");
             }
-            messageLogger.WriteSuccess("Connected to database successfully.");
+
+            consoleLogger.WriteSuccess($"Connected to database {dbPath} successfully.");
         }
 
         #region Public Methods
         public void Start()
         {
-            messageLogger.WriteMessageLine("Welcome to Order Processor");
+            consoleLogger.WriteMessageLine("Welcome to Order Processor");
 
             while (true)
             {
-                var input = SelectedOption();
+                var optionNumber = EnterOptionNumber();
 
-                if (input != null && MenuItems.TryGetValue(input, out var menuEntry))
+                if (optionNumber != null && MenuItems.TryGetValue(optionNumber, out var menuEntry))
                 {
                     menuEntry.Action(dbStorageContext);
                 }
                 else
                 {
-                    messageLogger.WriteWarning("Invalid input. Please enter a correct value.");
+                    consoleLogger.WriteWarning("Invalid optionNumber. Please enter a correct value.");
                 }
 
-                messageLogger.WriteMessage("\nPress any key to return to the main menu...\n");
+                consoleLogger.WriteMessage("\nPress any key to return to the main menu...\n");
                 Console.ReadKey();
                 Console.Clear();
             }
@@ -65,36 +67,39 @@ namespace OrderProcessor.Service
         #endregion
 
         #region Private Methods
-        private static string SelectedOption()
+        private static string EnterOptionNumber()
         {
             while (true)
             {
                 ShowMenu();
 
-                messageLogger.WriteMessage("Enter option number: ");
+                consoleLogger.WriteMessage("Enter option number: ");
+
                 if (int.TryParse(Console.ReadLine(), out int value) 
                     && value >= 1 && value <= MenuItems.Count)
                 {
                     return value.ToString();
                 }
+
                 Console.Clear();
-                messageLogger.WriteWarning("Invalid input. Please enter a correct value.");
+                consoleLogger.WriteWarning("Invalid optionNumber. Please enter a correct value.");
             }
         }
 
         private static void ShowMenu()
         {
-            messageLogger.WriteMessageLine("Select an option:");
+            consoleLogger.WriteMessageLine("Select an option:");
+
             foreach (var entry in MenuItems)
             {
-                messageLogger.WriteMessageLine($"{entry.Key}. {entry.Value.Description}");
+                consoleLogger.WriteMessageLine($"{entry.Key}. {entry.Value.Description}");
             }
         }
 
         private static void ExitApp()
         {
             Console.Clear();
-            messageLogger.WriteMessageLine("Exiting the application...");
+            consoleLogger.WriteMessageLine("Exiting the application...");
             Environment.Exit(0);
         }
 

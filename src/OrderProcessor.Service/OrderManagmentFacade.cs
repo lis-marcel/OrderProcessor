@@ -8,7 +8,7 @@ namespace OrderProcessor.Service
 {
     public class OrderManagmentFacade
     {
-        private static readonly MessageLogger messageLogger = new();
+        private static readonly ConsoleLogger messageLogger = new();
 
         #region Public Methods
         public static void CreateOrder(DbStorage dbStorageContext)
@@ -41,7 +41,12 @@ namespace OrderProcessor.Service
             try
             {
                 var order = OrderUtility.AskAndFindOrder(dbStorageContext, messageLogger);
-                if (order == null) return;
+
+                if (order == null)
+                {
+                    messageLogger.WriteInfo("Order not found.");
+                    return;
+                }
 
                 dbStorageContext.Orders.Remove(order);
                 dbStorageContext.SaveChanges();

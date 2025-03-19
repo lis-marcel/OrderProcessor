@@ -8,7 +8,8 @@ namespace OrderProcessor.Service
 {
     public static class OrderUtility
     {
-        public static Order AskAndFindOrder(DbStorage dbStorageContext, MessageLogger logger)
+        #region Public Methods
+        public static Order AskAndFindOrder(DbStorage dbStorageContext, ConsoleLogger logger)
         {
             Order? res;
 
@@ -17,13 +18,13 @@ namespace OrderProcessor.Service
             
             if (res == null)
             {
-                logger.WriteError( $"Order {orderId} not found.");
+                logger.WriteError($"Order {orderId} not found.");
             }
             
             return res;
         }
 
-        public static int EnterOrderId(MessageLogger logger)
+        public static int EnterOrderId(ConsoleLogger logger)
         {
             while (true)
             {
@@ -39,20 +40,22 @@ namespace OrderProcessor.Service
             }
         }
 
-        public static int GetValidOrderStatus(MessageLogger logger)
+        public static int GetValidOrderStatus(ConsoleLogger logger)
         {
             while (true)
             {
-                logger.WriteMessage("Enter order status (0 - New, 1 - InStock, 2 - InShipping, 3 - ReturnedToCustomer, 4 - Error, 5 - Closed): ");
+                logger.WriteMessage("Enter order status (1 - New, 2 - InStock, 3 - InShipping, 4 - ReturnedToCustomer, 5 - Error, 6 - Closed): ");
+
                 if (int.TryParse(Console.ReadLine(), out int status) && Enum.IsDefined(typeof(Status), status))
                 {
                     return status;
                 }
-                logger.WriteError("Invalid input. Please enter a correct order status.");
+
+                logger.WriteWarning("Invalid input. Please enter a correct order status.");
             }
         }
 
-        public static OrderData CreateOrderDetails(MessageLogger logger)
+        public static OrderData CreateOrderDetails(ConsoleLogger logger)
         {
             // Clear console if interactive
             if (Environment.UserInteractive && !Console.IsOutputRedirected)
@@ -62,23 +65,15 @@ namespace OrderProcessor.Service
 
             while (true)
             {
-                var productName = OrderDetalisService.EnterStringValue("product name");
-                var value = OrderDetalisService.EnterDoubleValue("order");
-                var quantity = OrderDetalisService.EnterIntValue("quantity");
-                var customerName = OrderDetalisService.EnterStringValue("customer name");
-                var shippingAddress = OrderDetalisService.EnterStringValue("shipping address");
-                var customerType = OrderDetalisService.EnterCustomerType();
-                var paymentMethod = OrderDetalisService.EnterPaymentMethod();
-
                 var orderData = new OrderData
                 {
-                    ProductName = productName,
-                    Value = value,
-                    Quantity = quantity,
-                    CustomerName = customerName,
-                    ShippingAddress = shippingAddress,
-                    CustomerType = customerType,
-                    PaymentMethod = paymentMethod,
+                    ProductName = OrderDetalisService.EnterStringValue("product name"),
+                    Value = OrderDetalisService.EnterDoubleValue("order value"),
+                    Quantity = OrderDetalisService.EnterIntValue("quantity"),
+                    CustomerName = OrderDetalisService.EnterStringValue("customer name"),
+                    ShippingAddress = OrderDetalisService.EnterStringValue("shipping address"),
+                    CustomerType = OrderDetalisService.EnterCustomerType(),
+                    PaymentMethod = OrderDetalisService.EnterPaymentMethod(),
                     CreationTime = DateTime.Now,
                     Status = Status.New
                 };
@@ -97,7 +92,7 @@ namespace OrderProcessor.Service
             }
         }
 
-        public static bool ShowOrderSummaryAndConfirm(OrderData orderData, MessageLogger logger)
+        public static bool ShowOrderSummaryAndConfirm(OrderData orderData, ConsoleLogger logger)
         {
             if (Environment.UserInteractive && !Console.IsOutputRedirected)
             {
@@ -116,29 +111,30 @@ namespace OrderProcessor.Service
             return AskUserForConfirmation("Do you confirm the order details?", logger);
         }
 
-        public static bool AskUserForConfirmation(string message, MessageLogger logger)
+        public static bool AskUserForConfirmation(string message, ConsoleLogger logger)
         {
             while (true)
             {
                 logger.WriteMessageLine($"{message} [Press ENTER to confirm, any other key to cancel]: ");
                 var input = Console.ReadKey(true);
+
                 return input.Key == ConsoleKey.Enter;
             }
         }
 
-        public static object ParsePropertyValue(PropertyInfo property, MessageLogger logger)
+        public static object ParsePropertyValue(PropertyInfo property, ConsoleLogger logger)
         {
             if (property.PropertyType == typeof(int))
             {
-                return OrderDetalisService.EnterIntValue(property.Name);
+                return OrderDetalisService.EnterIntValue("new " + property.Name);
             }
             else if (property.PropertyType == typeof(string))
             {
-                return OrderDetalisService.EnterStringValue(property.Name);
+                return OrderDetalisService.EnterStringValue("new " + property.Name);
             }
             else if (property.PropertyType == typeof(double))
             {
-                return OrderDetalisService.EnterDoubleValue(property.Name);
+                return OrderDetalisService.EnterDoubleValue("new " + property.Name);
             }
             else if (property.PropertyType == typeof(CustomerType))
             {
@@ -150,5 +146,7 @@ namespace OrderProcessor.Service
             }
             return null;
         }
+        #endregion
+
     }
 }

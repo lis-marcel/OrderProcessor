@@ -7,7 +7,7 @@ namespace OrderProcessor.BO.OrderOptions
 {
     public enum CustomerType
     {
-        Company,
-        Individual,
+        Company = 1,
+        Individual = 2,
     }
 }

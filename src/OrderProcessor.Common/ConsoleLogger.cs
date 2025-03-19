@@ -1,7 +1,8 @@
 ﻿namespace OrderProcessor.Common
 {
-    public class MessageLogger
+    public class ConsoleLogger
     {
+        #region Public Methods
         public void WriteMessage(string message)
         {
             Console.Write(message);
@@ -39,6 +40,7 @@
             Console.WriteLine($"[ERROR]: {message}");
             Console.ResetColor();
         }
+        #endregion
 
     }
 }

@@ -7,12 +7,17 @@ namespace OrderProcessor.Service
 {
     public static class WarehouseService
     {
-        public static void MoveToStock(DbStorage dbStorageContext, MessageLogger logger)
+        #region Public Methods
+        public static void MoveToStock(DbStorage dbStorageContext, ConsoleLogger logger)
         {
             try
             {
                 var order = OrderUtility.AskAndFindOrder(dbStorageContext, logger);
-                if (order == null) return;
+                if (order == null) 
+                {
+                    logger.WriteInfo("Order not found.");
+                    return; 
+                }
 
                 var orderData = OrderData.ToDTO(order);
                 bool isEligible = OrderBusinessLogic.IsOrderEligibleForWarehouseProcessing(orderData);
@@ -27,6 +32,7 @@ namespace OrderProcessor.Service
                     orderData.Status = Status.InStock;
                     logger.WriteSuccess("Order moved to stock successfully.");
                 }
+
                 order.Status = orderData.Status;
 
                 dbStorageContext.SaveChanges();
@@ -37,13 +43,13 @@ namespace OrderProcessor.Service
             }
         }
 
-        public static void MoveToShipping(DbStorage dbStorageContext, MessageLogger logger)
+        public static void MoveToShipping(DbStorage dbStorageContext, ConsoleLogger logger)
         {
             try
             {
                 var orderId = OrderUtility.EnterOrderId(logger);
                 Task.Run(async () =>
-                    await OrderBusinessLogic.MarkOrderAsShippedAfterDelay(dbStorageContext, orderId)
+                    await OrderBusinessLogic.MarkOrderAsToShippingAfterDelay(dbStorageContext, orderId)
                 );
             }
             catch (Exception ex)
@@ -51,5 +57,7 @@ namespace OrderProcessor.Service
                 logger.WriteError(ex.Message);
             }
         }
+        #endregion
+
     }
 }

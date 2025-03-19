@@ -21,6 +21,7 @@ namespace OrderProcessor.Service.DTO
         public string CustomerName { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
 
+        #region Public Methods
         public static Order ToBO(OrderData order)
         {
             return new Order
@@ -54,6 +55,7 @@ namespace OrderProcessor.Service.DTO
                 PaymentMethod = order.PaymentMethod
             };
         }
+        #endregion
 
     }
 }

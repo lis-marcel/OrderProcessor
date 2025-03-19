@@ -1,23 +1,28 @@
 ﻿using OrderProcessor.BO;
-using OrderProcessor.Service.DTO;
 using OrderProcessor.Common;
-using System.Reflection;
+using OrderProcessor.Service.DTO;
 
 namespace OrderProcessor.Service
 {
     public static class OrderEditingService
     {
-        public static void EditOrder(DbStorage dbStorageContext, MessageLogger logger)
+        #region Public Methods
+        public static void EditOrder(DbStorage dbStorageContext, ConsoleLogger logger)
         {
             try
             {
                 var order = OrderUtility.AskAndFindOrder(dbStorageContext, logger);
-                if (order == null) return;
+
+                if (order == null)
+                {
+                    logger.WriteInfo("Order not found.");
+                    return;
+                }
 
                 var orderData = OrderData.ToDTO(order);
                 var orderProperties = typeof(OrderData).GetProperties();
 
-                // Clear console before editing (only if interactive)
+                // Condition for unit tests
                 if (Environment.UserInteractive && !Console.IsOutputRedirected)
                 {
                     Console.Clear();
@@ -26,7 +31,9 @@ namespace OrderProcessor.Service
                 foreach (var property in orderProperties)
                 {
                     if (property.Name is "Id" or "CreationTime" or "Status")
+                    {
                         continue;
+                    }
 
                     object oldValue = property.GetValue(orderData);
                     logger.WriteMessageLine($"Current {property.Name}: {oldValue}");
@@ -61,5 +68,7 @@ namespace OrderProcessor.Service
                 logger.WriteError(ex.Message);
             }
         }
+        #endregion
+
     }
 }

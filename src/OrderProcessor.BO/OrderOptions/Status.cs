@@ -7,11 +7,11 @@ namespace OrderProcessor.BO.OrderOptions
 {
     public enum Status
     {
-        New,
-        InStock,
-        InShipping,
-        ReturnedToCustomer,
-        Error,
-        Closed
+        New = 1,
+        InStock = 2,
+        InShipping = 3,
+        ReturnedToCustomer = 4,
+        Error = 5,
+        Closed = 6
     }
 }

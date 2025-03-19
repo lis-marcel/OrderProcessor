@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace OrderProcessor.Service
 {
+    // TODO: I know this is a static typed class, but if I had more time I would make it a generic class
     public class TablePrinter
     {
         private readonly List<string> headers = new();

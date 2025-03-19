@@ -5,18 +5,20 @@ namespace OrderProcessor.Service
 {
     public class OrderDetalisService
     {
-        private static readonly MessageLogger messageLogger = new();
+        private static readonly ConsoleLogger messageLogger = new();
 
         #region Public Methods
         public static double EnterDoubleValue(string fieldName)
         {
             while (true)
             {
-                messageLogger.WriteMessage($"Enter {fieldName} value: ");
+                messageLogger.WriteMessage($"Enter {fieldName}: ");
+
                 if (double.TryParse(Console.ReadLine(), out double value) && value >= 0)
                 {
                     return value;
                 }
+
                 messageLogger.WriteWarning($"Invalid input. Please enter a correct {fieldName} value.");
             }
         }
@@ -27,10 +29,12 @@ namespace OrderProcessor.Service
             {
                 messageLogger.WriteMessage($"Enter {fieldName}: ");
                 string? productName = Console.ReadLine();
+
                 if (!string.IsNullOrEmpty(productName))
                 {
                     return productName;
                 }
+
                 messageLogger.WriteWarning($"Invalid input. {fieldName} can not be empty.");
             }
         }
@@ -40,10 +44,12 @@ namespace OrderProcessor.Service
             while (true)
             {
                 messageLogger.WriteMessage($"Enter {fieldName}: ");
+
                 if (int.TryParse(Console.ReadLine(), out int quantity) && quantity > 0)
                 {
                     return quantity;
                 }
+
                 messageLogger.WriteWarning($"Invalid input. Please enter a correct {fieldName}.");
             }
         }
@@ -52,11 +58,13 @@ namespace OrderProcessor.Service
         {
             while (true)
             {
-                messageLogger.WriteMessage("Enter customer type (0 - Individual, 1 - Company): ");
+                messageLogger.WriteMessage("Enter customer type (1 - Individual, 2 - Company): ");
+
                 if (int.TryParse(Console.ReadLine(), out int customerType) && Enum.IsDefined(typeof(CustomerType), customerType))
                 {
                     return (CustomerType)customerType;
                 }
+
                 messageLogger.WriteWarning("Invalid input. Please enter a correct customer type.");
             }
         }
@@ -65,11 +73,13 @@ namespace OrderProcessor.Service
         {
             while (true)
             {
-                messageLogger.WriteMessage("Enter payment method (0 - Cash on delivery, 1 - Credit card): ");
+                messageLogger.WriteMessage("Enter payment method (1 - Cash on delivery, 2 - Credit card): ");
+
                 if (int.TryParse(Console.ReadLine(), out int paymentMethod) && Enum.IsDefined(typeof(PaymentMethod), paymentMethod))
                 {
                     return (PaymentMethod)paymentMethod;
                 }
+
                 messageLogger.WriteWarning("Invalid input. Please enter a correct payment method.");
             }
         }

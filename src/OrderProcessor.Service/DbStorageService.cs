@@ -10,20 +10,13 @@ namespace OrderProcessor.Service
 {
     public class DbStorageService
     {
+        #region Public Methods
         public static string PrepareDb()
         {
-            var basePath = AppDomain.CurrentDomain.BaseDirectory;
             // TODO: Find a better way to access the database
-            var parentPath = Directory.GetParent(basePath).Parent.Parent.Parent.Parent.FullName;
+            var basePath = AppDomain.CurrentDomain.BaseDirectory;
 
-            var dbDirectory = Path.Combine(parentPath, "OrderProcessor.BO\\Db");
-
-            if (!Directory.Exists(dbDirectory))
-            {
-                Directory.CreateDirectory(dbDirectory);
-            }
-
-            var dbPath = Path.Combine(dbDirectory, "OrderProcessor.db");
+            var dbPath = Path.Combine(basePath, "OrderProcessor.db");
 
             return dbPath;
         }
@@ -34,5 +27,7 @@ namespace OrderProcessor.Service
                 ? dbStorageContext.Orders.Max(o => o.Id)
                 : 0;
         }
+        #endregion
+
     }
 }

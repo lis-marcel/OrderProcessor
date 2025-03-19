@@ -6,14 +6,16 @@ namespace OrderProcessor.Service
 {
     public static class OrderCreationService
     {
-        public static void CreateOrder(DbStorage dbStorageContext, MessageLogger logger)
+        #region Public Methods
+        public static void CreateOrder(DbStorage dbStorageContext, ConsoleLogger logger)
         {
             try
             {
                 var orderData = OrderUtility.CreateOrderDetails(logger);
+
                 if (orderData == null)
                 {
-                    logger.WriteWarning("Order creation cancelled.");
+                    logger.WriteInfo("Order creation cancelled.");
                     return;
                 }
 
@@ -29,6 +31,7 @@ namespace OrderProcessor.Service
                 logger.WriteError(ex.Message);
             }
         }
+        #endregion
 
     }
 }

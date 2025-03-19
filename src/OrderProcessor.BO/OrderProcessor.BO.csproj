@@ -12,8 +12,4 @@
     <PackageReference Include="SQLite" Version="3.13.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\OrderProcessor.Common\OrderProcessor.Common.csproj" />
-  </ItemGroup>
-
 </Project>

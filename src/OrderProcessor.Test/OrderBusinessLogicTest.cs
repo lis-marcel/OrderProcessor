@@ -90,7 +90,7 @@ namespace OrderProcessor.Service.Test
                 dbContext.SaveChanges();
 
                 // Act
-                await OrderBusinessLogic.MarkOrderAsShippedAfterDelay(dbContext, 1);
+                await OrderBusinessLogic.MarkOrderAsToShippingAfterDelay(dbContext, 1);
 
                 // Assert
                 var updatedOrder = dbContext.Orders.Find(1);
@@ -115,7 +115,7 @@ namespace OrderProcessor.Service.Test
             try
             {
                 // Act (no exampleOrder added, so ID 99 won't exist)
-                await OrderBusinessLogic.MarkOrderAsShippedAfterDelay(dbContext, 99);
+                await OrderBusinessLogic.MarkOrderAsToShippingAfterDelay(dbContext, 99);
 
                 // Assert
                 var nonExistent = dbContext.Orders.Find(99);

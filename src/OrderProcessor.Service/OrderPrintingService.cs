@@ -6,20 +6,24 @@ namespace OrderProcessor.Service
 {
     public class OrderPrintingService
     {
-        private static readonly MessageLogger logger = new();
+        private static readonly ConsoleLogger logger = new();
 
+        #region Public Methods
         public static void ShowSpecificOrder(DbStorage dbStorageContext)
         {
             try
             {
                 var order = OrderUtility.AskAndFindOrder(dbStorageContext, logger);
-                if (order == null) return;
+
+                if (order == null) 
+                {
+                    logger.WriteInfo("Order not found.");
+                    return; 
+                }
 
                 var orderData = OrderData.ToDTO(order);
-                var tablePrinter = TablePrinter.CreateTable(orderData);
 
-                tablePrinter.PrintTable();
-                // Print again if needed
+                var tablePrinter = TablePrinter.CreateTable(orderData);
                 tablePrinter.PrintTable();
             }
             catch (Exception ex)
@@ -33,13 +37,15 @@ namespace OrderProcessor.Service
             try
             {
                 var orders = dbStorageContext.Orders.ToList();
+
                 if (orders.Count == 0)
                 {
-                    logger.WriteError("No orders found.");
+                    logger.WriteInfo("Orders not found.");
                     return;
                 }
 
                 var ordersData = orders.Select(OrderData.ToDTO);
+                
                 var tablePrinter = TablePrinter.CreateTable(ordersData);
                 tablePrinter.PrintTable();
             }
@@ -48,5 +54,7 @@ namespace OrderProcessor.Service
                 logger.WriteError(ex.Message);
             }
         }
+        #endregion
+
     }
 }

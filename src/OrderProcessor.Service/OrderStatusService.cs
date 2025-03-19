@@ -7,12 +7,18 @@ namespace OrderProcessor.Service
 {
     public static class OrderStatusService
     {
-        public static void ChangeStatus(DbStorage dbStorageContext, MessageLogger logger)
+        #region Public Methods
+        public static void ChangeStatus(DbStorage dbStorageContext, ConsoleLogger logger)
         {
             try
             {
                 var order = OrderUtility.AskAndFindOrder(dbStorageContext, logger);
-                if (order == null) return;
+
+                if (order == null)
+                {
+                    logger.WriteInfo("Order not found.");
+                    return;
+                }
 
                 var orderData = OrderData.ToDTO(order);
                 orderData.Status = (Status)OrderUtility.GetValidOrderStatus(logger);
@@ -26,5 +32,7 @@ namespace OrderProcessor.Service
                 logger.WriteError(ex.Message);
             }
         }
+        #endregion
+
     }
 }

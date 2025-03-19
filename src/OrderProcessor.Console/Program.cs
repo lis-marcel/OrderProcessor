@@ -5,7 +5,7 @@ namespace OrderProcessor
 {
     internal class Program
     {
-        private static readonly MessageLogger messageLogger = new();
+        private static readonly ConsoleLogger messageLogger = new();
 
         static void Main(string[] args)
         {

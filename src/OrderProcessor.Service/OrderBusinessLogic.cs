@@ -9,7 +9,7 @@ namespace OrderProcessor.Service
     {
         private static readonly double cashPaymentThreshold = 2500;
         private static readonly int updateDelay = 4500;
-        private static readonly MessageLogger messageLogger = new();
+        private static readonly ConsoleLogger consoleLogger = new();
 
         public OrderBusinessLogic() { }
 
@@ -26,26 +26,36 @@ namespace OrderProcessor.Service
             return isEligible;
         }
 
-        public static async Task MarkOrderAsShippedAfterDelay(DbStorage dbStorageConetxt, int orderId)
+        public static async Task MarkOrderAsToShippingAfterDelay(DbStorage dbStorageConetxt, int orderId)
         {
-            var order = dbStorageConetxt.Orders.Find(orderId);
-
-            if (order == null)
+            try
             {
-                messageLogger.WriteError("Order not found.");
-                return;
+                var order = dbStorageConetxt.Orders.Find(orderId);
+
+                if (order == null)
+                {
+                    consoleLogger.WriteInfo("Order not found.");
+                    return;
+                }
+
+                consoleLogger.WriteInfo($"Order with ID: {orderId} will be automatically moved to shippng in less than {(double)updateDelay/1000}s.\n" +
+                    $"Keep working on your tasks.");
+
+                await Task.Delay(updateDelay);
+
+                var orderData = OrderData.ToDTO(order);
+
+                orderData.Status = Status.InShipping;
+                order.Status = orderData.Status;
+
+                dbStorageConetxt.SaveChanges();
+
+                consoleLogger.WriteSuccess($"Order with ID: {orderData.Id} moved to shipping successfully. Follow your previous tasks.\n");
             }
-
-            await Task.Delay(updateDelay);
-
-            var orderData = OrderData.ToDTO(order);
-
-            orderData.Status = Status.InShipping;
-            order.Status = orderData.Status;
-
-            dbStorageConetxt.SaveChanges();
-
-            messageLogger.WriteInfo($"Order with ID: {orderData.Id} moved to shipping successfully. Follow the instruction above.\n");
+            catch (Exception ex)
+            {
+                consoleLogger.WriteError(ex.Message);
+            }
         }
 
         #endregion
