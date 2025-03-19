@@ -23,7 +23,9 @@ namespace OrderProcessor.Service
 
                 var orderData = OrderData.ToDTO(order);
 
-                var tablePrinter = TablePrinter.CreateTable((IEnumerable<OrderData>)orderData);
+                var singleOrderCollection = new[] { orderData };
+
+                var tablePrinter = TablePrinter.CreateTable(singleOrderCollection);
                 tablePrinter.PrintTable();
             }
             catch (Exception ex)

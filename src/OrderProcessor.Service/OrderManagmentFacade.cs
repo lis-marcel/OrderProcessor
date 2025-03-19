@@ -44,7 +44,6 @@ namespace OrderProcessor.Service
 
                 if (order == null)
                 {
-                    messageLogger.WriteInfo("Order not found.");
                     return;
                 }
 
