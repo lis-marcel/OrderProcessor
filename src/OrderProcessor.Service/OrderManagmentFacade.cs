@@ -21,9 +21,9 @@ namespace OrderProcessor.Service
             OrderStatusService.ChangeStatus(dbStorageContext, messageLogger);
         }
 
-        public static void MoveToStock(DbStorage dbStorageContext)
+        public static void MoveToWarehouse(DbStorage dbStorageContext)
         {
-            WarehouseService.MoveToStock(dbStorageContext, messageLogger);
+            WarehouseService.MoveToWarehouse(dbStorageContext, messageLogger);
         }
 
         public static void MoveToShipping(DbStorage dbStorageContext)

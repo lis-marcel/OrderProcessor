@@ -26,7 +26,7 @@ namespace OrderProcessor.Console
         static void MyHandler(object sender, UnhandledExceptionEventArgs args)
         {
             Exception e = (Exception)args.ExceptionObject;
-            System.Console.WriteLine("MyHandler caught : " + e.Message);
+            System.Console.WriteLine("Exception handler caught : " + e.Message);
             System.Console.WriteLine("Runtime terminating: {0}", args.IsTerminating);
         }
     }

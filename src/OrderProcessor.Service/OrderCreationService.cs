@@ -19,12 +19,12 @@ namespace OrderProcessor.Service
                     return;
                 }
 
-                int orderId = DbStorageService.GetHighestOrderId(dbStorageContext) + 1;
-                orderData.Id = orderId;
+                int newOrderId = DbStorageService.GetHighestOrderId(dbStorageContext) + 1;
+                orderData.Id = newOrderId;
 
                 dbStorageContext.Orders.Add(OrderData.ToBO(orderData));
                 dbStorageContext.SaveChanges();
-                logger.WriteSuccess($"Order created successfully with ID: {orderId}");
+                logger.WriteSuccess($"Order created successfully with ID: {newOrderId}");
             }
             catch (Exception ex)
             {

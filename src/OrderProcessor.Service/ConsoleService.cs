@@ -12,7 +12,7 @@ namespace OrderProcessor.Service
             new()
             {
                 ["1"] = ("Create order", OrderManagmentFacade.CreateOrder),
-                ["2"] = ("Move to stock", OrderManagmentFacade.MoveToStock),
+                ["2"] = ("Move to warehouse", OrderManagmentFacade.MoveToWarehouse),
                 ["3"] = ("Move to shipping", OrderManagmentFacade.MoveToShipping),
                 ["4"] = ("Change order status", OrderManagmentFacade.ChangeOrderStatus),
                 ["5"] = ("Edit order details", OrderManagmentFacade.EditOrderDetails),

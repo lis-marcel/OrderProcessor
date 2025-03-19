@@ -44,7 +44,7 @@ namespace OrderProcessor.Service
         {
             while (true)
             {
-                logger.WriteMessage("Enter order status (1 - New, 2 - InStock, 3 - InShipping, 4 - ReturnedToCustomer, 5 - Error, 6 - Closed): ");
+                logger.WriteMessage("Enter order status (1 - New, 2 - InWarehouse, 3 - InShipping, 4 - ReturnedToCustomer, 5 - Error, 6 - Closed): ");
 
                 if (int.TryParse(Console.ReadLine(), out int status) && Enum.IsDefined(typeof(Status), status))
                 {

@@ -8,7 +8,7 @@ namespace OrderProcessor.BO.OrderOptions
     public enum Status
     {
         New = 1,
-        InStock = 2,
+        InWarehouse = 2,
         InShipping = 3,
         ReturnedToCustomer = 4,
         Error = 5,

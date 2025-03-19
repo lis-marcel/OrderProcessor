@@ -8,7 +8,7 @@ namespace OrderProcessor.Service
     public static class WarehouseService
     {
         #region Public Methods
-        public static void MoveToStock(DbStorage dbStorageContext, ConsoleLogger logger)
+        public static void MoveToWarehouse(DbStorage dbStorageContext, ConsoleLogger logger)
         {
             try
             {
@@ -30,7 +30,7 @@ namespace OrderProcessor.Service
                 else
                 {
                     orderData.Status = Status.InStock;
-                    logger.WriteSuccess("Order moved to stock successfully.");
+                    logger.WriteSuccess("Order moved to warehouse successfully.");
                 }
 
                 order.Status = orderData.Status;
