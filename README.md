@@ -13,8 +13,8 @@ Due to time and experience limitations, this project is considered as a prototyp
 - **Business Logic Implementation:**  
     Currently, input validation is implemented to handle all invalid inputs from the user. In project specifiation it was only mentioned to valiadte shipping address, but in my opinion it may be easier eventually to remove this logic rather than rearchitect the system around potentially error-prone inputs.
 - **Central Library Directory:**  
-    Since most components use the same libraries, I would store all necessary libraries in a single directory.
-- **Release version** 
+    Since most components use the same libraries, I would store all necessary libraries in a single lib directory.
+- **Release version:**   
     In future I think it would be good to create release version deployment ready for business usage.
 
 ### 2. BO Layer
@@ -44,10 +44,10 @@ Due to time and experience limitations, this project is considered as a prototyp
 - **ORM Choice:**  
     In a real business implementation, using a different ORM such as Dapper could be preferable over the currently employed EntityFramework.
 - **Table Printing:**  
-    The current table printing function is static. A future improvement would involve making this functionality generic for better maintainability.
+    The current table creating function in `TablePrinter.cs` is static. A future improvement would involve making this functionality generic for better maintainability.
 - **Additional Functionalities:**  
     Functionalities like editing and deleting orders have been added, which are essential for a system processing external requests.
-- **Shipping address validation**
+- **Shipping address validation:**   
     In current version I just make sure that shipping address is not empty, but I know that in real world business enviroment it can't work like this. That's why in next iteration of project I'd do more complex address validation cooperating with external API like Google Maps or OpenStreetMap to check if given address exists.
 
 ### 4. Tests
@@ -58,7 +58,7 @@ Due to time and experience limitations, this project is considered as a prototyp
 
 ### 5. Directories structure
 ```plaintext
-        C:.
+    C:.
     |   .gitattributes
     |   .gitignore
     |   README.md
