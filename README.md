@@ -26,12 +26,12 @@ Due to time and experience limitations, this project is considered as a prototyp
             public int Id { get; set; }
             public decimal Value { get; set; }
             public string ProductName { get; set; }
-            public string ClientType { get; set; }
+            public ClientType ClientType { get; set; }
             public string ShippingAddress { get; set; }
-            public string PaymentMethod { get; set; }
+            public PaymentMethod PaymentMethod { get; set; }
             public int Quantity { get; set; }
             public DateTime CreationTime { get; set; }
-            public string Status { get; set; }
+            public Status Status { get; set; }
             public string CustomerName { get; set; }
         }
     ```
