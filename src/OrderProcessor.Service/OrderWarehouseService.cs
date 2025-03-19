@@ -29,7 +29,7 @@ namespace OrderProcessor.Service
                 }
                 else
                 {
-                    orderData.Status = Status.InStock;
+                    orderData.Status = Status.InWarehouse;
                     logger.WriteSuccess("Order moved to warehouse successfully.");
                 }
 
