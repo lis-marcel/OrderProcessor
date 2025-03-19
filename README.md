@@ -14,6 +14,8 @@ Due to time and experience limitations, this project is considered as a prototyp
     Currently, input validation is implemented to handle all invalid inputs from the user. In project specifiation it was only mentioned to valiadte shipping address, but in my opinion it may be easier eventually to remove this logic rather than rearchitect the system around potentially error-prone inputs.
 - **Central Library Directory:**  
     Since most components use the same libraries, I would store all necessary libraries in a single directory.
+- **Release version** 
+    In future I think it would be good to create release version deployment ready for business usage.
 
 ### 2. BO Layer
 - **Current Order entity sructure:**  
@@ -45,6 +47,8 @@ Due to time and experience limitations, this project is considered as a prototyp
     The current table printing function is static. A future improvement would involve making this functionality generic for better maintainability.
 - **Additional Functionalities:**  
     Functionalities like editing and deleting orders have been added, which are essential for a system processing external requests.
+- **Shipping ddress validation**
+    In current version I just make sure that shipping address is not empty, but I know that in real world business enviroment it can't work like this. That's why in next iteration of project I'd do more complex address validation cooperating with external API like Google Maps or OpenStreetMap to check if given address exists.
 
 ### 4. Tests
 - **TDD Technique:**  
@@ -52,12 +56,9 @@ Due to time and experience limitations, this project is considered as a prototyp
 - **Manual Testing Requirement:**  
     The `OrderManagmentService.cs` class currently requires manual testing due to logic within methods like `GetValidOrderStatus()` and `CreateOrderDetails()` that handle user interaction in the console.
 
-### 5. Open section with ideas
-- **Release version** - create release version deployment ready for business usage.
-
-### 6. Directories structure
+### 5. Directories structure
 ```plaintext
-    C:.
+        C:.
     |   .gitattributes
     |   .gitignore
     |   README.md
