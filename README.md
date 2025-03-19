@@ -47,7 +47,7 @@ Due to time and experience limitations, this project is considered as a prototyp
     The current table printing function is static. A future improvement would involve making this functionality generic for better maintainability.
 - **Additional Functionalities:**  
     Functionalities like editing and deleting orders have been added, which are essential for a system processing external requests.
-- **Shipping ddress validation**
+- **Shipping address validation**
     In current version I just make sure that shipping address is not empty, but I know that in real world business enviroment it can't work like this. That's why in next iteration of project I'd do more complex address validation cooperating with external API like Google Maps or OpenStreetMap to check if given address exists.
 
 ### 4. Tests
