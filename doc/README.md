@@ -1,14 +1,13 @@
-# OrderProcessor
+## Final thoughts & Future Development
+Due to time and experience limitations, this project is considered as a prototype. Below are some thoughts for potential future improvements.
 
 ## Tech stack
 - **IDE** - Visual Studio 2022 Community v17.13.3
+- **.NET** - .NET 8
 - **Database engine** - SQlite v3.13.0
 - **External libraries**
     - Microsoft.EntityFrameworkCore v9.0.3
     - Microsoft.EntityFrameworkCore.Sqlite v9.0.3
-
-## Final thoughts & Future Development
-Due to time and experience limitations, this project is considered as a prototype. Below are some thoughts for potential future improvements.
 
 ### 1. General Application Architecture
 - **Business Logic Implementation:**  
