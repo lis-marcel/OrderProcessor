@@ -57,7 +57,7 @@ Due to time and experience limitations, this project is considered as a prototyp
 
 ### 6. Directories structure
 ```plaintext
-        C:.
+    C:.
     |   .gitattributes
     |   .gitignore
     |   README.md
