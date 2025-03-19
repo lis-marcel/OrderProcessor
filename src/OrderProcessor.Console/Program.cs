@@ -1,11 +1,11 @@
 ﻿using OrderProcessor.Common;
 using OrderProcessor.Service;
 
-namespace OrderProcessor
+namespace OrderProcessor.Console
 {
     internal class Program
     {
-        private static readonly ConsoleLogger messageLogger = new();
+        private static readonly ConsoleLogger consoleLogger = new();
 
         static void Main(string[] args)
         {
@@ -16,7 +16,7 @@ namespace OrderProcessor
             }
             catch (Exception ex)
             {
-                messageLogger.WriteError(ex.Message);
+                consoleLogger.WriteError(ex.Message);
             }
         }
     }
