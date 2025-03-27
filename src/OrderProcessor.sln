@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor.Service", "O
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor.Service.Test", "OrderProcessor.Test\OrderProcessor.Service.Test.csproj", "{FE010DE5-C3D0-4D08-9E93-C7F250E16337}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor.CommonLibraries", "..\lib\OrderProcessor.CommonLibraries\OrderProcessor.CommonLibraries.csproj", "{6876451E-DE2C-4653-BB37-31E1E845284B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{FE010DE5-C3D0-4D08-9E93-C7F250E16337}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE010DE5-C3D0-4D08-9E93-C7F250E16337}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE010DE5-C3D0-4D08-9E93-C7F250E16337}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6876451E-DE2C-4653-BB37-31E1E845284B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6876451E-DE2C-4653-BB37-31E1E845284B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6876451E-DE2C-4653-BB37-31E1E845284B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6876451E-DE2C-4653-BB37-31E1E845284B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

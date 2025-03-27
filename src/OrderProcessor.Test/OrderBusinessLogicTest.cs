@@ -23,16 +23,25 @@ namespace OrderProcessor.Service.Test
             PaymentMethod = PaymentMethod.CreditCard,
             Status = Status.New
         };
+        private static readonly Order exampleOrder2 = new()
+        {
+            Id = 1,
+            ProductName = "Test Product",
+            Quantity = 1,
+            ShippingAddress = "123 Test St",
+            CustomerName = "Test Customer",
+            CustomerType = CustomerType.Individual,
+            CreationTime = DateTime.Now,
+            Value = 4000,
+            PaymentMethod = PaymentMethod.Cash,
+            Status = Status.New
+        };
 
         [Fact]
         public void Test_IsOrderEligibleForWarehouseProcessing_ReturnFalse()
         {
             // Arrange
-            var orderData = new OrderData
-            {
-                Value = 3000,
-                PaymentMethod = PaymentMethod.Cash
-            };
+            var orderData = OrderData.ToDTO(exampleOrder2);
 
             // Act
             bool result = OrderBusinessLogic.IsOrderEligibleForWarehouseProcessing(orderData);
@@ -45,11 +54,7 @@ namespace OrderProcessor.Service.Test
         public void Test_IsOrderEligibleForWarehouseProcessing_ReturnTrue_ForCashUnderThreshold()
         {
             // Arrange
-            var orderData = new OrderData
-            {
-                Value = 2000,
-                PaymentMethod = PaymentMethod.Cash
-            };
+            var orderData = OrderData.ToDTO(exampleOrder1);
 
             // Act
             bool result = OrderBusinessLogic.IsOrderEligibleForWarehouseProcessing(orderData);
@@ -62,11 +67,7 @@ namespace OrderProcessor.Service.Test
         public void Test_IsOrderEligibleForWarehouseProcessing_ReturnTrue_ForCreditCardAboveThreshold()
         {
             // Arrange
-            var orderData = new OrderData
-            {
-                Value = 3000,
-                PaymentMethod = PaymentMethod.CreditCard
-            };
+            var orderData = OrderData.ToDTO(exampleOrder1);
 
             // Act
             bool result = OrderBusinessLogic.IsOrderEligibleForWarehouseProcessing(orderData);
