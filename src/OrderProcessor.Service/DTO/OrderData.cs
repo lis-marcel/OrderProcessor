@@ -12,13 +12,13 @@ namespace OrderProcessor.Service.DTO
     {
         public int Id { get; set; }
         public double Value { get; set; }
-        public string ProductName { get; set; }
-        public string ShippingAddress { get; set; }
+        public required string ProductName { get; set; }
+        public required string ShippingAddress { get; set; }
         public int Quantity { get; set; }
         public DateTime CreationTime { get; set; }
         public Status Status { get; set; }
         public CustomerType CustomerType { get; set; }
-        public string CustomerName { get; set; }
+        public required string CustomerName { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
 
         #region Public Methods

@@ -1,13 +1,8 @@
 ﻿using OrderProcessor.Service.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 
 namespace OrderProcessor.Service
 {
-    // TODO: I know this is a static typed class, but if I had more time I would make it a generic class
     public class TablePrinter
     {
         private readonly List<string> headers = new();
@@ -17,16 +12,16 @@ namespace OrderProcessor.Service
         public static TablePrinter CreateTable(IEnumerable<OrderData> orders)
         {
             var printer = new TablePrinter();
+            var classType = typeof(OrderData);
 
             // Add columns
-            printer.AddColumn("ID");
-            printer.AddColumn("Value");
-            printer.AddColumn("Product Name");
-            printer.AddColumn("Address");
-            printer.AddColumn("Qty");
-            printer.AddColumn("Status");
-            printer.AddColumn("Payment");
-
+            foreach (PropertyInfo propertyInfo in classType.GetProperties())
+            {
+                if (propertyInfo.Name != "CreationTime" && propertyInfo.Name != "CustomerType" && propertyInfo.Name != "CustomerName")
+                {
+                    printer.AddColumn(propertyInfo.Name);
+                }
+            }
             // Add rows
             foreach (var order in orders)
             {
