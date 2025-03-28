@@ -41,8 +41,10 @@ namespace OrderProcessor.Service
         }
 
         #region Public Methods
-        public void Start()
+        public async void Start()
         {
+            await OrderStatusService.ProcessPendingOrders(dbStorageContext, consoleLogger);
+
             consoleLogger.WriteMessageLine("Welcome to Order Processor");
 
             while (true)

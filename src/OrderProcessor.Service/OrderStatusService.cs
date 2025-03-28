@@ -5,33 +5,62 @@ using OrderProcessor.BO.OrderOptions;
 
 namespace OrderProcessor.Service
 {
-    public static class OrderStatusService
+    public class OrderStatusService
     {
         #region Public Methods
-        public static void ChangeStatus(DbStorage dbStorageContext, ConsoleLogger logger)
+        public static void ChangeStatus(DbStorage dbStorageContext, ConsoleLogger consoleLogger)
         {
             try
             {
-                var order = OrderUtility.AskAndFindOrder(dbStorageContext, logger);
+                var order = OrderUtility.AskAndFindOrder(dbStorageContext, consoleLogger);
 
                 if (order == null)
                 {
-                    logger.WriteInfo("Order not found.");
+                    consoleLogger.WriteInfo("Order not found.");
                     return;
                 }
 
                 var orderData = OrderData.ToDTO(order);
-                orderData.Status = (Status)OrderUtility.GetValidOrderStatus(logger);
+                orderData.Status = (OrderStatus)OrderUtility.GetValidOrderStatus(consoleLogger);
                 order.Status = orderData.Status;
 
                 dbStorageContext.SaveChanges();
-                logger.WriteSuccess("Order status changed successfully.");
+                consoleLogger.WriteSuccess("Order status changed successfully.");
             }
             catch (Exception ex)
             {
-                logger.WriteError(ex.Message);
+                consoleLogger.WriteError(ex.Message);
             }
         }
+
+        public static async Task ProcessPendingOrders(DbStorage dbStorageContext, ConsoleLogger consoleLogger)
+        {
+            consoleLogger.WriteInfo("Processing pending orders...");
+
+            try
+            {
+                var now = DateTime.Now;
+                var pendingOrders = dbStorageContext.Orders.Where(o =>
+                    o.Status == OrderStatus.PendingToShipping &&
+                    o.MarkToShippingAt >= now);
+
+                foreach (var order in pendingOrders)
+                {
+                    var orderData = OrderData.ToDTO(order);
+                    orderData.Status = OrderStatus.InShipping;
+                }
+
+                consoleLogger.WriteSuccess("Pending orders processed successfully.");
+
+                await dbStorageContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                consoleLogger.WriteError(ex.Message);
+                consoleLogger.WriteError("Failed to process pending orders.");
+            }
+        }
+
         #endregion
 
     }

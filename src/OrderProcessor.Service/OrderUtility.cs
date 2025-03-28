@@ -44,9 +44,9 @@ namespace OrderProcessor.Service
         {
             while (true)
             {
-                logger.WriteMessage("Enter order status (1 - New, 2 - InWarehouse, 3 - InShipping, 4 - ReturnedToCustomer, 5 - Error, 6 - Closed): ");
+                logger.WriteMessage("Enter order status (1 - New, 2 - InWarehouse, 3 - PendingToShipping, 4 - InShipping, 5 - ReturnedToCustomer, 6 - Error, 7 - Closed): ");
 
-                if (int.TryParse(Console.ReadLine(), out int status) && Enum.IsDefined(typeof(Status), status))
+                if (int.TryParse(Console.ReadLine(), out int status) && Enum.IsDefined(typeof(OrderStatus), status))
                 {
                     return status;
                 }
@@ -75,7 +75,7 @@ namespace OrderProcessor.Service
                     CustomerType = OrderDetalisService.EnterCustomerType(),
                     PaymentMethod = OrderDetalisService.EnterPaymentMethod(),
                     CreationTime = DateTime.Now,
-                    Status = Status.New
+                    Status = OrderStatus.New
                 };
 
                 if (ShowOrderSummaryAndConfirm(orderData, logger))

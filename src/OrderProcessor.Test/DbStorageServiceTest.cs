@@ -21,7 +21,7 @@ namespace OrderProcessor.Service.Test
             CreationTime = DateTime.Now,
             Value = 1000,
             PaymentMethod = PaymentMethod.CreditCard,
-            Status = Status.New
+            Status = OrderStatus.New
         };
 
         [Fact]

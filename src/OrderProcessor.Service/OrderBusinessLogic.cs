@@ -16,14 +16,7 @@ namespace OrderProcessor.Service
         #region Public Methods
         public static bool IsOrderEligibleForWarehouseProcessing(OrderData orderData)
         {
-            bool isEligible = true;
-
-            if (orderData.Value > cashPaymentThreshold && orderData.PaymentMethod == PaymentMethod.Cash)
-            {
-                isEligible = false;
-            }
-
-            return isEligible;
+            return true && orderData.Value > cashPaymentThreshold && orderData.PaymentMethod == PaymentMethod.Cash;
         }
 
         public static async Task MarkOrderAsToShippingAfterDelay(DbStorage dbStorageConetxt, int orderId)
@@ -41,11 +34,20 @@ namespace OrderProcessor.Service
                 consoleLogger.WriteInfo($"Order with ID: {orderId} will be automatically moved to shippng in less than {(double)updateDelay/1000}s.\n" +
                     $"Keep working on your tasks.");
 
-                await Task.Delay(updateDelay);
 
+                // TODO: fix this stuff
                 var orderData = OrderData.ToDTO(order);
 
-                orderData.Status = Status.InShipping;
+                orderData.Status = OrderStatus.PendingToShipping;
+                orderData.MarkToShippingAt = DateTime.Now.AddMilliseconds(updateDelay);
+
+                order = OrderData.ToBO(orderData);
+
+                dbStorageConetxt.SaveChanges();
+
+                await Task.Delay(updateDelay);
+
+                orderData.Status = OrderStatus.InShipping;
                 order.Status = orderData.Status;
 
                 dbStorageConetxt.SaveChanges();

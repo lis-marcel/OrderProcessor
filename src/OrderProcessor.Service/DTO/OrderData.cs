@@ -11,7 +11,8 @@ namespace OrderProcessor.Service.DTO
         public required string ShippingAddress { get; set; }
         public int Quantity { get; set; }
         public DateTime CreationTime { get; set; }
-        public Status Status { get; set; }
+        public DateTime? MarkToShippingAt { get; set; }
+        public OrderStatus Status { get; set; }
         public CustomerType CustomerType { get; set; }
         public required string CustomerName { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
@@ -27,6 +28,7 @@ namespace OrderProcessor.Service.DTO
                 ShippingAddress = order.ShippingAddress,
                 Quantity = order.Quantity,
                 CreationTime = order.CreationTime,
+                MarkToShippingAt = order.MarkToShippingAt,
                 Status = order.Status,
                 CustomerType = order.CustomerType,
                 CustomerName = order.CustomerName,
@@ -44,6 +46,7 @@ namespace OrderProcessor.Service.DTO
                 ShippingAddress = order.ShippingAddress,
                 Quantity = order.Quantity,
                 CreationTime = order.CreationTime,
+                MarkToShippingAt = order.MarkToShippingAt,
                 Status = order.Status,
                 CustomerType = order.CustomerType,
                 CustomerName = order.CustomerName,

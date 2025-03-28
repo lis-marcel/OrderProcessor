@@ -30,7 +30,7 @@ namespace OrderProcessor.Service
 
                 foreach (var property in orderProperties)
                 {
-                    if (property.Name is "Id" or "CreationTime" or "Status")
+                    if (property.Name is "Id" or "CreationTime" or "OrderStatus")
                     {
                         continue;
                     }

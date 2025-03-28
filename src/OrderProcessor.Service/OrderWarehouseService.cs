@@ -25,11 +25,11 @@ namespace OrderProcessor.Service
                 if (!isEligible)
                 {
                     logger.WriteWarning("Order is not eligible for moving to warehouse.\nReturning order to customer.");
-                    orderData.Status = Status.ReturnedToCustomer;
+                    orderData.Status = OrderStatus.ReturnedToCustomer;
                 }
                 else
                 {
-                    orderData.Status = Status.InWarehouse;
+                    orderData.Status = OrderStatus.InWarehouse;
                     logger.WriteSuccess("Order moved to warehouse successfully.");
                 }
 

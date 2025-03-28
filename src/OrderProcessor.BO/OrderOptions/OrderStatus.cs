@@ -5,13 +5,14 @@ using System.Text;
 
 namespace OrderProcessor.BO.OrderOptions
 {
-    public enum Status
+    public enum OrderStatus
     {
         New = 1,
         InWarehouse = 2,
-        InShipping = 3,
-        ReturnedToCustomer = 4,
-        Error = 5,
-        Closed = 6
+        PendingToShipping = 3,
+        InShipping = 4,
+        ReturnedToCustomer = 5,
+        Error = 6,
+        Closed = 7
     }
 }

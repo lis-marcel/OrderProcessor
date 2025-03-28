@@ -21,7 +21,7 @@ namespace OrderProcessor.Service.Test
             CreationTime = DateTime.Now,
             Value = 1000,
             PaymentMethod = PaymentMethod.CreditCard,
-            Status = Status.New
+            Status = OrderStatus.New
         };
         private static readonly Order exampleOrder2 = new()
         {
@@ -34,7 +34,7 @@ namespace OrderProcessor.Service.Test
             CreationTime = DateTime.Now,
             Value = 4000,
             PaymentMethod = PaymentMethod.Cash,
-            Status = Status.New
+            Status = OrderStatus.New
         };
 
         [Fact]
@@ -96,7 +96,7 @@ namespace OrderProcessor.Service.Test
                 // Assert
                 var updatedOrder = dbContext.Orders.Find(1);
                 Assert.NotNull(updatedOrder);
-                Assert.Equal(Status.InShipping, updatedOrder!.Status);
+                Assert.Equal(OrderStatus.InShipping, updatedOrder!.Status);
             }
             finally
             {

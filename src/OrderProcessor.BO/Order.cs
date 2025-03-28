@@ -14,7 +14,8 @@ namespace OrderProcessor.BO
         public required string ShippingAddress { get; set; }
         public int Quantity { get; set; }
         public DateTime CreationTime { get; set; }
-        public Status Status { get; set; }
+        public DateTime? MarkToShippingAt { get; set; }
+        public OrderStatus Status { get; set; }
         public CustomerType CustomerType { get; set; }
         public required string CustomerName { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
