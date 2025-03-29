@@ -39,15 +39,17 @@ namespace OrderProcessor.Service
 
             try
             {
-                var now = DateTime.Now;
+                var now = DateTime.Now.AddMilliseconds(-4500);
                 var pendingOrders = dbStorageContext.Orders.Where(o =>
                     o.Status == OrderStatus.PendingToShipping &&
-                    o.MarkToShippingAt >= now);
+                    o.MarkToShippingAt <= now);
 
                 foreach (var order in pendingOrders)
                 {
                     var orderData = OrderData.ToDTO(order);
                     orderData.Status = OrderStatus.InShipping;
+
+                    order.Status = orderData.Status;
                 }
 
                 consoleLogger.WriteSuccess("Pending orders processed successfully.");

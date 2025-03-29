@@ -34,17 +34,18 @@ namespace OrderProcessor.Service
                 consoleLogger.WriteInfo($"Order with ID: {orderId} will be automatically moved to shippng in less than {(double)updateDelay/1000}s.\n" +
                     $"Keep working on your tasks.");
 
-
-                // TODO: fix this stuff
                 var orderData = OrderData.ToDTO(order);
 
+                // Set the order to pending to shipping
                 orderData.Status = OrderStatus.PendingToShipping;
                 orderData.MarkToShippingAt = DateTime.Now.AddMilliseconds(updateDelay);
 
-                order = OrderData.ToBO(orderData);
+                order.Status = orderData.Status;
+                order.MarkToShippingAt = orderData.MarkToShippingAt;
 
                 dbStorageConetxt.SaveChanges();
 
+                // Imitate a delay
                 await Task.Delay(updateDelay);
 
                 orderData.Status = OrderStatus.InShipping;
