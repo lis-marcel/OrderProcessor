@@ -5,29 +5,27 @@ namespace OrderProcessor.Service
 {
     public class OrderDetalisService
     {
-        private static readonly ConsoleLogger messageLogger = new();
-
         #region Public Methods
-        public static double EnterDoubleValue(string fieldName)
+        public static double EnterDoubleValue(string fieldName, ConsoleLogger consoleLogger)
         {
             while (true)
             {
-                messageLogger.WriteMessage($"Enter {fieldName}: ");
+                consoleLogger.WriteMessage($"Enter {fieldName}: ");
 
                 if (double.TryParse(Console.ReadLine(), out double value) && value >= 0)
                 {
                     return value;
                 }
 
-                messageLogger.WriteWarning($"Invalid input. Please enter a correct {fieldName} value.");
+                consoleLogger.WriteWarning($"Invalid input. Please enter a correct {fieldName} value.");
             }
         }
 
-        public static string EnterStringValue(string fieldName)
+        public static string EnterStringValue(string fieldName, ConsoleLogger consoleLogger)
         {
             while (true)
             {
-                messageLogger.WriteMessage($"Enter {fieldName}: ");
+                consoleLogger.WriteMessage($"Enter {fieldName}: ");
                 string? productName = Console.ReadLine();
 
                 if (!string.IsNullOrEmpty(productName))
@@ -35,52 +33,52 @@ namespace OrderProcessor.Service
                     return productName;
                 }
 
-                messageLogger.WriteWarning($"Invalid input. {fieldName} can not be empty.");
+                consoleLogger.WriteWarning($"Invalid input. {fieldName} can not be empty.");
             }
         }
 
-        public static int EnterIntValue(string fieldName)
+        public static int EnterIntValue(string fieldName, ConsoleLogger consoleLogger)
         {
             while (true)
             {
-                messageLogger.WriteMessage($"Enter {fieldName}: ");
+                consoleLogger.WriteMessage($"Enter {fieldName}: ");
 
                 if (int.TryParse(Console.ReadLine(), out int quantity) && quantity > 0)
                 {
                     return quantity;
                 }
 
-                messageLogger.WriteWarning($"Invalid input. Please enter a correct {fieldName}.");
+                consoleLogger.WriteWarning($"Invalid input. Please enter a correct {fieldName}.");
             }
         }
 
-        public static CustomerType EnterCustomerType()
+        public static CustomerType EnterCustomerType(ConsoleLogger consoleLogger)
         {
             while (true)
             {
-                messageLogger.WriteMessage("Enter customer type (1 - Individual, 2 - Company): ");
+                consoleLogger.WriteMessage("Enter customer type (1 - Individual, 2 - Company): ");
 
                 if (int.TryParse(Console.ReadLine(), out int customerType) && Enum.IsDefined(typeof(CustomerType), customerType))
                 {
                     return (CustomerType)customerType;
                 }
 
-                messageLogger.WriteWarning("Invalid input. Please enter a correct customer type.");
+                consoleLogger.WriteWarning("Invalid input. Please enter a correct customer type.");
             }
         }
 
-        public static PaymentMethod EnterPaymentMethod()
+        public static PaymentMethod EnterPaymentMethod(ConsoleLogger consoleLogger)
         {
             while (true)
             {
-                messageLogger.WriteMessage("Enter payment method (1 - Cash on delivery, 2 - Credit card): ");
+                consoleLogger.WriteMessage("Enter payment method (1 - Cash on delivery, 2 - Credit card): ");
 
                 if (int.TryParse(Console.ReadLine(), out int paymentMethod) && Enum.IsDefined(typeof(PaymentMethod), paymentMethod))
                 {
                     return (PaymentMethod)paymentMethod;
                 }
 
-                messageLogger.WriteWarning("Invalid input. Please enter a correct payment method.");
+                consoleLogger.WriteWarning("Invalid input. Please enter a correct payment method.");
             }
         }
 

@@ -11,7 +11,7 @@ namespace OrderProcessor.Service
         {
             try
             {
-                var orderData = OrderUtility.CreateOrderDetails(logger);
+                var orderData = OrderUtility.CreateOrderDetails(dbStorageContext, logger);
 
                 if (orderData == null)
                 {

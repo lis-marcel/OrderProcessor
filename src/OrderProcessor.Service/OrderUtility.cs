@@ -55,7 +55,7 @@ namespace OrderProcessor.Service
             }
         }
 
-        public static OrderData CreateOrderDetails(ConsoleLogger logger)
+        public static OrderData CreateOrderDetails(DbStorage dbStorageContext, ConsoleLogger logger)
         {
             // Clear console if interactive
             if (Environment.UserInteractive && !Console.IsOutputRedirected)
@@ -67,13 +67,12 @@ namespace OrderProcessor.Service
             {
                 var orderData = new OrderData
                 {
-                    ProductName = OrderDetalisService.EnterStringValue("product name"),
-                    Value = OrderDetalisService.EnterDoubleValue("order value"),
-                    Quantity = OrderDetalisService.EnterIntValue("quantity"),
-                    CustomerName = OrderDetalisService.EnterStringValue("customer name"),
-                    ShippingAddress = OrderDetalisService.EnterStringValue("shipping address"),
-                    CustomerType = OrderDetalisService.EnterCustomerType(),
-                    PaymentMethod = OrderDetalisService.EnterPaymentMethod(),
+                    ProductName = OrderDetalisService.EnterStringValue("product name", logger),
+                    Value = OrderDetalisService.EnterDoubleValue("order value", logger),
+                    Quantity = OrderDetalisService.EnterIntValue("quantity", logger),
+                    ShippingAddress = OrderDetalisService.EnterStringValue("shipping address", logger),
+                    CustomerId = CustomerService.ValidateCustomerId(dbStorageContext, logger),
+                    PaymentMethod = OrderDetalisService.EnterPaymentMethod(logger),
                     CreationTime = DateTime.Now,
                     Status = OrderStatus.New
                 };
@@ -103,9 +102,8 @@ namespace OrderProcessor.Service
             logger.WriteMessageLine($"Product Name: {orderData.ProductName}");
             logger.WriteMessageLine($"Value: {orderData.Value}");
             logger.WriteMessageLine($"Quantity: {orderData.Quantity}");
-            logger.WriteMessageLine($"Customer Name: {orderData.CustomerName}");
             logger.WriteMessageLine($"Shipping Address: {orderData.ShippingAddress}");
-            logger.WriteMessageLine($"Customer Type: {orderData.CustomerType}");
+            logger.WriteMessageLine($"Customer ID: {orderData.CustomerId}");
             logger.WriteMessageLine($"Payment Method: {orderData.PaymentMethod}");
 
             return AskUserForConfirmation("Do you confirm the order details?", logger);
@@ -122,27 +120,27 @@ namespace OrderProcessor.Service
             }
         }
 
-        public static object ParsePropertyValue(PropertyInfo property, ConsoleLogger logger)
+        public static object ParsePropertyValue(PropertyInfo property, ConsoleLogger consoleLogger)
         {
             if (property.PropertyType == typeof(int))
             {
-                return OrderDetalisService.EnterIntValue("new " + property.Name);
+                return OrderDetalisService.EnterIntValue("new " + property.Name, consoleLogger);
             }
             else if (property.PropertyType == typeof(string))
             {
-                return OrderDetalisService.EnterStringValue("new " + property.Name);
+                return OrderDetalisService.EnterStringValue("new " + property.Name, consoleLogger);
             }
             else if (property.PropertyType == typeof(double))
             {
-                return OrderDetalisService.EnterDoubleValue("new " + property.Name);
+                return OrderDetalisService.EnterDoubleValue("new " + property.Name, consoleLogger);
             }
             else if (property.PropertyType == typeof(CustomerType))
             {
-                return OrderDetalisService.EnterCustomerType();
+                return OrderDetalisService.EnterCustomerType(consoleLogger);
             }
             else if (property.PropertyType == typeof(PaymentMethod))
             {
-                return OrderDetalisService.EnterPaymentMethod();
+                return OrderDetalisService.EnterPaymentMethod(consoleLogger);
             }
             return null;
         }

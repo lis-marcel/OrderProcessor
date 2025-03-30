@@ -17,7 +17,10 @@ namespace OrderProcessor.Service
             // Add columns
             foreach (PropertyInfo propertyInfo in classType.GetProperties())
             {
-                if (propertyInfo.Name != "CreationTime" && propertyInfo.Name != "CustomerType" && propertyInfo.Name != "CustomerName" && propertyInfo.Name != "MarkToShippingAt")
+                if (propertyInfo.Name != "CreationTime" 
+                    && propertyInfo.Name != "CustomerType" 
+                    && propertyInfo.Name != "CustomerName" 
+                    && propertyInfo.Name != "MarkToShippingAt")
                 {
                     printer.AddColumn(propertyInfo.Name);
                 }
@@ -32,6 +35,7 @@ namespace OrderProcessor.Service
                     order.ShippingAddress,
                     order.Quantity,
                     order.Status,
+                    order.CustomerId,
                     order.PaymentMethod
                 );
             }

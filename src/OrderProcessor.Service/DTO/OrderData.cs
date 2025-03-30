@@ -13,8 +13,7 @@ namespace OrderProcessor.Service.DTO
         public DateTime CreationTime { get; set; }
         public DateTime? MarkToShippingAt { get; set; }
         public OrderStatus Status { get; set; }
-        public CustomerType CustomerType { get; set; }
-        public required string CustomerName { get; set; }
+        public int CustomerId { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
 
         #region Public Methods
@@ -30,8 +29,7 @@ namespace OrderProcessor.Service.DTO
                 CreationTime = order.CreationTime,
                 MarkToShippingAt = order.MarkToShippingAt,
                 Status = order.Status,
-                CustomerType = order.CustomerType,
-                CustomerName = order.CustomerName,
+                CustomerId = order.CustomerId,
                 PaymentMethod = order.PaymentMethod
             };
         }
@@ -48,8 +46,7 @@ namespace OrderProcessor.Service.DTO
                 CreationTime = order.CreationTime,
                 MarkToShippingAt = order.MarkToShippingAt,
                 Status = order.Status,
-                CustomerType = order.CustomerType,
-                CustomerName = order.CustomerName,
+                CustomerId = order.CustomerId,
                 PaymentMethod = order.PaymentMethod
             };
         }

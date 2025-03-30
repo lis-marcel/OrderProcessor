@@ -35,7 +35,7 @@ namespace OrderProcessor.Service
                         continue;
                     }
 
-                    object oldValue = property.GetValue(orderData);
+                    var oldValue = property.GetValue(orderData);
                     logger.WriteMessageLine($"Current {property.Name}: {oldValue}");
 
                     if (OrderUtility.AskUserForConfirmation("Do you want to edit this field?", logger))
@@ -51,8 +51,7 @@ namespace OrderProcessor.Service
                     order.ProductName = updated.ProductName;
                     order.ShippingAddress = updated.ShippingAddress;
                     order.Quantity = updated.Quantity;
-                    order.CustomerType = updated.CustomerType;
-                    order.CustomerName = updated.CustomerName;
+                    order.CustomerId = updated.CustomerId;
                     order.PaymentMethod = updated.PaymentMethod;
 
                     dbStorageContext.SaveChanges();
