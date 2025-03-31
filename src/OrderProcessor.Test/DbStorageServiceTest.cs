@@ -10,7 +10,7 @@ namespace OrderProcessor.Service.Test
 {
     public class DbStorageServiceTest
     {
-        private static readonly Order exampleOrder1 = new()
+        private static readonly Order exampleOrder = new()
         {
             Id = 1,
             ProductName = "Test Product",
@@ -21,6 +21,11 @@ namespace OrderProcessor.Service.Test
             Value = 1000,
             PaymentMethod = PaymentMethod.CreditCard,
             Status = OrderStatus.New
+        };
+        private static readonly Customer exampleCustomer = new()
+        {
+            Name = "TestCustomer",
+            CustomerType = CustomerType.Company,
         };
 
         [Fact]
@@ -34,7 +39,7 @@ namespace OrderProcessor.Service.Test
             using var dbContext = new DbStorage(options);
             try
             {
-                dbContext.Orders.Add(exampleOrder1);
+                dbContext.Orders.Add(exampleOrder);
                 dbContext.SaveChanges();
 
                 // Act
@@ -62,6 +67,53 @@ namespace OrderProcessor.Service.Test
             {
                 // Act
                 int highestId = DbStorageService.GetHighestOrderId(dbContext);
+
+                // Assert
+                Assert.Equal(0, highestId);
+            }
+            finally
+            {
+                dbContext.Database.EnsureDeleted();
+            }
+        }
+
+        [Fact]
+        public void Test_GetCustomerById_ReturnsExistingCustomerId()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<DbStorage>()
+                .UseInMemoryDatabase(databaseName: "Test_Dabatabase3")
+                .Options;
+            using var dbContext = new DbStorage(options);
+            try
+            {
+                dbContext.Customers.Add(exampleCustomer);
+                dbContext.SaveChanges();
+
+                // Act
+                int highestId = DbStorageService.GetHighestCustomerId(dbContext);
+
+                // Assert
+                Assert.Equal(1, highestId);
+            }
+            finally
+            {
+                dbContext.Database.EnsureDeleted();
+            }
+        }
+
+        [Fact]
+        public void Test_GetCustomerById_EmptyDatabase()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<DbStorage>()
+                .UseInMemoryDatabase(databaseName: "Test_Dabatabase4")
+                .Options;
+            using var dbContext = new DbStorage(options);
+            try
+            {
+                // Act
+                int highestId = DbStorageService.GetHighestCustomerId(dbContext);
 
                 // Assert
                 Assert.Equal(0, highestId);

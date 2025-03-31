@@ -10,7 +10,7 @@ namespace OrderProcessor.Service.Test
 {
     public class OrderDetailsServiceTest
     {
-        private ConsoleLogger consoleLogger = new ConsoleLogger();
+        private static readonly ConsoleLogger consoleLogger = new();
 
         [Fact]
         public void Test_GetDoubleValue_ValidInput()
@@ -20,7 +20,7 @@ namespace OrderProcessor.Service.Test
             Console.SetIn(new StringReader(input));
 
             // Act
-            double result = OrderDetalisService.EnterDoubleValue("TestField", consoleLogger);
+            double result = UserInputHandler.EnterDoubleValue("TestField", consoleLogger);
 
             // Assert
             Assert.Equal(12.34, result);
@@ -34,7 +34,7 @@ namespace OrderProcessor.Service.Test
             Console.SetIn(new StringReader(input));
 
             // Act
-            double result = OrderDetalisService.EnterDoubleValue("TestField", consoleLogger);
+            double result = UserInputHandler.EnterDoubleValue("TestField", consoleLogger);
 
             // Assert
             Assert.Equal(12.34, result);
@@ -48,7 +48,7 @@ namespace OrderProcessor.Service.Test
             Console.SetIn(new StringReader(input));
 
             // Act
-            string result = OrderDetalisService.EnterStringValue("TestField", consoleLogger);
+            string result = UserInputHandler.EnterStringValue("TestField", consoleLogger);
 
             // Assert
             Assert.Equal("TestValue", result);
@@ -62,7 +62,7 @@ namespace OrderProcessor.Service.Test
             Console.SetIn(new StringReader(input));
 
             // Act
-            string result = OrderDetalisService.EnterStringValue("TestField", consoleLogger);
+            string result = UserInputHandler.EnterStringValue("TestField", consoleLogger);
 
             // Assert
             Assert.Equal("TestValue", result);
@@ -76,7 +76,7 @@ namespace OrderProcessor.Service.Test
             Console.SetIn(new StringReader(input));
 
             // Act
-            int result = OrderDetalisService.EnterIntValue("TestField", consoleLogger);
+            int result = UserInputHandler.EnterIntValue("TestField", consoleLogger);
 
             // Assert
             Assert.Equal(42, result);
@@ -90,8 +90,8 @@ namespace OrderProcessor.Service.Test
             Console.SetIn(new StringReader(input));
 
             // Act
-            int result = OrderDetalisService.EnterIntValue("TestField", consoleLogger);
-
+            int result = UserInputHandler.EnterIntValue("TestField", consoleLogger);
+                
             // Assert
             Assert.Equal(42, result);
         }
@@ -100,7 +100,7 @@ namespace OrderProcessor.Service.Test
         public void Test_GetCustomerType_ValidInput()
         {
             // Arrange
-            var input = "0";
+            var input = "1";
             Console.SetIn(new StringReader(input));
 
             // Act
@@ -114,7 +114,7 @@ namespace OrderProcessor.Service.Test
         public void Test_GetCustomerType_InvalidInputFollowedByValid() 
         {
             // Arrange
-            var input = "abc\n998\n1";
+            var input = "abc\n998\n2";
             Console.SetIn(new StringReader(input));
 
             // Act
@@ -128,7 +128,7 @@ namespace OrderProcessor.Service.Test
         public void Test_GetPaymentMethod_ValidInput()
         {
             // Arrange
-            var input = "0";
+            var input = "1";
             Console.SetIn(new StringReader(input));
 
             // Act
@@ -142,7 +142,7 @@ namespace OrderProcessor.Service.Test
         public void Test_GetPaymentMethod_InvalidInputFollowedByValid()
         {
             // Arrange
-            var input = "90\n0";
+            var input = "90\n1";
             Console.SetIn(new StringReader(input));
 
             // Act

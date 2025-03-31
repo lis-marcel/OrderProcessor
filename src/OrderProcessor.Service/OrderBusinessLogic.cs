@@ -16,7 +16,7 @@ namespace OrderProcessor.Service
         #region Public Methods
         public static bool IsOrderEligibleForWarehouseProcessing(OrderData orderData)
         {
-            return true && orderData.Value > cashPaymentThreshold && orderData.PaymentMethod == PaymentMethod.Cash;
+            return orderData.PaymentMethod == PaymentMethod.Cash && orderData.Value > cashPaymentThreshold ? false : true;
         }
 
         public static async Task MarkOrderAsToShippingAfterDelay(DbStorage dbStorageConetxt, int orderId)

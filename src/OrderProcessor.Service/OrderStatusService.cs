@@ -44,6 +44,12 @@ namespace OrderProcessor.Service
                     o.Status == OrderStatus.PendingToShipping &&
                     o.MarkToShippingAt <= now);
 
+                if (!pendingOrders.Any())
+                {
+                    consoleLogger.WriteInfo("No pending orders found.");
+                    return;
+                }
+
                 foreach (var order in pendingOrders)
                 {
                     var orderData = OrderData.ToDTO(order);

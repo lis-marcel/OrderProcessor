@@ -62,7 +62,7 @@ namespace OrderProcessor.Service.Test
         }
 
         [Fact]
-        public void Test_IsOrderEligibleForWarehouseProcessing_ReturnTrue_ForCreditCardAboveThreshold()
+        public void Test_IsOrderEligibleForWarehouseProcessing_ReturnTrue_ForCreditCardBelowThreshold()
         {
             // Arrange
             var orderData = OrderData.ToDTO(exampleOrder1);

@@ -19,7 +19,8 @@ namespace OrderProcessor.Service
                 ["6"] = ("Show specific order", OrderPrintingService.ShowSpecificOrder),
                 ["7"] = ("Show all orders", OrderPrintingService.ShowAllOrders),
                 ["8"] = ("Delete order", OrderManagmentFacade.DeleteOrder),
-                ["9"] = ("Exit application", _ => ExitApp())
+                ["9"] = ("Create customer", CustomerService.AddCustomer),
+                ["10"] = ("Exit application", _ => ExitApp())
             };
 
         public ConsoleService() 

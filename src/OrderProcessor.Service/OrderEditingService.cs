@@ -38,7 +38,7 @@ namespace OrderProcessor.Service
                     var oldValue = property.GetValue(orderData);
                     logger.WriteMessageLine($"Current {property.Name}: {oldValue}");
 
-                    if (OrderUtility.AskUserForConfirmation("Do you want to edit this field?", logger))
+                    if (UserInputHandler.AskUserForConfirmation("Do you want to edit this field?", logger))
                     {
                         property.SetValue(orderData, OrderUtility.ParsePropertyValue(property, logger));
                     }

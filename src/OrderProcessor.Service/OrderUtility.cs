@@ -67,11 +67,11 @@ namespace OrderProcessor.Service
             {
                 var orderData = new OrderData
                 {
-                    ProductName = OrderDetalisService.EnterStringValue("product name", logger),
-                    Value = OrderDetalisService.EnterDoubleValue("order value", logger),
-                    Quantity = OrderDetalisService.EnterIntValue("quantity", logger),
-                    ShippingAddress = OrderDetalisService.EnterStringValue("shipping address", logger),
-                    CustomerId = CustomerService.ValidateCustomerId(dbStorageContext, logger),
+                    ProductName = UserInputHandler.EnterStringValue("product name", logger),
+                    Value = UserInputHandler.EnterDoubleValue("order value", logger),
+                    Quantity = UserInputHandler.EnterIntValue("quantity", logger),
+                    ShippingAddress = UserInputHandler.EnterStringValue("shipping address", logger),
+                    CustomerId = CustomerService.ValidateCustomerId(dbStorageContext, UserInputHandler.EnterIntValue("customer ID", logger)),
                     PaymentMethod = OrderDetalisService.EnterPaymentMethod(logger),
                     CreationTime = DateTime.Now,
                     Status = OrderStatus.New
@@ -82,7 +82,7 @@ namespace OrderProcessor.Service
                     return orderData;
                 }
 
-                if (AskUserForConfirmation("Do you want to return to the main menu?", logger))
+                if (UserInputHandler.AskUserForConfirmation("Do you want to return to the main menu?", logger))
                 {
                     return null;
                 }
@@ -106,33 +106,22 @@ namespace OrderProcessor.Service
             logger.WriteMessageLine($"Customer ID: {orderData.CustomerId}");
             logger.WriteMessageLine($"Payment Method: {orderData.PaymentMethod}");
 
-            return AskUserForConfirmation("Do you confirm the order details?", logger);
-        }
-
-        public static bool AskUserForConfirmation(string message, ConsoleLogger logger)
-        {
-            while (true)
-            {
-                logger.WriteMessageLine($"{message} [Press ENTER to confirm, any other key to cancel]: ");
-                var input = Console.ReadKey(true);
-
-                return input.Key == ConsoleKey.Enter;
-            }
+            return UserInputHandler.AskUserForConfirmation("Do you confirm the order details?", logger);
         }
 
         public static object ParsePropertyValue(PropertyInfo property, ConsoleLogger consoleLogger)
         {
             if (property.PropertyType == typeof(int))
             {
-                return OrderDetalisService.EnterIntValue("new " + property.Name, consoleLogger);
+                return UserInputHandler.EnterIntValue("new " + property.Name, consoleLogger);
             }
             else if (property.PropertyType == typeof(string))
             {
-                return OrderDetalisService.EnterStringValue("new " + property.Name, consoleLogger);
+                return UserInputHandler.EnterStringValue("new " + property.Name, consoleLogger);
             }
             else if (property.PropertyType == typeof(double))
             {
-                return OrderDetalisService.EnterDoubleValue("new " + property.Name, consoleLogger);
+                return UserInputHandler.EnterDoubleValue("new " + property.Name, consoleLogger);
             }
             else if (property.PropertyType == typeof(CustomerType))
             {
@@ -144,7 +133,9 @@ namespace OrderProcessor.Service
             }
             return null;
         }
+
         #endregion
+
 
     }
 }
