@@ -19,7 +19,7 @@ namespace OrderProcessor.Service
                     return;
                 }
 
-                int newOrderId = DbStorageService.GetHighestOrderId(dbStorageContext) + 1;
+                int newOrderId = DbStorageService.GetHighestId<Order>(dbStorageContext) + 1;
                 orderData.Id = newOrderId;
 
                 dbStorageContext.Orders.Add(OrderData.ToBO(orderData));

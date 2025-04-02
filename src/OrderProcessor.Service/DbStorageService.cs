@@ -26,20 +26,18 @@ namespace OrderProcessor.Service
             return dbPath;
         }
 
-        // TODO: Refactor to use a generic method
-        public static int GetHighestOrderId(DbStorage dbStorageContext)
+        public static int GetHighestId<T>(DbStorage dbStorageContext) where T : class
         {
-            return dbStorageContext.Orders.Any()
-                ? dbStorageContext.Orders.Max(o => o.Id)
-                : 0;
+            var dbSet = dbStorageContext.Set<T>();
+
+            var highestId = dbSet.AsQueryable()
+                .OrderByDescending(e => EF.Property<int>(e, "Id"))
+                .Select(e => EF.Property<int>(e, "Id"))
+                .FirstOrDefaultAsync().Result;
+
+            return highestId;
         }
 
-        public static int GetHighestCustomerId(DbStorage dbStorageContext)
-        {
-            return dbStorageContext.Customers.Any()
-                ? dbStorageContext.Customers.Max(o => o.Id)
-                : 0;
-        }
         #endregion
 
     }

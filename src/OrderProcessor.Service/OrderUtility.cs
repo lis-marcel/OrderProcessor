@@ -9,7 +9,7 @@ namespace OrderProcessor.Service
     public static class OrderUtility
     {
         #region Public Methods
-        public static Order AskAndFindOrder(DbStorage dbStorageContext, ConsoleLogger logger)
+        public static Order? AskAndFindOrder(DbStorage dbStorageContext, ConsoleLogger logger)
         {
             Order? res;
 
@@ -55,7 +55,7 @@ namespace OrderProcessor.Service
             }
         }
 
-        public static OrderData CreateOrderDetails(DbStorage dbStorageContext, ConsoleLogger logger)
+        public static OrderData? CreateOrderDetails(DbStorage dbStorageContext, ConsoleLogger logger)
         {
             // Clear console if interactive
             if (Environment.UserInteractive && !Console.IsOutputRedirected)
@@ -109,7 +109,7 @@ namespace OrderProcessor.Service
             return UserInputHandler.AskUserForConfirmation("Do you confirm the order details?", logger);
         }
 
-        public static object ParsePropertyValue(PropertyInfo property, ConsoleLogger consoleLogger)
+        public static object? ParsePropertyValue(PropertyInfo property, ConsoleLogger consoleLogger)
         {
             if (property.PropertyType == typeof(int))
             {

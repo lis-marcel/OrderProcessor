@@ -44,7 +44,7 @@ namespace OrderProcessor.Service
                 dbStorageContext.Customers.Add(customer);
                 dbStorageContext.SaveChanges();
 
-                int customerId = DbStorageService.GetHighestOrderId(dbStorageContext) + 1;
+                int customerId = DbStorageService.GetHighestId<Order>(dbStorageContext) + 1;
 
                 consoleLogger.WriteSuccess($"New customer with ID:{customerId} added successfully.");
             }

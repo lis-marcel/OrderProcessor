@@ -43,7 +43,7 @@ namespace OrderProcessor.Service.Test
                 dbContext.SaveChanges();
 
                 // Act
-                int highestId = DbStorageService.GetHighestOrderId(dbContext);
+                int highestId = DbStorageService.GetHighestId<Order>(dbContext);
 
                 // Assert
                 Assert.Equal(1, highestId);
@@ -66,7 +66,7 @@ namespace OrderProcessor.Service.Test
             try
             {
                 // Act
-                int highestId = DbStorageService.GetHighestOrderId(dbContext);
+                int highestId = DbStorageService.GetHighestId<Order>(dbContext);
 
                 // Assert
                 Assert.Equal(0, highestId);
@@ -91,7 +91,7 @@ namespace OrderProcessor.Service.Test
                 dbContext.SaveChanges();
 
                 // Act
-                int highestId = DbStorageService.GetHighestCustomerId(dbContext);
+                int highestId = DbStorageService.GetHighestId<Customer>(dbContext);
 
                 // Assert
                 Assert.Equal(1, highestId);
@@ -113,7 +113,7 @@ namespace OrderProcessor.Service.Test
             try
             {
                 // Act
-                int highestId = DbStorageService.GetHighestCustomerId(dbContext);
+                int highestId = DbStorageService.GetHighestId<Customer>(dbContext);
 
                 // Assert
                 Assert.Equal(0, highestId);
