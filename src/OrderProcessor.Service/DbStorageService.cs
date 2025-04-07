@@ -30,12 +30,7 @@ namespace OrderProcessor.Service
         {
             var dbSet = dbStorageContext.Set<T>();
 
-            var highestId = dbSet.AsQueryable()
-                .OrderByDescending(e => EF.Property<int>(e, "Id"))
-                .Select(e => EF.Property<int>(e, "Id"))
-                .FirstOrDefaultAsync().Result;
-
-            return highestId;
+            return !dbSet.Any() ? 0 : dbSet.Max(e => EF.Property<int>(e, "Id"));
         }
 
         #endregion
