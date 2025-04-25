@@ -1,7 +1,7 @@
 ﻿using OrderProcessor.Service.DTO;
 using System.Reflection;
 
-namespace OrderProcessor.Console.Service
+namespace OrderProcessor.Service
 {
     public class TablePrinter
     {
@@ -47,7 +47,7 @@ namespace OrderProcessor.Console.Service
         {
             if (headers.Count == 0)
             {
-                System.Console.WriteLine("No columns defined.");
+                Console.WriteLine("No columns defined.");
                 return;
             }
 
@@ -85,12 +85,12 @@ namespace OrderProcessor.Console.Service
             {
                 row += rowData[i].PadRight(widths[i]) + " | ";
             }
-            System.Console.WriteLine(row);
+            Console.WriteLine(row);
 
             // Underline header row
             if (isHeader)
             {
-                System.Console.WriteLine(new string('-', row.Length));
+                Console.WriteLine(new string('-', row.Length));
             }
         }
 

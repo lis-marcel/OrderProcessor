@@ -2,7 +2,6 @@
 using OrderProcessor.BO;
 using OrderProcessor.BO.OrderOptions;
 using OrderProcessor.Common;
-using OrderProcessor.Console.Service;
 using OrderProcessor.Service.DTO;
 using System;
 using System.Collections.Generic;
@@ -97,7 +96,7 @@ namespace OrderProcessor.Service.Test
                 int result = CustomerService.ValidateCustomerId(dbContext, 1);
 
                 string input = "1\n";
-                System.Console.SetIn(new StringReader(input));
+                Console.SetIn(new StringReader(input));
 
                 // Assert
                 Assert.Equal(1, result);
@@ -126,7 +125,7 @@ namespace OrderProcessor.Service.Test
                 int result = CustomerService.ValidateCustomerId(dbContext, 1);
 
                 string input = "abc\n1\n";
-                System.Console.SetIn(new StringReader(input));
+                Console.SetIn(new StringReader(input));
 
                 // Assert
                 Assert.Equal(1, result);

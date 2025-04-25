@@ -1,7 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OrderProcessor.BO;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace OrderProcessor.Console.Service
+namespace OrderProcessor.Service
 {
     public class DbStorageService
     {

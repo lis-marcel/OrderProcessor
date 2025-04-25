@@ -3,7 +3,7 @@ using OrderProcessor.Service.DTO;
 using OrderProcessor.Common;
 using OrderProcessor.BO.OrderOptions;
 
-namespace OrderProcessor.Console.Service
+namespace OrderProcessor.Service
 {
     public class OrderStatusService
     {

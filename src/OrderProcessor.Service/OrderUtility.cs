@@ -4,7 +4,7 @@ using OrderProcessor.Common;
 using OrderProcessor.Service.DTO;
 using System.Reflection;
 
-namespace OrderProcessor.Console.Service
+namespace OrderProcessor.Service
 {
     public static class OrderUtility
     {
@@ -29,7 +29,7 @@ namespace OrderProcessor.Console.Service
             while (true)
             {
                 logger.WriteMessage("Enter Order ID: ");
-                string? input = System.Console.ReadLine();
+                string? input = Console.ReadLine();
 
                 if (int.TryParse(input, out int orderId))
                 {
@@ -46,7 +46,7 @@ namespace OrderProcessor.Console.Service
             {
                 logger.WriteMessage("Enter order status (1 - New, 2 - InWarehouse, 3 - PendingToShipping, 4 - InShipping, 5 - ReturnedToCustomer, 6 - Error, 7 - Closed): ");
 
-                if (int.TryParse(System.Console.ReadLine(), out int status) && Enum.IsDefined(typeof(OrderStatus), status))
+                if (int.TryParse(Console.ReadLine(), out int status) && Enum.IsDefined(typeof(OrderStatus), status))
                 {
                     return status;
                 }
@@ -58,9 +58,9 @@ namespace OrderProcessor.Console.Service
         public static OrderData? CreateOrderDetails(DbStorage dbStorageContext, ConsoleLogger logger)
         {
             // Clear console if interactive
-            if (Environment.UserInteractive && !System.Console.IsOutputRedirected)
+            if (Environment.UserInteractive && !Console.IsOutputRedirected)
             {
-                System.Console.Clear();
+                Console.Clear();
             }
 
             while (true)
@@ -93,9 +93,9 @@ namespace OrderProcessor.Console.Service
 
         public static bool ShowOrderSummaryAndConfirm(OrderData orderData, ConsoleLogger logger)
         {
-            if (Environment.UserInteractive && !System.Console.IsOutputRedirected)
+            if (Environment.UserInteractive && !Console.IsOutputRedirected)
             {
-                System.Console.Clear();
+                Console.Clear();
             }
 
             logger.WriteMessageLine("Order Summary:");

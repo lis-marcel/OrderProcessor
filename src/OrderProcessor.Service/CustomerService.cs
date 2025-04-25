@@ -2,7 +2,7 @@
 using OrderProcessor.Common;
 using OrderProcessor.Service.DTO;
 
-namespace OrderProcessor.Console.Service
+namespace OrderProcessor.Service
 {
     public class CustomerService
     {
