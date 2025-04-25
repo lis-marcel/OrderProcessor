@@ -1,5 +1,5 @@
 ﻿using OrderProcessor.Common;
-using OrderProcessor.Service;
+using OrderProcessor.Console.Service;
 
 namespace OrderProcessor.Console
 {

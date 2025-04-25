@@ -2,7 +2,7 @@
 using OrderProcessor.Common;
 using OrderProcessor.Service.DTO;
 
-namespace OrderProcessor.Service
+namespace OrderProcessor.Console.Service
 {
     public static class OrderEditingService
     {
@@ -23,9 +23,9 @@ namespace OrderProcessor.Service
                 var orderProperties = typeof(OrderData).GetProperties();
 
                 // Condition for unit tests
-                if (Environment.UserInteractive && !Console.IsOutputRedirected)
+                if (Environment.UserInteractive && !System.Console.IsOutputRedirected)
                 {
-                    Console.Clear();
+                    System.Console.Clear();
                 }
 
                 foreach (var property in orderProperties)

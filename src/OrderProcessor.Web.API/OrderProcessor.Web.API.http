@@ -1,6 +1,6 @@
-@OrderProcessor.Web.API_HostAddress = http://localhost:5027
+@OrderProcessor.Web.API_HostAddress = http://localhost:8080
 
-GET {{OrderProcessor.Web.API_HostAddress}}/weatherforecast/
+GET {{OrderProcessor.Web.API_HostAddress}}/order/
 Accept: application/json
 
 ###

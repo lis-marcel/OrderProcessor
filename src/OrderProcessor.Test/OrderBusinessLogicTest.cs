@@ -1,10 +1,10 @@
 using OrderProcessor.BO;
 using OrderProcessor.BO.OrderOptions;
 using OrderProcessor.Common;
-using OrderProcessor.Service;
 using OrderProcessor.Service.DTO;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
+using OrderProcessor.Console.Service;
 
 namespace OrderProcessor.Service.Test
 {

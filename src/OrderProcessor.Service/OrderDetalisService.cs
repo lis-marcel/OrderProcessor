@@ -1,7 +1,7 @@
 ﻿using OrderProcessor.BO.OrderOptions;
 using OrderProcessor.Common;
 
-namespace OrderProcessor.Service
+namespace OrderProcessor.Console.Service
 {
     public class OrderDetalisService
     {
@@ -12,7 +12,7 @@ namespace OrderProcessor.Service
             {
                 consoleLogger.WriteMessage("Enter payment method (1 - Cash on delivery, 2 - Credit card): ");
 
-                if (int.TryParse(Console.ReadLine(), out int paymentMethod) && Enum.IsDefined(typeof(PaymentMethod), paymentMethod))
+                if (int.TryParse(System.Console.ReadLine(), out int paymentMethod) && Enum.IsDefined(typeof(PaymentMethod), paymentMethod))
                 {
                     return (PaymentMethod)paymentMethod;
                 }
@@ -27,7 +27,7 @@ namespace OrderProcessor.Service
             {
                 consoleLogger.WriteMessage("Enter customer type (1 - Individual, 2 - Company): ");
 
-                if (int.TryParse(Console.ReadLine(), out int customerType) && Enum.IsDefined(typeof(CustomerType), customerType))
+                if (int.TryParse(System.Console.ReadLine(), out int customerType) && Enum.IsDefined(typeof(CustomerType), customerType))
                 {
                     return (CustomerType)customerType;
                 }
