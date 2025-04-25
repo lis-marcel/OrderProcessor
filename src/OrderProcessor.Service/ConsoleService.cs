@@ -2,7 +2,7 @@
 using OrderProcessor.BO;
 using OrderProcessor.Common;
 
-namespace OrderProcessor.Service
+namespace OrderProcessor.Console.Service
 {
     public class ConsoleService
     {
@@ -62,8 +62,8 @@ namespace OrderProcessor.Service
                 }
 
                 consoleLogger.WriteMessage("\nPress any key to return to the main menu...\n");
-                Console.ReadKey();
-                Console.Clear();
+                System.Console.ReadKey();
+                System.Console.Clear();
             }
         }
 
@@ -78,13 +78,13 @@ namespace OrderProcessor.Service
 
                 consoleLogger.WriteMessage("Enter option number: ");
 
-                if (int.TryParse(Console.ReadLine(), out int value) 
+                if (int.TryParse(System.Console.ReadLine(), out int value) 
                     && value >= 1 && value <= MenuItems.Count)
                 {
                     return value.ToString();
                 }
 
-                Console.Clear();
+                System.Console.Clear();
                 consoleLogger.WriteWarning("Invalid optionNumber. Please enter a correct value.");
             }
         }
@@ -101,7 +101,7 @@ namespace OrderProcessor.Service
 
         private static void ExitApp()
         {
-            Console.Clear();
+            System.Console.Clear();
             consoleLogger.WriteMessageLine("Exiting the application...");
             Environment.Exit(0);
         }

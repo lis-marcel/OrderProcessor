@@ -1,10 +1,10 @@
 ﻿using OrderProcessor.BO;
 using OrderProcessor.BO.OrderOptions;
 using OrderProcessor.Common;
-using OrderProcessor.Service;
 using OrderProcessor.Service.DTO;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
+using OrderProcessor.Console.Service;
 
 namespace OrderProcessor.Service.Test
 {
@@ -17,7 +17,7 @@ namespace OrderProcessor.Service.Test
         {
             // Arrange
             var input = "12,34";
-            Console.SetIn(new StringReader(input));
+            System.Console.SetIn(new StringReader(input));
 
             // Act
             double result = UserInputHandler.EnterDoubleValue("TestField", consoleLogger);
@@ -31,7 +31,7 @@ namespace OrderProcessor.Service.Test
         {
             // Arrange
             var input = "abc\n12,34";
-            Console.SetIn(new StringReader(input));
+            System.Console.SetIn(new StringReader(input));
 
             // Act
             double result = UserInputHandler.EnterDoubleValue("TestField", consoleLogger);
@@ -45,7 +45,7 @@ namespace OrderProcessor.Service.Test
         {
             // Arrange
             var input = "TestValue";
-            Console.SetIn(new StringReader(input));
+            System.Console.SetIn(new StringReader(input));
 
             // Act
             string result = UserInputHandler.EnterStringValue("TestField", consoleLogger);
@@ -59,7 +59,7 @@ namespace OrderProcessor.Service.Test
         {
             // Arrange
             var input = "\nTestValue";
-            Console.SetIn(new StringReader(input));
+            System.Console.SetIn(new StringReader(input));
 
             // Act
             string result = UserInputHandler.EnterStringValue("TestField", consoleLogger);
@@ -73,7 +73,7 @@ namespace OrderProcessor.Service.Test
         {
             // Arrange
             var input = "42";
-            Console.SetIn(new StringReader(input));
+            System.Console.SetIn(new StringReader(input));
 
             // Act
             int result = UserInputHandler.EnterIntValue("TestField", consoleLogger);
@@ -87,7 +87,7 @@ namespace OrderProcessor.Service.Test
         {
             // Arrange
             var input = "abc\n42";
-            Console.SetIn(new StringReader(input));
+            System.Console.SetIn(new StringReader(input));
 
             // Act
             int result = UserInputHandler.EnterIntValue("TestField", consoleLogger);
@@ -101,7 +101,7 @@ namespace OrderProcessor.Service.Test
         {
             // Arrange
             var input = "1";
-            Console.SetIn(new StringReader(input));
+            System.Console.SetIn(new StringReader(input));
 
             // Act
             CustomerType result = OrderDetalisService.EnterCustomerType(consoleLogger);
@@ -115,7 +115,7 @@ namespace OrderProcessor.Service.Test
         {
             // Arrange
             var input = "abc\n998\n2";
-            Console.SetIn(new StringReader(input));
+            System.Console.SetIn(new StringReader(input));
 
             // Act
             CustomerType result = OrderDetalisService.EnterCustomerType(consoleLogger);
@@ -129,7 +129,7 @@ namespace OrderProcessor.Service.Test
         {
             // Arrange
             var input = "1";
-            Console.SetIn(new StringReader(input));
+            System.Console.SetIn(new StringReader(input));
 
             // Act
             PaymentMethod result = OrderDetalisService.EnterPaymentMethod(consoleLogger);
@@ -143,7 +143,7 @@ namespace OrderProcessor.Service.Test
         {
             // Arrange
             var input = "90\n1";
-            Console.SetIn(new StringReader(input));
+            System.Console.SetIn(new StringReader(input));
 
             // Act
             PaymentMethod result = OrderDetalisService.EnterPaymentMethod(consoleLogger);

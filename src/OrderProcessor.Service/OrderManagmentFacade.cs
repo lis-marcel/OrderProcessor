@@ -1,10 +1,8 @@
 ﻿using OrderProcessor.BO;
-using OrderProcessor.BO.OrderOptions;
 using OrderProcessor.Common;
-using OrderProcessor.Service.DTO;
-using System.Reflection;
+using OrderProcessor.Service;
 
-namespace OrderProcessor.Service
+namespace OrderProcessor.Console.Service
 {
     public class OrderManagmentFacade
     {

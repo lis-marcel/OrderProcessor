@@ -1,10 +1,11 @@
 ﻿using OrderProcessor.BO;
 using OrderProcessor.Service.DTO;
 using OrderProcessor.Common;
+using OrderProcessor.Console.Service;
 
 namespace OrderProcessor.Service
 {
-    public static class OrderCreationService
+    public class OrderCreationService
     {
         #region Public Methods
         public static void CreateOrder(DbStorage dbStorageContext, ConsoleLogger logger)
@@ -19,11 +20,11 @@ namespace OrderProcessor.Service
                     return;
                 }
 
-                int newOrderId = DbStorageService.GetHighestId<Order>(dbStorageContext) + 1;
-                orderData.Id = newOrderId;
-
                 dbStorageContext.Orders.Add(OrderData.ToBO(orderData));
                 dbStorageContext.SaveChanges();
+
+                int newOrderId = DbStorageService.GetHighestId<Order>(dbStorageContext);
+
                 logger.WriteSuccess($"Order created successfully with ID: {newOrderId}");
             }
             catch (Exception ex)
