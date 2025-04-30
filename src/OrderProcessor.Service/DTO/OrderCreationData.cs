@@ -1,8 +1,13 @@
 ﻿using OrderProcessor.BO.OrderOptions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace OrderProcessor.Web.API.BO
+namespace OrderProcessor.Service.DTO
 {
-    public class OrderRequest
+    public class OrderCreationData
     {
         public double Value { get; set; }
         public required string ProductName { get; set; }

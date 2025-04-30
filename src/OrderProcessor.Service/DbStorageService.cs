@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OrderProcessor.BO;
 
-namespace OrderProcessor.Console.Service
+namespace OrderProcessor.Service
 {
     public class DbStorageService
     {

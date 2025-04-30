@@ -9,7 +9,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\lib\OrderProcessor.CommonLibraries\OrderProcessor.CommonLibraries.csproj" />
     <ProjectReference Include="..\OrderProcessor.BO\OrderProcessor.BO.csproj" />
-    <ProjectReference Include="..\OrderProcessor.Common\OrderProcessor.Common.csproj" />
   </ItemGroup>
 
 </Project>

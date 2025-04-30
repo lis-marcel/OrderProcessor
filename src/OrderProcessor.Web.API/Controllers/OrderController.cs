@@ -1,52 +1,84 @@
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿using OrderProcessor.Service.DTO;
+using OrderProcessor.Service;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using OrderProcessor.BO;
-using OrderProcessor.BO.OrderOptions;
-using OrderProcessor.Console.Service;
-using OrderProcessor.Service.DTO;
-using OrderProcessor.Web.API.BO;
 
-namespace OrderProcessor.Web.API.Controllers;
-
-[ApiController]
-[Route("/order")]
-public class OrderController : ControllerBase
+namespace OrderProcessor.Web.API.Controllers
 {
-    [HttpPost]
-    [Route("/create")]
-    public IActionResult CreateOrder(DbStorage dbContext, [FromBody]OrderRequest orderRequest)
+    [ApiController]
+    [Route("api")]
+    public class OrderController : ControllerBase
     {
-        try
+        private readonly DbStorage _dbStorageContext;
+        private readonly OrderService _orderService;
+
+        public OrderController(DbStorage dbStorageContext, OrderService orderService)
         {
-            if (orderRequest == null)
+            _dbStorageContext = dbStorageContext;
+            _orderService = orderService;
+        }
+
+        [HttpPost("create")]
+        public IActionResult CreateOrder([FromBody] OrderCreationData orderCreationData)
+        {
+            if (orderCreationData == null)
             {
-                return BadRequest("Order data is null");
+                return BadRequest("Order creation data is null.");
             }
 
-            var orderData = new OrderData
+            var result = OrderService.CreateOrder(_dbStorageContext, orderCreationData);
+
+            if (result)
             {
-                Value = orderRequest.Value,
-                ProductName = orderRequest.ProductName,
-                ShippingAddress = orderRequest.ShippingAddress,
-                Status = OrderStatus.New,
-                Quantity = orderRequest.Quantity,
-                CreationTime = DateTime.Now,
-                MarkToShippingAt = null,
-                CustomerId = orderRequest.CustomerId,
-                PaymentMethod = orderRequest.PaymentMethod
-            };
-
-            dbContext.Orders.Add(OrderData.ToBO(orderData));
-            dbContext.SaveChanges();
-
-            int newOrderId = DbStorageService.GetHighestId<Order>(dbContext);
-
-            return Ok($"Order created successfully with ID: {newOrderId}");
+                return Ok("Order created successfully.");
+            }
+            else
+            {
+                return StatusCode(500, "An error occurred while creating the order.");
+            }
         }
-        catch (Exception ex)
+
+        [HttpGet("order/{orderId}")]
+        public IActionResult GetOrder(int orderId)
         {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
+            var order = OrderService.GetOrder(_dbStorageContext, orderId);
+            if (order != null)
+            {
+                return Ok(order);
+            }
+            else
+            {
+                return NotFound($"Order with ID {orderId} not found.");
+            }
         }
+
+        [HttpPost("orders")]
+        public IActionResult GetOrders()
+        {
+            var order = OrderService.GetOrders(_dbStorageContext);
+            if (order != null)
+            {
+                return Ok(order);
+            }
+            else
+            {
+                return NotFound($"No orders found.");
+            }
+        }
+
+        [HttpGet("delete/{orderId}")]
+        public IActionResult DeleteOrder(int orderId)
+        {
+            var order = OrderService.DeleteOrder(_dbStorageContext, orderId);
+            if (order == true)
+            {
+                return Ok(order);
+            }
+            else
+            {
+                return NotFound($"Order with ID {orderId} not found.");
+            }
+        }
+
     }
 }

@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OrderProcessor.Service\OrderProcessor.Console.Service.csproj" />
+    <ProjectReference Include="..\..\lib\OrderProcessor.CommonLibraries\OrderProcessor.CommonLibraries.csproj" />
+    <ProjectReference Include="..\OrderProcessor.BO\OrderProcessor.BO.csproj" />
+    <ProjectReference Include="..\OrderProcessor.Service\OrderProcessor.Service.csproj" />
   </ItemGroup>
 
 </Project>

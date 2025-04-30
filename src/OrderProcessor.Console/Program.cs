@@ -1,26 +1,24 @@
-﻿using OrderProcessor.Common;
-using OrderProcessor.Console.Service;
+﻿using OrderProcessor.Service;
 
 namespace OrderProcessor.Console
 {
     internal class Program
     {
-        private static readonly ConsoleLogger consoleLogger = new();
 
         static void Main(string[] args)
         {
-            AppDomain currentDomain = AppDomain.CurrentDomain;
-            currentDomain.UnhandledException += new UnhandledExceptionEventHandler(MyHandler);
+            //AppDomain currentDomain = AppDomain.CurrentDomain;
+            //currentDomain.UnhandledException += new UnhandledExceptionEventHandler(MyHandler);
 
-            try
-            {
-                ConsoleService service = new();
-                service.Start();
-            }
-            catch (Exception ex)
-            {
-                consoleLogger.WriteError(ex.Message);
-            }
+            //try
+            //{
+            //    ConsoleService service = new();
+            //    service.Start();
+            //}
+            //catch (Exception ex)
+            //{
+            //    consoleLogger.WriteError(ex.Message);
+            //}
         }
 
         static void MyHandler(object sender, UnhandledExceptionEventArgs args)

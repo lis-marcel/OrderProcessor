@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using OrderProcessor.BO;
+using System.Text;
 using OrderProcessor.Service;
+using OrderProcessor.BO;
 
 namespace OrderProcessor.Web.API
 {
@@ -15,18 +16,7 @@ namespace OrderProcessor.Web.API
             builder.Services.AddDbContext<DbStorage>(options =>
                 options.UseSqlite(builder.Configuration.GetConnectionString("AppDbConnection")));
 
-            builder.Services.AddScoped<OrderCreationService>();
-
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowSpecificOrigin", // Allow specific origin
-                builder =>
-                {
-                    builder.WithOrigins("http://localhost:8080")
-                            .AllowAnyHeader()
-                            .AllowAnyMethod();
-                });
-            });
+            builder.Services.AddScoped<OrderService>();
 
             builder.Services.AddControllers();
 
