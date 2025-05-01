@@ -2,6 +2,7 @@
 using OrderProcessor.Service;
 using Microsoft.AspNetCore.Mvc;
 using OrderProcessor.BO;
+using System.Threading.Tasks;
 
 namespace OrderProcessor.Web.API.Controllers
 {
@@ -19,14 +20,14 @@ namespace OrderProcessor.Web.API.Controllers
         }
 
         [HttpPost("create")]
-        public IActionResult CreateOrder([FromBody] OrderCreationData orderCreationData)
+        public async Task<IActionResult> CreateOrder([FromBody] OrderCreationData orderCreationData)
         {
             if (orderCreationData == null)
             {
                 return BadRequest("Order creation data is null.");
             }
 
-            var result = OrderService.CreateOrder(_dbStorageContext, orderCreationData);
+            var result = await OrderService.CreateOrder(_dbStorageContext, orderCreationData);
 
             if (result)
             {
@@ -67,9 +68,9 @@ namespace OrderProcessor.Web.API.Controllers
         }
 
         [HttpGet("delete/{orderId}")]
-        public IActionResult DeleteOrder(int orderId)
+        public async Task<IActionResult> DeleteOrder(int orderId)
         {
-            var order = OrderService.DeleteOrder(_dbStorageContext, orderId);
+            var order = await OrderService.DeleteOrder(_dbStorageContext, orderId);
             if (order == true)
             {
                 return Ok(order);

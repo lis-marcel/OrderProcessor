@@ -9,9 +9,9 @@ namespace OrderProcessor.Service
     {
         #region Public Methods
 
-        public static OrderData? CreateOrderDetails(OrderCreationData orderCreationData)
+        public static Task<OrderData?> CreateOrderDetails(OrderCreationData orderCreationData)
         {
-            return new()
+            return Task.FromResult<OrderData?>(new()
             {
                 ProductName = orderCreationData.ProductName,
                 Value = orderCreationData.Value,
@@ -21,7 +21,7 @@ namespace OrderProcessor.Service
                 PaymentMethod = orderCreationData.PaymentMethod,
                 CreationTime = DateTime.Now,
                 Status = OrderStatus.New
-            };
+            });
         }
 
         #endregion

@@ -1,4 +1,5 @@
-﻿using OrderProcessor.BO;
+﻿using Microsoft.EntityFrameworkCore;
+using OrderProcessor.BO;
 using OrderProcessor.Service.DTO;
 using System.Reflection.Metadata.Ecma335;
 
@@ -7,19 +8,19 @@ namespace OrderProcessor.Service
     public class OrderService
     {
         #region Public Methods
-        public static bool CreateOrder(DbStorage dbStorageContext, OrderCreationData orderCreationData)
+        public static async Task<bool> CreateOrder(DbStorage dbStorageContext, OrderCreationData orderCreationData)
         {
             try
             {
-                var orderData = OrderUtility.CreateOrderDetails(orderCreationData);
+                var orderData = await OrderUtility.CreateOrderDetails(orderCreationData);
 
                 if (orderData == null)
                 {
                     return false;
                 }
 
-                dbStorageContext.Orders.Add(OrderData.ToBO(orderData));
-                dbStorageContext.SaveChanges();
+                await dbStorageContext.Orders.AddAsync(OrderData.ToBO(orderData));
+                await dbStorageContext.SaveChangesAsync();
 
                 return true;
             }
@@ -29,14 +30,14 @@ namespace OrderProcessor.Service
             }
         }
 
-        public static OrderData? GetOrder(DbStorage dbStorageContext, int orderId)
+        public static async Task<OrderData?> GetOrder(DbStorage dbStorageContext, int orderId)
         {
             try
             {
-                var orderExists = dbStorageContext.Orders.Any(o => o.Id == orderId);
-                var order = dbStorageContext.Orders.FirstOrDefault(o => o.Id == orderId);
+                var orderExists = await dbStorageContext.Orders.AnyAsync(o => o.Id == orderId);
+                var order = await dbStorageContext.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
 
-                return orderExists ? OrderData.ToDTO(order) : null;
+                return orderExists ? OrderData.ToDTO(order!) : null;
             }
             catch
             {
@@ -65,12 +66,12 @@ namespace OrderProcessor.Service
             }
         }
 
-        public static bool DeleteOrder(DbStorage dbStorageContext, int orderId)
+        public static async Task<bool> DeleteOrder(DbStorage dbStorageContext, int orderId)
         {
             try
             {
-                var orderExists = dbStorageContext.Orders.Any(o => o.Id == orderId);
-                var order = dbStorageContext.Orders.FirstOrDefault(o => o.Id == orderId);
+                var orderExists = await dbStorageContext.Orders.AnyAsync(o => o.Id == orderId);
+                var order = await dbStorageContext.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
 
                 if (order == null)
                 {
@@ -78,7 +79,13 @@ namespace OrderProcessor.Service
                 }
 
                 var removeResult = dbStorageContext.Orders.Remove(order);
-                dbStorageContext.SaveChanges();
+
+                if (removeResult == null)
+                {
+                    return false;
+                }
+
+                await dbStorageContext.SaveChangesAsync();
 
                 return true;
             }
