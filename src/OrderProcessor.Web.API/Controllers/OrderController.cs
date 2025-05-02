@@ -1,13 +1,14 @@
-﻿using OrderProcessor.Service.DTO;
-using OrderProcessor.Service;
+﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using OrderProcessor.BO;
-using System.Threading.Tasks;
+using OrderProcessor.Service;
+using OrderProcessor.Service.DTO;
 
 namespace OrderProcessor.Web.API.Controllers
 {
     [ApiController]
     [Route("api")]
+    [EnableCors("AllowVueApp")]
     public class OrderController : ControllerBase
     {
         private readonly DbStorage _dbStorageContext;
