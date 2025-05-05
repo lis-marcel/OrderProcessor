@@ -1,7 +1,10 @@
 <template>
   <div class="all-orders-container">
-    <h1>All Orders</h1>
-    
+    <div class="header-actions">
+      <h1>All Orders</h1>
+      <router-link to="/create-order" class="create-order-btn">Create New Order</router-link>
+    </div>
+   
     <!-- Loading indicator -->
     <div v-if="loading" class="loading">
       <p>Loading orders...</p>
@@ -60,9 +63,6 @@ export default {
       
       try {
         const response = await axios.post('https://127.0.0.1:7092/api/orders', {
-          // Your request payload here
-          // page: 1,
-          // pageSize: 50
         });
         
         this.orders = response.data;
@@ -104,10 +104,8 @@ export default {
     getPaymentMethodText(methodCode) {
       // Map payment method codes to human-readable text
       const methods = {
-        0: 'Credit Card',
-        1: 'Bank Transfer',
-        2: 'Cash on Delivery',
-        3: 'PayPal'
+        1: 'Cash on Delivery',
+        2: 'Credit Card',
       };
       return methods[methodCode] || `Unknown (${methodCode})`;
     }
@@ -116,6 +114,27 @@ export default {
 </script>
 
 <style scoped>
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.create-order-btn {
+  background-color: #4CAF50;
+  color: white;
+  text-decoration: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.create-order-btn:hover {
+  background-color: #3d9c40;
+}
+
 .all-orders-container {
   padding: 1rem;
 }

@@ -36,11 +36,11 @@ namespace OrderProcessor.Web.API.Controllers
             }
             else
             {
-                return StatusCode(500, "An error occurred while creating the order.");
+                return StatusCode(500, "An error occurred while creating the orders.");
             }
         }
 
-        [HttpGet("order/{orderId}")]
+        [HttpGet("orders/{orderId}")]
         public IActionResult GetOrder(int orderId)
         {
             var order = OrderService.GetOrder(_dbStorageContext, orderId);
@@ -57,10 +57,10 @@ namespace OrderProcessor.Web.API.Controllers
         [HttpPost("orders")]
         public IActionResult GetOrders()
         {
-            var order = OrderService.GetOrders(_dbStorageContext);
-            if (order != null)
+            var orders = OrderService.GetOrders(_dbStorageContext);
+            if (orders != null)
             {
-                return Ok(order);
+                return Ok(orders);
             }
             else
             {

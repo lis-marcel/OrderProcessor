@@ -2,44 +2,116 @@
     <nav>
         <ul class="navbar">
             <li><router-link to="/">All orders</router-link></li>
-            <li><router-link to="/user-orders">User orders</router-link></li>
-            <li><router-link to="/user-account">Account</router-link></li>
+            <li v-if="isAuthenticated"><router-link to="/user-orders">User orders</router-link></li>
+            <li v-if="isAuthenticated"><router-link to="/user-account">Account</router-link></li>
+            <li class="auth-links">
+              <template v-if="isAuthenticated">
+                <span class="user-name">{{ userName }}</span>
+                <button @click="logout" class="logout-btn">Logout</button>
+              </template>
+              <template v-else>
+                <router-link to="/login" class="login-link">Login</router-link>
+                <router-link to="/register" class="register-link">Register</router-link>
+              </template>
+            </li>
         </ul>
     </nav>
 </template>
 
 <script>
+import authService from '../services/authService.js'
+
 export default {
-  name: 'NavbarComponent'
+  name: 'NavbarComponent',
+  data() {
+    return {
+      isAuthenticated: authService.isAuthenticated(),
+      userName: authService.getCurrentUser()?.name || 'User'
+    }
+  },
+  methods: {
+    logout() {
+      authService.logout()
+      this.isAuthenticated = false
+      this.$router.push('/login')
+    }
+  },
+  created() {
+    // Keep auth state updated
+    window.addEventListener('storage', () => {
+      this.isAuthenticated = authService.isAuthenticated()
+      this.userName = authService.getCurrentUser()?.name || 'User'
+    })
+  }
 }
 </script>
 
 <style>
 .navbar {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    background-color: #333;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  background-color: #333;
+  align-items: center;
 }
+
 .navbar li {
-    padding: 14px 20px;
+  padding: 14px 20px;
 }
+
 .navbar li a {
-    color: white;
-    text-decoration: none;
+  color: white;
+  text-decoration: none;
 }
+
 .navbar li a:hover {
-    background-color: #111;
+  background-color: #111;
 }
+
 .navbar li a.active {
-    background-color: #4CAF50;
-    color: white;
+  background-color: #4CAF50;
+  color: white;
 }
+
 .navbar li a:visited {
-    color: white;
+  color: white;
 }
+
 .navbar li a:focus {
-    outline: none;
+  outline: none;
+}
+
+.auth-links {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-name {
+  color: white;
+  margin-right: 10px;
+}
+
+.logout-btn {
+  background: #d9534f;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.login-link, .register-link {
+  color: white;
+  text-decoration: none;
+  margin-left: 10px;
+}
+
+.register-link {
+  background: #5cb85c;
+  padding: 8px 12px;
+  border-radius: 4px;
 }
 </style>
