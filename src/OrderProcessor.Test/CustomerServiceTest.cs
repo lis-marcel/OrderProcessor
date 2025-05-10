@@ -20,7 +20,7 @@
 //            Name = "TestCustomer1",
 //            CustomerType = CustomerType.Company,
 //        };
-//        private static readonly CustomerData customerData = new()
+//        private static readonly CustomerUtilities customerData = new()
 //        {
 //            Name = "TestCustomer2",
 //            CustomerType = CustomerType.Individual,
@@ -39,7 +39,7 @@
 //        //    try
 //        //    {
 //        //        // Act
-//        //        //CustomerService.CreateCustomer(dbContext);
+//        //        //CustomerService.RegisterCustomer(dbContext);
 //        //        dbContext.Customers.Add(customer);
 //        //        dbContext.SaveChanges();
 //        //        //var input = "Jan\n1\n";
@@ -155,7 +155,7 @@
 //                var retrievedCustomer = dbContext.Customers.First();
 
 //                // Implementation of EditCustomer method
-//                var updatedCustomerData = CustomerData.ToBO(customerData);
+//                var updatedCustomerData = CustomerUtilities.ToBO(customerData);
 //                retrievedCustomer = updatedCustomerData; 
 //                retrievedCustomer.Id = customer1.Id; // Ensure the ID remains the same
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OrderProcessor.BO.Entities;
 
 namespace OrderProcessor.BO
 {

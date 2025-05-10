@@ -1,7 +1,7 @@
 // src/services/authService.js
 import axios from 'axios'
 
-const API_URL = 'https://127.0.0.1:7092/api/auth/'
+const API_URL = 'https://127.0.0.1:7092/api/customer/'
 
 export default {
   async login(email, password) {

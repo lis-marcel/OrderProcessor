@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import authService from '../services/authService.js';
 
 export default {
   name: 'LoginView',
@@ -75,13 +75,7 @@ export default {
       this.loginError = null;
       
       try {
-        const response = await axios.post('https://127.0.0.1:7092/api/auth/login', this.loginData);
-        
-        // Store the JWT token
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        
-        // Redirect to home page
+        await authService.login(this.loginData.email, this.loginData.password);
         this.$router.push('/');
       } catch (error) {
         console.error('Login failed:', error);

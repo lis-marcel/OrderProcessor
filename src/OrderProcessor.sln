@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor.Console", "OrderProcessor.Console\OrderProcessor.Console.csproj", "{56F472AD-2276-41B4-AD0D-B068DA0072F9}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor.BO", "OrderProcessor.BO\OrderProcessor.BO.csproj", "{BA87ECD6-EF88-4219-8DA9-F7B44EFEC027}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor.Service", "OrderProcessor.Service\OrderProcessor.Service.csproj", "{B60D412D-41B3-4FED-83EA-57776EEF2CF0}"
@@ -21,10 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{56F472AD-2276-41B4-AD0D-B068DA0072F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{56F472AD-2276-41B4-AD0D-B068DA0072F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{56F472AD-2276-41B4-AD0D-B068DA0072F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{56F472AD-2276-41B4-AD0D-B068DA0072F9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BA87ECD6-EF88-4219-8DA9-F7B44EFEC027}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BA87ECD6-EF88-4219-8DA9-F7B44EFEC027}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA87ECD6-EF88-4219-8DA9-F7B44EFEC027}.Release|Any CPU.ActiveCfg = Release|Any CPU

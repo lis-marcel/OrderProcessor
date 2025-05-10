@@ -1,4 +1,4 @@
-﻿using OrderProcessor.BO;
+﻿using OrderProcessor.BO.Entities;
 using OrderProcessor.BO.OrderOptions;
 
 namespace OrderProcessor.Service.DTO

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using OrderProcessor.BO.OrderOptions;
 
-namespace OrderProcessor.BO
+namespace OrderProcessor.BO.Entities
 {
     public class Order
     {

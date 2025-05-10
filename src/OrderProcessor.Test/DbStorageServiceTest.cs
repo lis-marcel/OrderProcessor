@@ -3,6 +3,7 @@ using OrderProcessor.BO.OrderOptions;
 using OrderProcessor.Service.DTO;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
+using OrderProcessor.BO.Entities;
 
 namespace OrderProcessor.Service.Test
 {

@@ -12,12 +12,10 @@ namespace OrderProcessor.Web.API.Controllers
     public class OrderController : ControllerBase
     {
         private readonly DbStorage _dbStorageContext;
-        private readonly OrderService _orderService;
 
-        public OrderController(DbStorage dbStorageContext, OrderService orderService)
+        public OrderController(DbStorage dbStorageContext)
         {
             _dbStorageContext = dbStorageContext;
-            _orderService = orderService;
         }
 
         [HttpPost("create")]

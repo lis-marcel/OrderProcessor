@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OrderProcessor.BO;
 using OrderProcessor.Service.DTO;
-using System.Reflection.Metadata.Ecma335;
 
 namespace OrderProcessor.Service
 {
@@ -12,7 +11,7 @@ namespace OrderProcessor.Service
         {
             try
             {
-                var orderData = await OrderUtility.CreateOrderDetails(orderCreationData);
+                var orderData = OrderUtility.CreateOrderDetails(orderCreationData);
 
                 if (orderData == null)
                 {

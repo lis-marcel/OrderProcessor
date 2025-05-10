@@ -1,7 +1,5 @@
-﻿using OrderProcessor.BO;
-using OrderProcessor.BO.OrderOptions;
+﻿using OrderProcessor.BO.OrderOptions;
 using OrderProcessor.Service.DTO;
-using System.Reflection;
 
 namespace OrderProcessor.Service
 {
@@ -9,9 +7,9 @@ namespace OrderProcessor.Service
     {
         #region Public Methods
 
-        public static Task<OrderData?> CreateOrderDetails(OrderCreationData orderCreationData)
+        public static OrderData CreateOrderDetails(OrderCreationData orderCreationData)
         {
-            return Task.FromResult<OrderData?>(new()
+            return new()
             {
                 ProductName = orderCreationData.ProductName,
                 Value = orderCreationData.Value,
@@ -21,7 +19,7 @@ namespace OrderProcessor.Service
                 PaymentMethod = orderCreationData.PaymentMethod,
                 CreationTime = DateTime.Now,
                 Status = OrderStatus.New
-            });
+            };
         }
 
         #endregion
