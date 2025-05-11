@@ -21,7 +21,7 @@ namespace OrderProcessor.Web.API.Controllers
         [HttpPost("auth")]
         public async Task<IActionResult> RegisterCustomer([FromBody] CustomerRegistrationData customerRegistrationData)
         {
-            
+            throw new NotImplementedException("This method is not implemented yet.");
         }
     }
 }

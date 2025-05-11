@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using OrderProcessor.BO;
 using OrderProcessor.Service;
 using OrderProcessor.Service.DTO;
+using OrderProcessor.Web.API.ResponseModels;
 
 namespace OrderProcessor.Web.API.Controllers
 {
@@ -46,9 +47,15 @@ namespace OrderProcessor.Web.API.Controllers
 
             var result = await CustomerService.LoginCustomer(_dbStorageContext, customerLoginData);
 
-            if (result.HasValue)
+            if (result.Item1.HasValue && result.Item2 != null)
             {
-                return Ok(result);
+                LoginResponse loginResponse = new()
+                {
+                    SessionToken = result.Item1.Value,
+                    CustomerData = CustomerData.ToDTO(result.Item2)
+                };
+
+                return Ok(loginResponse);
             }
             else
             {

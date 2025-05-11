@@ -1,4 +1,5 @@
 ﻿using OrderProcessor.BO;
+using OrderProcessor.BO.Entities;
 using OrderProcessor.Service.DTO;
 namespace OrderProcessor.Service
 {
@@ -28,7 +29,7 @@ namespace OrderProcessor.Service
             }
         }
 
-        public static async Task<Guid?> LoginCustomer(DbStorage dbStorageContext, CustomerLoginData customerLoginData)
+        public static async Task<(Guid?, Customer?)> LoginCustomer(DbStorage dbStorageContext, CustomerLoginData customerLoginData)
         {
             try
             {
@@ -38,14 +39,14 @@ namespace OrderProcessor.Service
 
                 if (customer == null)
                 {
-                    return null;
+                    return (null, null);
                 }
 
                 var authResult = AuthService.AuthCustomer(dbStorageContext, customer);
 
                 if (!authResult.Item1)
                 {
-                    return null;
+                    return (null, null);
                 }
 
                 if (customer.LastLoginAt.AddDays(7) > DateTime.Now)
@@ -58,11 +59,11 @@ namespace OrderProcessor.Service
 
                 await dbStorageContext.SaveChangesAsync();
 
-                return authResult.Item2;
+                return (authResult.Item2, customer);
             }
             catch
             {
-                return null;
+                return (null, null);
             }
         }
 

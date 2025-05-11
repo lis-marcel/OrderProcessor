@@ -25,22 +25,35 @@ export default {
   name: 'NavbarComponent',
   data() {
     return {
-      isAuthenticated: authService.isAuthenticated(),
-      userName: authService.getCurrentUser()?.name || 'User'
+      isAuthenticated: false,
+      userName: 'User'
     }
   },
   methods: {
     logout() {
       authService.logout()
-      this.isAuthenticated = false
+      this.updateAuthState()
       this.$router.push('/login')
+    },
+    
+    updateAuthState() {
+      this.isAuthenticated = authService.isAuthenticated()
+      this.userName = authService.getCurrentUser()?.name || 'User'
     }
   },
   created() {
-    // Keep auth state updated
+    // Initialize auth state
+    this.updateAuthState()
+    
+    // Listen for route changes to update auth state
+    this.$router.beforeEach((to, from, next) => {
+      this.updateAuthState()
+      next()
+    })
+    
+    // Keep auth state updated across tabs
     window.addEventListener('storage', () => {
-      this.isAuthenticated = authService.isAuthenticated()
-      this.userName = authService.getCurrentUser()?.name || 'User'
+      this.updateAuthState()
     })
   }
 }
