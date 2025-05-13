@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using OrderProcessor.BO;
 using OrderProcessor.Service;
 using OrderProcessor.Service.DTO;
-using OrderProcessor.Web.API.ResponseModels;
+using OrderProcessor.Web.API.CommunicationModels;
 
 namespace OrderProcessor.Web.API.Controllers
 {
@@ -63,5 +63,72 @@ namespace OrderProcessor.Web.API.Controllers
             }
 
         }
+
+        [HttpPost("customer-orders")]
+        public async Task<IActionResult> CustomerOrders([FromBody] ProtectedRequest protectedRequest)
+        {
+            // Extract the Bearer token from the Authorization header
+            if (!Request.Headers.TryGetValue("Authorization", out var authHeader))
+            {
+                return BadRequest("Authorization header is missing.");
+            }
+
+            string authHeaderValue = authHeader.ToString();
+
+            // Check if it's a Bearer token
+            if (!authHeaderValue.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+            {
+                return BadRequest("Authorization header must start with 'Bearer '.");
+            }
+
+            // Extract the token part
+            string tokenString = authHeaderValue.Substring("Bearer ".Length).Trim();
+
+            // Parse the token to GUID
+            if (!Guid.TryParse(tokenString, out var sessionToken))
+            {
+                return BadRequest("Invalid session token format.");
+            }
+
+            if (protectedRequest == null)
+            {
+                return BadRequest("Customer login data is null.");
+            }
+
+            var result = AuthService.AuthCustomer(_dbStorageContext, sessionToken);
+
+            if (result.Item1 == null || result.Item2 == null)
+            {
+                return StatusCode(500, "An error occurred while loggin in the customer.");
+            }
+            else
+            {
+                var orders = await CustomerService.GetCustomerOrders(_dbStorageContext, protectedRequest.CustomerEmail!);
+
+                return Ok(orders);
+            }
+
+        }
+
+        [HttpPost("auth")]
+        public async Task<IActionResult> AuthCustomer([FromBody] Guid sessionToken)
+        {
+            if (sessionToken == Guid.Empty)
+            {
+                return BadRequest("Session token is null.");
+            }
+
+            var result = AuthService.AuthCustomer(_dbStorageContext, sessionToken);
+
+            if (result.Item1)
+            {
+                return Ok(result.Item2);
+            }
+            else
+            {
+                return StatusCode(500, "An error occurred while authenticating the customer.");
+            }
+        }
+
     }
 }

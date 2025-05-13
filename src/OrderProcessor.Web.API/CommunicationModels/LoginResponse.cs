@@ -1,6 +1,6 @@
 ﻿using OrderProcessor.Service.DTO;
 
-namespace OrderProcessor.Web.API.ResponseModels
+namespace OrderProcessor.Web.API.CommunicationModels
 {
     public class LoginResponse
     {

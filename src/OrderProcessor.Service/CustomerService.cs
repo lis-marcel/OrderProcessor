@@ -1,4 +1,5 @@
-﻿using OrderProcessor.BO;
+﻿using Microsoft.EntityFrameworkCore;
+using OrderProcessor.BO;
 using OrderProcessor.BO.Entities;
 using OrderProcessor.Service.DTO;
 namespace OrderProcessor.Service
@@ -66,6 +67,33 @@ namespace OrderProcessor.Service
                 return (null, null);
             }
         }
+
+        public static async Task<List<Order>> GetCustomerOrders(DbStorage dbStorageContext, string email)
+        {
+            try
+            {
+                var customer = dbStorageContext.Customers
+                    .Where(c => c.Email == email)
+                    .AsNoTracking()
+                    .FirstOrDefault();
+
+                if (customer == null)
+                {
+                    return new List<Order>();
+                }
+
+                var orders = dbStorageContext.Orders
+                    .Where(o => o.CustomerId == customer.Id)
+                    .ToList();
+
+                return orders;
+            }
+            catch
+            {
+                return new List<Order>();
+            }
+        }
+
 
     }
 }
