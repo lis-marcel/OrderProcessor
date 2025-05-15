@@ -4,7 +4,7 @@ namespace OrderProcessor.Service
 {
     public class CustomerUtility
     {
-        public static CustomerData CreateCustomerDetails(CustomerRegistrationData customerCreationData)
+        public static UserData CreateCustomerDetails(CustomerRegistrationData customerCreationData)
         {
             return new()
             {

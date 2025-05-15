@@ -20,7 +20,7 @@ namespace OrderProcessor.Service
                     return false;
                 }
 
-                await dbStorageContext.Customers.AddAsync(CustomerData.ToBO(customerData));
+                await dbStorageContext.Customers.AddAsync(UserData.ToBO(customerData));
                 await dbStorageContext.SaveChangesAsync();
 
                 return true;
@@ -31,7 +31,7 @@ namespace OrderProcessor.Service
             }
         }
 
-        public static async Task<(string?, Customer?)> LoginCustomer(
+        public static async Task<(string?, User?)> LoginCustomer(
             DbStorage dbStorageContext,
             CustomerLoginData customerLoginData,
             TokenService tokenService)
@@ -85,6 +85,28 @@ namespace OrderProcessor.Service
             catch
             {
                 return new List<Order>();
+            }
+        }
+
+        public static UserData? GetCustomerData(DbStorage dbStorageContext, string email)
+        {
+            try
+            {
+                var user = dbStorageContext.Customers
+                    .Where(c => c.Email == email)
+                    .AsNoTracking()
+                    .FirstOrDefault();
+
+                if (user == null)
+                {
+                    return null;
+                }
+
+                return UserData.ToDTO(user);
+            }
+            catch
+            {
+                return null;
             }
         }
 

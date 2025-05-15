@@ -5,6 +5,8 @@ using OrderProcessor.Service.Auth;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using OrderProcessor.BO.OrderOptions;
+using OrderProcessor.Web.API.Auth;
 
 namespace OrderProcessor.Web.API
 {
@@ -35,12 +37,12 @@ namespace OrderProcessor.Web.API
             });
 
             // Configure JWT authentication
-            builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+            builder.Services.Configure<Service.Auth.JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
             builder.Services.AddSingleton<TokenService>();
             builder.Services.AddScoped<AuthService>();
 
             // Add JWT authentication
-            var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
+            var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<Service.Auth.JwtSettings>();
             var key = Encoding.ASCII.GetBytes(jwtSettings!.SecretKey);
 
             builder.Services.AddAuthentication(options =>
@@ -64,6 +66,14 @@ namespace OrderProcessor.Web.API
                     ClockSkew = TimeSpan.Zero
                 };
             });
+
+            builder.Services.AddAuthorizationBuilder()
+                .AddPolicy(AuthPolicies.RequireAdministratorRole.ToString(), policy =>
+                    policy.RequireRole(AccountType.Administrator.ToString()))
+                .AddPolicy(AuthPolicies.RequireCustomerRole.ToString(), policy =>
+                    policy.RequireRole(AccountType.Customer.ToString()))
+                .AddPolicy(AuthPolicies.RequireAdminOrCustomerRole.ToString(), policy =>
+                    policy.RequireRole(AccountType.Administrator.ToString(), AccountType.Customer.ToString()));
 
             builder.Services.AddControllers();
 

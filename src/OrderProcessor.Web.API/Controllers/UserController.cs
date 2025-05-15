@@ -1,25 +1,22 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
+﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using OrderProcessor.BO;
 using OrderProcessor.Service;
 using OrderProcessor.Service.DTO;
 using OrderProcessor.Web.API.CommunicationModels;
-using System.Security.Claims;
 
 namespace OrderProcessor.Web.API.Controllers
 {
     [Route("api/customer")]
     [ApiController]
     [EnableCors("AllowVueApp")]
-    public class CustomerController : ControllerBase
+    public class UserController : ControllerBase
     {
         private readonly DbStorage _dbStorageContext;
         private readonly TokenService _tokenService;
         private readonly AuthService _authService;
 
-        public CustomerController(
+        public UserController(
             DbStorage dbStorageContext,
             TokenService tokenService,
             AuthService authService)
@@ -34,14 +31,14 @@ namespace OrderProcessor.Web.API.Controllers
         {
             if (customerRegistrationData == null)
             {
-                return BadRequest("Customer creation data is null.");
+                return BadRequest("User creation data is null.");
             }
 
             var result = await CustomerService.RegisterCustomer(_dbStorageContext, customerRegistrationData);
 
             if (result)
             {
-                return Ok("Customer created successfully.");
+                return Ok("User created successfully.");
             }
             else
             {
@@ -54,7 +51,7 @@ namespace OrderProcessor.Web.API.Controllers
         {
             if (customerLoginData == null)
             {
-                return BadRequest("Customer login data is null.");
+                return BadRequest("User login data is null.");
             }
 
             var result = await CustomerService.LoginCustomer(
@@ -67,7 +64,7 @@ namespace OrderProcessor.Web.API.Controllers
                 LoginResponse loginResponse = new()
                 {
                     Token = result.Item1,
-                    CustomerData = CustomerData.ToDTO(result.Item2)
+                    CustomerData = UserData.ToDTO(result.Item2)
                 };
 
                 return Ok(loginResponse);
@@ -77,30 +74,6 @@ namespace OrderProcessor.Web.API.Controllers
                 return StatusCode(500, "An error occurred while loggin in the customer.");
             }
 
-        }
-
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [HttpPost("customer-orders")]
-        public IActionResult CustomerOrders([FromBody] ProtectedRequest protectedRequest)
-        {
-            try
-            {
-                // Get user email from claims
-                var email = User.FindFirst(ClaimTypes.Name)?.Value;
-
-                if (string.IsNullOrEmpty(email))
-                {
-                    return Unauthorized();
-                }
-
-                var orders = CustomerService.GetCustomerOrders(_dbStorageContext, email);
-
-                return Ok(orders);
-            }
-            catch
-            {
-                return StatusCode(500, "An error occurred while retrieving customer orders.");
-            }
         }
 
     }

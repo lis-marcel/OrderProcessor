@@ -9,39 +9,41 @@ using System.Threading.Tasks;
 
 namespace OrderProcessor.Service.DTO
 {
-    public class CustomerData
+    public class UserData
     {
         public int Id { get; set; }
         public string? Name { get; set; }
         public string? Email { get; set; }
         public string? Password { get; set; }
         public DateTime LastLoginAt { get; set; }
-        public Guid SessionToken { get; set; }
         public CustomerType CustomerType { get; set; }
+        public AccountType AccountType { get; set; }
 
-        public static Customer ToBO(CustomerData customerData)
+        public static User ToBO(UserData customerData)
         {
-            return new Customer
+            return new User
             {
                 Id = customerData.Id,
                 Name = customerData.Name,
                 Email = customerData.Email,
                 Password = customerData.Password,
                 LastLoginAt = customerData.LastLoginAt,
-                CustomerType = customerData.CustomerType
+                CustomerType = customerData.CustomerType,
+                AccountType = customerData.AccountType,
             };
         }
 
-        public static CustomerData ToDTO(Customer customer)
+        public static UserData ToDTO(User customer)
         {
-            return new CustomerData
+            return new UserData
             {
                 Id = customer.Id,
                 Name = customer.Name,
                 Email = customer.Email,
                 Password = customer.Password,
                 LastLoginAt = customer.LastLoginAt,
-                CustomerType = customer.CustomerType
+                CustomerType = (CustomerType)customer.CustomerType!,
+                AccountType= customer.AccountType,
             };
         }
 

@@ -21,7 +21,7 @@ namespace OrderProcessor.Service.Test
             PaymentMethod = PaymentMethod.CreditCard,
             Status = OrderStatus.New
         };
-        private static readonly Customer exampleCustomer = new()
+        private static readonly User exampleCustomer = new()
         {
             Name = "TestCustomer",
             CustomerType = CustomerType.Company,
@@ -90,7 +90,7 @@ namespace OrderProcessor.Service.Test
                 dbContext.SaveChanges();
 
                 // Act
-                int highestId = DbStorageService.GetHighestId<Customer>(dbContext);
+                int highestId = DbStorageService.GetHighestId<User>(dbContext);
 
                 // Assert
                 Assert.Equal(1, highestId);
@@ -112,7 +112,7 @@ namespace OrderProcessor.Service.Test
             try
             {
                 // Act
-                int highestId = DbStorageService.GetHighestId<Customer>(dbContext);
+                int highestId = DbStorageService.GetHighestId<User>(dbContext);
 
                 // Assert
                 Assert.Equal(0, highestId);

@@ -1,23 +1,27 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using OrderProcessor.BO;
 using OrderProcessor.Service;
 using OrderProcessor.Service.DTO;
+using OrderProcessor.Web.API.Auth;
 
 namespace OrderProcessor.Web.API.Controllers
 {
     [ApiController]
-    [Route("api")]
+    [Route("api/orders")]
     [EnableCors("AllowVueApp")]
-    public class OrderController : ControllerBase
+    public class OrdersController : ControllerBase
     {
         private readonly DbStorage _dbStorageContext;
 
-        public OrderController(DbStorage dbStorageContext)
+        public OrdersController(DbStorage dbStorageContext)
         {
             _dbStorageContext = dbStorageContext;
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "RequireAdminOrCustomerRole")]
         [HttpPost("create")]
         public async Task<IActionResult> CreateOrder([FromBody] OrderCreationData orderCreationData)
         {
@@ -38,7 +42,8 @@ namespace OrderProcessor.Web.API.Controllers
             }
         }
 
-        [HttpGet("orders/{orderId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "RequireCustomerRole")]
+        [HttpGet("{orderId}")]
         public IActionResult GetOrder(int orderId)
         {
             var order = OrderService.GetOrder(_dbStorageContext, orderId);
@@ -52,7 +57,8 @@ namespace OrderProcessor.Web.API.Controllers
             }
         }
 
-        [HttpPost("orders")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "RequireAdministratorRole")]
+        [HttpPost("all-orders")]
         public IActionResult GetOrders()
         {
             var orders = OrderService.GetOrders(_dbStorageContext);
@@ -66,7 +72,8 @@ namespace OrderProcessor.Web.API.Controllers
             }
         }
 
-        [HttpGet("delete/{orderId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "RequireAdministratorRole")]
+        [HttpDelete("delete/{orderId}")]
         public async Task<IActionResult> DeleteOrder(int orderId)
         {
             var order = await OrderService.DeleteOrder(_dbStorageContext, orderId);

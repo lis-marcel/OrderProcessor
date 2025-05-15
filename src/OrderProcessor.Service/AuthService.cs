@@ -17,7 +17,7 @@ namespace OrderProcessor.Service
         }
 
         // This method is just a simplified example of how to authenticate a customer. 
-        public static (bool, Customer) AuthenticateCustomer(DbStorage dbStorage, string email, string password)
+        public static (bool, User) AuthenticateCustomer(DbStorage dbStorage, string email, string password)
         {
             try
             {
@@ -41,7 +41,7 @@ namespace OrderProcessor.Service
             }
         }
 
-        public (bool, Customer) ValidateToken(DbStorage dbStorage, string token)
+        public (bool, User) ValidateToken(DbStorage dbStorage, string token)
         {
             try
             {

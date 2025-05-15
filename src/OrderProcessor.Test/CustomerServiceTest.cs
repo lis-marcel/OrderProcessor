@@ -14,7 +14,7 @@
 //{
 //    public class CustomerServiceTest
 //    {
-//        private static readonly Customer customer1 = new()
+//        private static readonly User customer1 = new()
 //        {
 //            Id = 1,
 //            Name = "TestCustomer1",

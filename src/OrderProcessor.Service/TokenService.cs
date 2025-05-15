@@ -4,7 +4,9 @@ using OrderProcessor.BO.Entities;
 using OrderProcessor.Service.Auth;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using OrderProcessor.BO;
 using System.Text;
+using OrderProcessor.BO.OrderOptions;
 
 namespace OrderProcessor.Service
 {
@@ -17,17 +19,20 @@ namespace OrderProcessor.Service
             _jwtSettings = jwtSettings.Value;
         }
 
-        public string? GenerateJwtToken(Customer customer)
+        public string? GenerateJwtToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSettings.SecretKey);
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, customer.Email ?? string.Empty),
-                new Claim(ClaimTypes.NameIdentifier, customer.Id.ToString()),
-                new Claim("CustomerType", ((int)customer.CustomerType).ToString())
-            };
+                new Claim(ClaimTypes.Name, user.Email ?? string.Empty),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Role, user.AccountType.ToString()),
+                user.CustomerType.HasValue
+                    ? new Claim("CustomerType", ((int)user.CustomerType).ToString())
+                    : null
+            }.Where(c => c != null).ToList();
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {

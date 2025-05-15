@@ -155,11 +155,11 @@ export default {
     
     getStatusText(statusCode) {
       const statuses = {
-        0: 'New',
-        1: 'Processing',
-        2: 'Shipped',
-        3: 'Delivered',
-        4: 'Canceled'
+        1: 'New',
+        2: 'Processing',
+        3: 'Shipped',
+        4: 'Delivered',
+        5: 'Canceled'
       };
       return statuses[statusCode] || `Unknown (${statusCode})`;
     },
