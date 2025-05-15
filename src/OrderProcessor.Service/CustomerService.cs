@@ -2,6 +2,7 @@
 using OrderProcessor.BO;
 using OrderProcessor.BO.Entities;
 using OrderProcessor.Service.DTO;
+
 namespace OrderProcessor.Service
 {
     public class CustomerService
@@ -30,37 +31,30 @@ namespace OrderProcessor.Service
             }
         }
 
-        public static async Task<(Guid?, Customer?)> LoginCustomer(DbStorage dbStorageContext, CustomerLoginData customerLoginData)
+        public static async Task<(string?, Customer?)> LoginCustomer(
+            DbStorage dbStorageContext,
+            CustomerLoginData customerLoginData,
+            TokenService tokenService)
         {
             try
             {
-                var customer = dbStorageContext.Customers
-                    .Where(c => c.Email == customerLoginData.Email)
-                    .FirstOrDefault();
+                var (isAuthenticated, customer) = AuthService.AuthenticateCustomer(
+                    dbStorageContext,
+                    customerLoginData.Email!,
+                    customerLoginData.Password!);
 
-                if (customer == null)
+                if (!isAuthenticated || customer == null)
                 {
                     return (null, null);
                 }
 
-                var authResult = AuthService.AuthCustomer(dbStorageContext, customer);
+                // Generate JWT token
+                var token = tokenService.GenerateJwtToken(customer);
 
-                if (!authResult.Item1)
-                {
-                    return (null, null);
-                }
-
-                if (customer.LastLoginAt.AddDays(7) > DateTime.Now)
-                {
-                    
-                }
-
-                customer.SessionToken = authResult.Item2;
                 customer.LastLoginAt = DateTime.Now;
-
                 await dbStorageContext.SaveChangesAsync();
 
-                return (authResult.Item2, customer);
+                return (token, customer);
             }
             catch
             {
@@ -68,7 +62,7 @@ namespace OrderProcessor.Service
             }
         }
 
-        public static async Task<List<Order>> GetCustomerOrders(DbStorage dbStorageContext, string email)
+        public static List<Order> GetCustomerOrders(DbStorage dbStorageContext, string email)
         {
             try
             {

@@ -22,7 +22,6 @@ namespace OrderProcessor.BO.Entities
         public string? Password { get; set; }
 
         public DateTime LastLoginAt { get; set; }
-        public Guid SessionToken { get; set; }
         public CustomerType CustomerType { get; set; }
     }
 }

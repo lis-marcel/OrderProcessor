@@ -1,62 +1,75 @@
-﻿using OrderProcessor.BO;
+﻿// OrderProcessor.Service/AuthService.cs
+using Microsoft.Extensions.Options;
+using OrderProcessor.BO;
 using OrderProcessor.BO.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OrderProcessor.Service.Auth;
+using System.Security.Claims;
 
 namespace OrderProcessor.Service
 {
     public class AuthService
     {
-        public AuthService() { }
+        private readonly TokenService _tokenService;
+
+        public AuthService(TokenService tokenService)
+        {
+            _tokenService = tokenService;
+        }
 
         // This method is just a simplified example of how to authenticate a customer. 
-        // Will be replaced with a more secure implementation in the future.
-        public static (bool, Guid) AuthCustomer(DbStorage dbStorage, Customer customer)
+        public static (bool, Customer) AuthenticateCustomer(DbStorage dbStorage, string email, string password)
         {
             try
             {
                 var existingCustomer = dbStorage.Customers
-                    .Where(c => c.Email == customer.Email && c.Password == customer.Password)
+                    .Where(c => c.Email == email && c.Password == password)
                     .FirstOrDefault();
 
                 if (existingCustomer == null)
                 {
-                    return (false, Guid.Empty);
+                    return (false, null);
                 }
 
-                return (true, Guid.NewGuid());
+                existingCustomer.LastLoginAt = DateTime.Now;
+                dbStorage.SaveChanges();
+
+                return (true, existingCustomer);
             }
             catch
             {
-                return (false, Guid.Empty);
+                return (false, null);
             }
         }
 
-        public static (bool, Guid) AuthCustomer(DbStorage dbStorage, Guid guid)
+        public (bool, Customer) ValidateToken(DbStorage dbStorage, string token)
         {
             try
             {
-                var customerSession = dbStorage.Customers
-                    .Where(c => c.SessionToken == guid)
-                    .FirstOrDefault();
-
-                if (customerSession == null)
+                var claims = _tokenService.ValidateToken(token);
+                if (claims == null)
                 {
-                    return (false, Guid.Empty);
+                    return (false, null);
                 }
 
-                customerSession.LastLoginAt = DateTime.Now;
+                var emailClaim = claims.FindFirst(ClaimTypes.Name)?.Value;
+                if (string.IsNullOrEmpty(emailClaim))
+                {
+                    return (false, null);
+                }
 
-                dbStorage.SaveChanges();
+                var customer = dbStorage.Customers
+                    .FirstOrDefault(c => c.Email == emailClaim);
 
-                return (true, customerSession.SessionToken);
+                if (customer == null)
+                {
+                    return (false, null);
+                }
+
+                return (true, customer);
             }
             catch
             {
-                return (false, Guid.Empty);
+                return (false, null);
             }
         }
     }

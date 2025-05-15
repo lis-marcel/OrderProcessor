@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using OrderProcessor.BO;
 using OrderProcessor.Service;
 using OrderProcessor.Service.DTO;
 using OrderProcessor.Web.API.CommunicationModels;
+using System.Security.Claims;
 
 namespace OrderProcessor.Web.API.Controllers
 {
@@ -13,10 +16,17 @@ namespace OrderProcessor.Web.API.Controllers
     public class CustomerController : ControllerBase
     {
         private readonly DbStorage _dbStorageContext;
+        private readonly TokenService _tokenService;
+        private readonly AuthService _authService;
 
-        public CustomerController(DbStorage dbStorageContext)
+        public CustomerController(
+            DbStorage dbStorageContext,
+            TokenService tokenService,
+            AuthService authService)
         {
             _dbStorageContext = dbStorageContext;
+            _tokenService = tokenService;
+            _authService = authService;
         }
 
         [HttpPost("register")]
@@ -26,7 +36,9 @@ namespace OrderProcessor.Web.API.Controllers
             {
                 return BadRequest("Customer creation data is null.");
             }
+
             var result = await CustomerService.RegisterCustomer(_dbStorageContext, customerRegistrationData);
+
             if (result)
             {
                 return Ok("Customer created successfully.");
@@ -45,13 +57,16 @@ namespace OrderProcessor.Web.API.Controllers
                 return BadRequest("Customer login data is null.");
             }
 
-            var result = await CustomerService.LoginCustomer(_dbStorageContext, customerLoginData);
+            var result = await CustomerService.LoginCustomer(
+                _dbStorageContext,
+                customerLoginData,
+                _tokenService);
 
-            if (result.Item1.HasValue && result.Item2 != null)
+            if (!string.IsNullOrEmpty(result.Item1) && result.Item2 != null)
             {
                 LoginResponse loginResponse = new()
                 {
-                    SessionToken = result.Item1.Value,
+                    Token = result.Item1,
                     CustomerData = CustomerData.ToDTO(result.Item2)
                 };
 
@@ -64,69 +79,27 @@ namespace OrderProcessor.Web.API.Controllers
 
         }
 
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("customer-orders")]
-        public async Task<IActionResult> CustomerOrders([FromBody] ProtectedRequest protectedRequest)
+        public IActionResult CustomerOrders([FromBody] ProtectedRequest protectedRequest)
         {
-            // Extract the Bearer token from the Authorization header
-            if (!Request.Headers.TryGetValue("Authorization", out var authHeader))
+            try
             {
-                return BadRequest("Authorization header is missing.");
-            }
+                // Get user email from claims
+                var email = User.FindFirst(ClaimTypes.Name)?.Value;
 
-            string authHeaderValue = authHeader.ToString();
+                if (string.IsNullOrEmpty(email))
+                {
+                    return Unauthorized();
+                }
 
-            // Check if it's a Bearer token
-            if (!authHeaderValue.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
-            {
-                return BadRequest("Authorization header must start with 'Bearer '.");
-            }
-
-            // Extract the token part
-            string tokenString = authHeaderValue.Substring("Bearer ".Length).Trim();
-
-            // Parse the token to GUID
-            if (!Guid.TryParse(tokenString, out var sessionToken))
-            {
-                return BadRequest("Invalid session token format.");
-            }
-
-            if (protectedRequest == null)
-            {
-                return BadRequest("Customer login data is null.");
-            }
-
-            var result = AuthService.AuthCustomer(_dbStorageContext, sessionToken);
-
-            if (result.Item1 == null || result.Item2 == null)
-            {
-                return StatusCode(500, "An error occurred while loggin in the customer.");
-            }
-            else
-            {
-                var orders = await CustomerService.GetCustomerOrders(_dbStorageContext, protectedRequest.CustomerEmail!);
+                var orders = CustomerService.GetCustomerOrders(_dbStorageContext, email);
 
                 return Ok(orders);
             }
-
-        }
-
-        [HttpPost("auth")]
-        public async Task<IActionResult> AuthCustomer([FromBody] Guid sessionToken)
-        {
-            if (sessionToken == Guid.Empty)
+            catch
             {
-                return BadRequest("Session token is null.");
-            }
-
-            var result = AuthService.AuthCustomer(_dbStorageContext, sessionToken);
-
-            if (result.Item1)
-            {
-                return Ok(result.Item2);
-            }
-            else
-            {
-                return StatusCode(500, "An error occurred while authenticating the customer.");
+                return StatusCode(500, "An error occurred while retrieving customer orders.");
             }
         }
 
