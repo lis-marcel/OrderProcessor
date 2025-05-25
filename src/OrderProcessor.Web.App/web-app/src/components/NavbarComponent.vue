@@ -1,7 +1,7 @@
 <template>
     <nav>
         <ul class="navbar">
-            <li><router-link to="/">All orders</router-link></li>
+            <li v-if="isAuthenticated"><router-link to="/all-orders">All orders</router-link></li>
             <li v-if="isAuthenticated"><router-link to="/user-orders">User orders</router-link></li>
             <li v-if="isAuthenticated"><router-link to="/user-account">Account</router-link></li>
             <li class="auth-links">
@@ -46,15 +46,20 @@ export default {
     this.updateAuthState()
     
     // Listen for route changes to update auth state
-    this.$router.beforeEach((to, from, next) => {
-      this.updateAuthState()
-      next()
-    })
+    this.$watch(
+      () => this.$route,
+      () => this.updateAuthState(),
+      { immediate: true }
+    )
     
     // Keep auth state updated across tabs
     window.addEventListener('storage', () => {
       this.updateAuthState()
     })
+  },
+  beforeUnmount() {
+    // Clean up event listeners
+    window.removeEventListener('storage', this.updateAuthState)
   }
 }
 </script>

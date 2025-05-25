@@ -37,5 +37,29 @@ export default {
   
   isAuthenticated() {
     return !!localStorage.getItem('token')
+  },
+
+  getUserRole() {
+    const user = this.getCurrentUser()
+    return user ? user.role || '1' : null
+  },
+  
+  isAdmin() {
+    return this.getUserRole() === '2'
+  },
+  
+  isCustomer() {
+    return this.getUserRole() === '1'
+  },
+  
+  hasAccess(requiredRole) {
+    const userRole = this.getUserRole()
+    if (!userRole) return false
+    
+    // Admin has access to everything
+    if (userRole === '2') return true
+    
+    // Otherwise, check role match
+    return userRole === requiredRole
   }
 }
