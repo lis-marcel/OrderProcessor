@@ -9,14 +9,14 @@ using System.Security.Claims;
 
 namespace OrderProcessor.Web.API.Controllers
 {
-    [Route("api/customer")]
+    [Route("api/user")]
     [ApiController]
     [EnableCors("AllowVueApp")]
-    public class CustomersController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly DbStorage _dbStorageContext;
 
-        public CustomersController(DbStorage dbStorageContext)
+        public UsersController(DbStorage dbStorageContext)
         {
             _dbStorageContext = dbStorageContext;
         }

@@ -31,17 +31,52 @@ export default {
     localStorage.removeItem('user')
   },
   
-  getCurrentUser() {
-    return JSON.parse(localStorage.getItem('user'))
-  },
-  
+  // Add or update these methods in your authService
+
   isAuthenticated() {
-    return !!localStorage.getItem('token')
+    const token = localStorage.getItem('token');
+    if (!token) return false;
+    
+    // Optional: Add token expiration check if your tokens include exp
+    try {
+      // Get expiration if using JWT
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const payload = JSON.parse(window.atob(base64));
+      
+      if (payload.exp) {
+        return payload.exp * 1000 > Date.now();
+      }
+      
+      return true;
+    } catch (e) {
+      console.error('Error checking token:', e);
+      return true; // Assume valid if can't parse
+    }
+  },
+
+  getCurrentUser() {
+    try {
+      const userData = localStorage.getItem('user');
+      if (!userData) return null;
+      
+      const user = JSON.parse(userData);
+      // Ensure role is always a string
+      if (user && user.role !== undefined) {
+        user.role = String(user.role);
+      }
+      return user;
+    } catch (e) {
+      console.error('Error getting current user:', e);
+      return null;
+    }
   },
 
   getUserRole() {
     const user = this.getCurrentUser()
-    return user ? user.role || '1' : null
+    if (!user) return null
+    // Always ensure we return a string
+    return String(user.role || '1')
   },
   
   isAdmin() {

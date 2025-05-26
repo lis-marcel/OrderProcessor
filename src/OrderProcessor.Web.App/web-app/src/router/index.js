@@ -12,32 +12,32 @@ const routes = [
     path: '/',
     redirect: () => {
       const userData = authService.getCurrentUser() || {}
-      return userData.role === '2' ? '/all-orders' : '/user-orders'
+      return userData.role === '2' ? '/all-orders' : '/user-account'
     }
   },
   {
     path: '/all-orders',
     name: 'all-orders',
     component: AllOrdersView,
-    meta: { requiresAuth: true, role: '2' }
+    meta: { requiresAuth: true, role: '2' } // Admin only
   },
   {
     path: '/user-orders',
     name: 'user-orders',
     component: UserOrdersView,
-    meta: { requiresAuth: true, roles: ['1', '2'] }  // Allow both users and admins
+    meta: { requiresAuth: true, roles: ['1', '2'] } // Both users and admins
   },
   {
     path: '/user-account',
     name: 'user-account',
     component: UserAccountView,
-    meta: { requiresAuth: true } // Everyone can access their account
+    meta: { requiresAuth: true } // All authenticated users
   },
   {
     path: '/create-order',
     name: 'create-order',
     component: CreateOrderView,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true } // All authenticated users
   },
   {
     path: '/login',
@@ -59,65 +59,44 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const isAuthenticated = authService.isAuthenticated()
   const userData = authService.getCurrentUser() || {}
-  
-  // Enhanced debugging
-  console.log('Navigating to:', to.path)
-  console.log('From:', from.path)
-  console.log('User data:', userData)
-  console.log('User role (type):', typeof userData.role, userData.role)
+  const userRole = String(userData.role || '1')
+  const isAdmin = userRole === '2'
   
   // Case 1: Not authenticated trying to access protected route
   if (to.matched.some(record => record.meta.requiresAuth) && !isAuthenticated) {
-    console.log('Not authenticated, redirecting to login')
     next({ path: '/login' })
     return
   } 
   
   // Case 2: Authenticated user trying to access login/register
   if ((to.path === '/login' || to.path === '/register') && isAuthenticated) {
-    console.log('Already authenticated, redirecting to appropriate page')
-    const redirectPath = userData.role === '2' ? '/all-orders' : '/user-orders'
+    const redirectPath = isAdmin ? '/all-orders' : '/user-account'
     next({ path: redirectPath })
     return
   } 
   
-  // Case 3: Check role-based access
+  // Case 3: Check role-based access for authenticated users
   if (to.meta.requiresAuth && isAuthenticated) {
     // Admin can access everything
-    if (userData.role === '2') {
-      console.log('Admin access granted')
+    if (isAdmin) {
       next()
       return
     }
     
-    // Check specific role requirement
-    if (to.meta.role && userData.role !== to.meta.role) {
-      console.log('Access denied - incorrect role')
-      // Prevent redirect loop - don't redirect if already on user-orders
-      if (to.path !== '/user-orders') {
-        next({ path: '/user-orders' })
-      } else {
-        next() // Allow access to avoid loop
-      }
+    // Check for single role requirement
+    if (to.meta.role && to.meta.role !== userRole) {
+      next({ path: '/user-account' }) // Redirect regular users to their orders
       return
     }
     
-    // Check multiple roles requirement
+    // Check for multiple roles requirement
     if (to.meta.roles && Array.isArray(to.meta.roles) && 
-        !to.meta.roles.includes(String(userData.role))) {
-      console.log('Access denied - role not in allowed roles')
-      // Prevent redirect loop - don't redirect if already on user-orders
-      if (to.path !== '/user-orders') {
-        next({ path: '/user-orders' })
-      } else {
-        next() // Allow access to avoid loop
-      }
+        !to.meta.roles.includes(userRole)) {
+      next({ path: '/user-account' })
       return
     }
-  
-    // If no specific role requirements or role checks passed,
-    // allow access to authenticated user
-    console.log('Authenticated access granted')
+    
+    // If no specific role requirements or role checks passed, allow access
     next()
     return
   }

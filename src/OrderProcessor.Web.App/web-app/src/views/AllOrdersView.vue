@@ -43,6 +43,7 @@
 
 <script>
 import axios from 'axios';
+import authService from '../services/authService.js';
 
 export default {
   name: 'AllOrdersView',
@@ -50,64 +51,56 @@ export default {
     return {
       orders: [],
       loading: true,
-      error: null
+      error: null,
+      userData: null
     };
   },
   created() {
-    this.fetchOrders();
+  // Explicitly get user data on component creation
+  this.userData = authService.getCurrentUser();
+    
+    // Check if user is admin
+    if (!authService.isAdmin()) {
+      // If not admin, redirect to user orders
+      this.$router.push('/user-orders');
+      return;
+    }
+    
+    // If admin, fetch orders
+    this.fetchAllOrders();
   },
   methods: {
-    async fetchOrders() {
+    async fetchAllOrders() {
       this.loading = true;
       this.error = null;
       
       try {
-        const response = await axios.post('https://127.0.0.1:7092/api/orders', {
+        // Get fresh token
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+          throw new Error('Authentication token not found');
+        }
+        
+        // Make API request with admin token
+        const response = await axios.get('https://127.0.0.1:7092/api/orders/all-orders', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
         });
         
         this.orders = response.data;
-      } catch (error) {
-        console.error('Error fetching orders:', error);
-        this.error = error.message || 'Failed to load orders';
+      } catch (err) {
+        console.error('Error fetching all orders:', err);
+        this.error = err.message || 'Failed to load orders. Please try again.';
+        
+        // Check for auth-related errors
+        if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+          this.error = 'Authentication error. Please log out and log in again.';
+        }
       } finally {
         this.loading = false;
       }
-    },
-    formatCurrency(value) {
-      return new Intl.NumberFormat('pl-PL', { 
-        style: 'currency', 
-        currency: 'PLN' 
-      }).format(value);
-    },
-    formatDate(dateString) {
-      if (!dateString) return 'N/A';
-      const date = new Date(dateString);
-      return new Intl.DateTimeFormat('pl-PL', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      }).format(date);
-    },
-    getStatusText(statusCode) {
-      // Map status codes to human-readable text
-      const statuses = {
-        0: 'New',
-        1: 'Processing',
-        2: 'Shipped',
-        3: 'Delivered',
-        4: 'Canceled'
-      };
-      return statuses[statusCode] || `Unknown (${statusCode})`;
-    },
-    getPaymentMethodText(methodCode) {
-      // Map payment method codes to human-readable text
-      const methods = {
-        1: 'Cash on Delivery',
-        2: 'Credit Card',
-      };
-      return methods[methodCode] || `Unknown (${methodCode})`;
     }
   }
 };

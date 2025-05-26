@@ -10,13 +10,13 @@ namespace OrderProcessor.Web.API.Controllers
     [Route("api/customer")]
     [ApiController]
     [EnableCors("AllowVueApp")]
-    public class UserController : ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly DbStorage _dbStorageContext;
         private readonly TokenService _tokenService;
         private readonly AuthService _authService;
 
-        public UserController(
+        public AuthController(
             DbStorage dbStorageContext,
             TokenService tokenService,
             AuthService authService)
