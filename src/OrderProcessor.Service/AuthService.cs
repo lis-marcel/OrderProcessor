@@ -30,49 +30,49 @@ namespace OrderProcessor.Service
 
                 if (existingCustomer == null)
                 {
-                    return OperationResult.Failed();
+                    return OperationResult.Failed("Invalid email or password.");
                 }
 
                 existingCustomer.LastLoginAt = DateTime.Now;
                 _dbContext.SaveChanges();
 
-                return OperationResult.Succeeded("User found.", existingCustomer);
+                return OperationResult.Succeeded("User authenticated successfully.", existingCustomer);
             }
             catch (Exception ex)
             {
-                return OperationResult.Failed($"Error occured during authenticationg the customer: {ex.Message}");
+                return OperationResult.Failed($"Error occurred during authenticating the customer: {ex.Message}");
             }
         }
 
-        public (bool, User) ValidateToken(DbStorage dbStorage, string token)
+        public OperationResult ValidateToken(string token)
         {
             try
             {
                 var claims = _tokenService.ValidateToken(token);
                 if (claims == null)
                 {
-                    return (false, null);
+                    return OperationResult.Failed("Invalid token.");
                 }
 
                 var emailClaim = claims.FindFirst(ClaimTypes.Name)?.Value;
                 if (string.IsNullOrEmpty(emailClaim))
                 {
-                    return (false, null);
+                    return OperationResult.Failed("Token does not contain valid email claim.");
                 }
 
-                var customer = dbStorage.Customers
+                var customer = _dbContext.Customers
                     .FirstOrDefault(c => c.Email == emailClaim);
 
                 if (customer == null)
                 {
-                    return (false, null);
+                    return OperationResult.Failed("Customer not found for the provided token.");
                 }
 
-                return (true, customer);
+                return OperationResult.Succeeded("Token validated successfully.", customer);
             }
-            catch
+            catch (Exception ex)
             {
-                return (false, null);
+                return OperationResult.Failed($"Error occurred during token validation: {ex.Message}");
             }
         }
     }
