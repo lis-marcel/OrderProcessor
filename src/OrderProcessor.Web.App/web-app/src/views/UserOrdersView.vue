@@ -111,25 +111,9 @@ export default {
           this.loading = false;
           return;
         }
-        
-        const customerEmail = userData.email;
-        console.log('Fetching orders for:', customerEmail);
-        
-        // Get authentication token
+      
         const token = localStorage.getItem('token');
-        console.log('Using token:', token ? 'Token exists' : 'No token');
-        
-        // Debug: Check token payload (don't do this in production!)
-        if (token) {
-          try {
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            console.log('Token payload:', payload);
-            console.log('Token expires at:', new Date(payload.exp * 1000));
-          } catch (e) {
-            console.error('Invalid token format:', e);
-          }
-        }
-        
+             
         const response = await axios.post(`${API_ORDERS_URL}customer-orders`, 
           {},
           {

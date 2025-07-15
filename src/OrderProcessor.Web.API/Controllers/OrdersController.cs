@@ -20,7 +20,7 @@ namespace OrderProcessor.Web.API.Controllers
             _dbStorageContext = dbStorageContext;
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "RequireAdminOrCustomerRole")]
+        [Authorize]
         [HttpPost("create")]
         public async Task<IActionResult> CreateOrder([FromBody] OrderCreationDto orderCreationData)
         {
@@ -41,7 +41,7 @@ namespace OrderProcessor.Web.API.Controllers
             }
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "RequireCustomerRole")]
+        [Authorize]
         [HttpGet("{orderId}")]
         public async Task<IActionResult> GetOrder(int orderId)
         {
