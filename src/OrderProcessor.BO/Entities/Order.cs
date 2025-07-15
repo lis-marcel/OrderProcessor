@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using OrderProcessor.BO.OrderOptions;
+﻿using OrderProcessor.BO.OrderOptions;
 
 namespace OrderProcessor.BO.Entities
 {

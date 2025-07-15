@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor.Service", "O
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor.Service.Test", "OrderProcessor.Test\OrderProcessor.Service.Test.csproj", "{FE010DE5-C3D0-4D08-9E93-C7F250E16337}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor.CommonLibraries", "..\lib\OrderProcessor.CommonLibraries\OrderProcessor.CommonLibraries.csproj", "{6876451E-DE2C-4653-BB37-31E1E845284B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor.Common", "..\lib\OrderProcessor.CommonLibraries\OrderProcessor.Common.csproj", "{6876451E-DE2C-4653-BB37-31E1E845284B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderProcessor.Web.API", "OrderProcessor.Web.API\OrderProcessor.Web.API.csproj", "{7D4951AC-4F33-457D-A508-9E5196E5BA2C}"
 EndProject

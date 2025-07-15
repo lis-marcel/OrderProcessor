@@ -116,7 +116,7 @@ export default {
         const token = localStorage.getItem('token');
         
         // Make API request with customer ID
-        const response = await axios.post('https://127.0.0.1:7092/api/customer/my-orders', 
+        const response = await axios.post('https://127.0.0.1:7092/api/customer/customer-orders', 
           { customerEmail },
           {
             headers: {

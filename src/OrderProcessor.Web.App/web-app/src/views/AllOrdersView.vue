@@ -56,51 +56,97 @@ export default {
     };
   },
   created() {
-  // Explicitly get user data on component creation
-  this.userData = authService.getCurrentUser();
+    // Debug user role
+    const userData = authService.getCurrentUser();
+    console.log('AllOrdersView created:', {
+      userData: userData ? {
+        accountType: userData.accountType
+      } : null,
+      isAdmin: authService.isAdmin()
+    });
     
-    // Check if user is admin
+    // Check if admin
     if (!authService.isAdmin()) {
-      // If not admin, redirect to user orders
+      console.log('Non-admin accessing AllOrdersView, redirecting');
       this.$router.push('/user-orders');
       return;
     }
     
-    // If admin, fetch orders
+    // Admin can proceed to fetch all orders
     this.fetchAllOrders();
   },
   methods: {
+    // Fix: Wrap fetchAllOrders within methods object
     async fetchAllOrders() {
       this.loading = true;
       this.error = null;
       
       try {
-        // Get fresh token
         const token = localStorage.getItem('token');
+        console.log('Fetching orders with token:', token ? 'Token exists' : 'No token');
         
         if (!token) {
           throw new Error('Authentication token not found');
         }
         
-        // Make API request with admin token
+        console.log('Making API request to fetch all orders');
+        
         const response = await axios.get('https://127.0.0.1:7092/api/orders/all-orders', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
         });
         
+        console.log('Orders API response:', response.data);
         this.orders = response.data;
       } catch (err) {
         console.error('Error fetching all orders:', err);
         this.error = err.message || 'Failed to load orders. Please try again.';
-        
-        // Check for auth-related errors
-        if (err.response && (err.response.status === 401 || err.response.status === 403)) {
-          this.error = 'Authentication error. Please log out and log in again.';
-        }
       } finally {
         this.loading = false;
       }
+    },
+    
+    // Add missing utility methods used in the template
+    formatCurrency(value) {
+      if (value == null) return '-';
+      return new Intl.NumberFormat('en-US', { 
+        style: 'currency', 
+        currency: 'USD'
+      }).format(value);
+    },
+    
+    formatDate(dateString) {
+      if (!dateString) return '-';
+      const date = new Date(dateString);
+      return new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }).format(date);
+    },
+    
+    getStatusText(status) {
+      const statusMap = {
+        0: 'New',
+        1: 'Processing',
+        2: 'Shipped',
+        3: 'Delivered',
+        4: 'Canceled'
+      };
+      return statusMap[status] || 'Unknown';
+    },
+    
+    getPaymentMethodText(method) {
+      const methodMap = {
+        0: 'Credit Card',
+        1: 'PayPal',
+        2: 'Bank Transfer',
+        3: 'Cash on Delivery'
+      };
+      return methodMap[method] || 'Unknown';
     }
   }
 };

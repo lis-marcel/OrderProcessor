@@ -155,7 +155,7 @@
 //                var retrievedCustomer = dbContext.Customers.First();
 
 //                // Implementation of EditCustomer method
-//                var updatedCustomerData = CustomerUtilities.ToBO(customerData);
+//                var updatedCustomerData = CustomerUtilities.ToBo(customerData);
 //                retrievedCustomer = updatedCustomerData; 
 //                retrievedCustomer.Id = customer1.Id; // Ensure the ID remains the same
 

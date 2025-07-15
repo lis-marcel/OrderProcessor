@@ -3,7 +3,7 @@ using OrderProcessor.BO.OrderOptions;
 
 namespace OrderProcessor.Service.DTO
 {
-    public class OrderData
+    public class OrderDto
     {
         public int Id { get; set; }
         public double Value { get; set; }
@@ -17,7 +17,7 @@ namespace OrderProcessor.Service.DTO
         public PaymentMethod PaymentMethod { get; set; }
 
         #region Public Methods
-        public static Order ToBO(OrderData order)
+        public static Order ToBo(OrderDto order)
         {
             return new Order
             {
@@ -34,9 +34,9 @@ namespace OrderProcessor.Service.DTO
             };
         }
 
-        public static OrderData ToDTO(Order order)
+        public static OrderDto ToDto(Order order)
         {
-            return new OrderData
+            return new OrderDto
             {
                 Id = order.Id,
                 Value = order.Value,

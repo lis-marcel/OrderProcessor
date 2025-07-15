@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OrderProcessor.Service.DTO
 {
-    public class CustomerRegistrationData
+    public class CustomerRegistrationDto
     {
         public string? Name { get; set; }
         public string? Email { get; set; }

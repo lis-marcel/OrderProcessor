@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OrderProcessor.Service.DTO
 {
-    public class UserData
+    public class UserDto
     {
         public int Id { get; set; }
         public string? Name { get; set; }
@@ -19,7 +19,7 @@ namespace OrderProcessor.Service.DTO
         public CustomerType CustomerType { get; set; }
         public AccountType AccountType { get; set; }
 
-        public static User ToBO(UserData customerData)
+        public static User ToBo(UserDto customerData)
         {
             return new User
             {
@@ -33,9 +33,9 @@ namespace OrderProcessor.Service.DTO
             };
         }
 
-        public static UserData ToDTO(User customer)
+        public static UserDto ToDto(User customer)
         {
-            return new UserData
+            return new UserDto
             {
                 Id = customer.Id,
                 Name = customer.Name,

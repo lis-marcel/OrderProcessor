@@ -1,10 +1,10 @@
 ﻿using OrderProcessor.Service.DTO;
 
-namespace OrderProcessor.Service
+namespace OrderProcessor.Service.Helpers
 {
     public class CustomerUtility
     {
-        public static UserData CreateCustomerDetails(CustomerRegistrationData customerCreationData)
+        public static UserDto CreateCustomerDetails(CustomerRegistrationDto customerCreationData)
         {
             return new()
             {

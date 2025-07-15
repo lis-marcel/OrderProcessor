@@ -40,6 +40,7 @@ namespace OrderProcessor.Web.API
             builder.Services.Configure<Service.Auth.JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
             builder.Services.AddSingleton<TokenService>();
             builder.Services.AddScoped<AuthService>();
+            builder.Services.AddScoped<CustomerService>();
 
             // Add JWT authentication
             var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<Service.Auth.JwtSettings>();

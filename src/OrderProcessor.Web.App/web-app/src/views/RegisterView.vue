@@ -112,11 +112,10 @@ export default {
         });
         
         // Store the JWT token
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
+        console.log('Registration successful:', response.data);
         
-        // Redirect to home page
-        this.$router.push('/');
+        // Redirect to login page
+        this.$router.push('/login');
       } catch (error) {
         console.error('Registration failed:', error);
         this.registerError = error.response?.data?.message || 'Registration failed. Please try again.';

@@ -7,7 +7,7 @@ namespace OrderProcessor.Service
     {
         #region Public Methods
 
-        public static OrderData CreateOrderDetails(OrderCreationData orderCreationData)
+        public static OrderDto CreateOrderDetails(OrderCreationDto orderCreationData)
         {
             return new()
             {

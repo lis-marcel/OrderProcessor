@@ -7,7 +7,7 @@ using OrderProcessor.Web.API.CommunicationModels;
 
 namespace OrderProcessor.Web.API.Controllers
 {
-    [Route("api/customer")]
+    [Route("api/auth")]
     [ApiController]
     [EnableCors("AllowVueApp")]
     public class AuthController : ControllerBase
@@ -15,65 +15,58 @@ namespace OrderProcessor.Web.API.Controllers
         private readonly DbStorage _dbStorageContext;
         private readonly TokenService _tokenService;
         private readonly AuthService _authService;
+        private readonly CustomerService _customerService;
 
         public AuthController(
             DbStorage dbStorageContext,
             TokenService tokenService,
-            AuthService authService)
+            AuthService authService,
+            CustomerService customerService)
         {
             _dbStorageContext = dbStorageContext;
             _tokenService = tokenService;
             _authService = authService;
+            _customerService = customerService;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> RegisterCustomer([FromBody] CustomerRegistrationData customerRegistrationData)
+        public async Task<IActionResult> RegisterCustomer([FromBody] CustomerRegistrationDto customerRegistrationData)
         {
             if (customerRegistrationData == null)
             {
                 return BadRequest("User creation data is null.");
             }
 
-            var result = await CustomerService.RegisterCustomer(_dbStorageContext, customerRegistrationData);
+            var result = await _customerService.RegisterCustomer(customerRegistrationData);
 
-            if (result)
+            if (result.Success)
             {
-                return Ok("User created successfully.");
+                return Ok(result.Message);
             }
             else
             {
-                return StatusCode(500, "An error occurred while creating the customer.");
+                return StatusCode(500, result.Message);
             }
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> LoginCustomer([FromBody] CustomerLoginData customerLoginData)
+        public async Task<IActionResult> LoginCustomer([FromBody] CustomerLoginDto customerLoginData)
         {
             if (customerLoginData == null)
             {
                 return BadRequest("User login data is null.");
             }
 
-            var result = await CustomerService.LoginCustomer(
-                _dbStorageContext,
-                customerLoginData,
-                _tokenService);
+            var result = await _customerService.LoginCustomer(customerLoginData);
 
-            if (!string.IsNullOrEmpty(result.Item1) && result.Item2 != null)
+            if (result.Success && result.Data != null)
             {
-                LoginResponse loginResponse = new()
-                {
-                    Token = result.Item1,
-                    CustomerData = UserData.ToDTO(result.Item2)
-                };
-
-                return Ok(loginResponse);
+                return Ok(result.Data);
             }
             else
             {
-                return StatusCode(500, "An error occurred while loggin in the customer.");
+                return StatusCode(500, result.Message ?? "An error occurred while logging in the customer.");
             }
-
         }
 
     }

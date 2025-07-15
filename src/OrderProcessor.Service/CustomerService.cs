@@ -1,64 +1,105 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.EntityFrameworkCore;
 using OrderProcessor.BO;
 using OrderProcessor.BO.Entities;
+using OrderProcessor.Common;
 using OrderProcessor.Service.DTO;
+using OrderProcessor.Service.Helpers;
 
 namespace OrderProcessor.Service
 {
     public class CustomerService
     {
-        public CustomerService() { }
+        private readonly DbStorage _dbContext;
+        private readonly AuthService _authService;
+        private readonly TokenService _tokenService;
 
-        public static async Task<bool> RegisterCustomer(DbStorage dbStorageContext, CustomerRegistrationData customerRegistrationData)
+        public CustomerService(DbStorage dbContext, AuthService authService, TokenService tokenService) 
         {
-            try
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            _authService = authService ?? throw new ArgumentNullException(nameof(authService));
+            _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));
+        }
+
+        public async Task<OperationResult> RegisterCustomer(CustomerRegistrationDto customerRegistrationDto)
+        {
+            if (string.IsNullOrEmpty(customerRegistrationDto.Email) ||
+                string.IsNullOrEmpty(customerRegistrationDto.Name) ||
+                string.IsNullOrEmpty(customerRegistrationDto.Password)) 
             {
-                var customerData = CustomerUtility.CreateCustomerDetails(customerRegistrationData);
-
-                if (customerData == null)
-                {
-                    return false;
-                }
-
-                await dbStorageContext.Customers.AddAsync(UserData.ToBO(customerData));
-                await dbStorageContext.SaveChangesAsync();
-
-                return true;
+                return OperationResult.Failed("Username, password, and email are required.");
             }
-            catch
+
+            var emailExists = await EmailExists(customerRegistrationDto.Email);
+
+            if (emailExists)
             {
-                return false;
+                return OperationResult.Failed("Email already in use.");
+            }
+
+            try
+            { 
+                var customerData = CustomerUtility.CreateCustomerDetails(customerRegistrationDto);
+
+                await _dbContext.Customers.AddAsync(UserDto.ToBo(customerData));
+                await _dbContext.SaveChangesAsync();
+
+                return OperationResult.Succeeded("User created successfully.", customerData);
+            }
+            catch (Exception ex)
+            {
+                return OperationResult.Failed($"Error occured during creating the user: {ex.Message}");
             }
         }
 
-        public static async Task<(string?, User?)> LoginCustomer(
-            DbStorage dbStorageContext,
-            CustomerLoginData customerLoginData,
-            TokenService tokenService)
+        public async Task<OperationResult> LoginCustomer(CustomerLoginDto customerLoginData)
         {
+            if (string.IsNullOrEmpty(customerLoginData.Email) ||
+                string.IsNullOrEmpty(customerLoginData.Password))
+            {
+                return OperationResult.Failed("Password and email are required.");
+            }
+
             try
             {
-                var (isAuthenticated, customer) = AuthService.AuthenticateCustomer(
-                    dbStorageContext,
-                    customerLoginData.Email!,
-                    customerLoginData.Password!);
+                var authResult = _authService.AuthenticateCustomer(
+                    customerLoginData.Email,
+                    customerLoginData.Password);
 
-                if (!isAuthenticated || customer == null)
+                if (!authResult.Success)
                 {
-                    return (null, null);
+                    return OperationResult.Failed("Failed to authenticate customer.");
                 }
 
                 // Generate JWT token
-                var token = tokenService.GenerateJwtToken(customer);
+                var user = authResult.Data as User;
 
-                customer.LastLoginAt = DateTime.Now;
-                await dbStorageContext.SaveChangesAsync();
+                if (user == null)
+                {
+                    return OperationResult.Failed("Invalid user data.");
+                }
+                var token = _tokenService.GenerateJwtToken(user);
 
-                return (token, customer);
+                if (string.IsNullOrEmpty(token))
+                {
+                    return OperationResult.Failed("Failed to generate authentication token.");
+                }
+
+                authResult.Data = DateTime.Now;
+                await _dbContext.SaveChangesAsync();
+
+                // Return login data with both token and user info
+                var loginData = new
+                {
+                    Token = token,
+                    User = UserDto.ToDto(user)
+                };
+
+                return OperationResult.Succeeded("Login successful", loginData);
             }
-            catch
+            catch (Exception ex)
             {
-                return (null, null);
+                return OperationResult.Failed($"Error occured during creating the user: {ex.Message}");
             }
         }
 
@@ -88,7 +129,7 @@ namespace OrderProcessor.Service
             }
         }
 
-        public static UserData? GetCustomerData(DbStorage dbStorageContext, string email)
+        public static UserDto? GetCustomerData(DbStorage dbStorageContext, string email)
         {
             try
             {
@@ -102,7 +143,7 @@ namespace OrderProcessor.Service
                     return null;
                 }
 
-                return UserData.ToDTO(user);
+                return UserDto.ToDto(user);
             }
             catch
             {
@@ -110,6 +151,13 @@ namespace OrderProcessor.Service
             }
         }
 
+        private async Task<bool> EmailExists(string email)
+        {
+            var result = await _dbContext.Customers
+                .FirstOrDefaultAsync(u => u.Email == email);
+
+            return true && result != null;
+        }
 
     }
 }

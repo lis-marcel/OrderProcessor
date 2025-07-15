@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OrderProcessor.Service.DTO
 {
-    public class OrderCreationData
+    public class OrderCreationDto
     {
         public double Value { get; set; }
         public required string ProductName { get; set; }

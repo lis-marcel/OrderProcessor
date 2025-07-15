@@ -9,7 +9,7 @@ using System.Security.Claims;
 
 namespace OrderProcessor.Web.API.Controllers
 {
-    [Route("api/user")]
+    [Route("api/customer")]
     [ApiController]
     [EnableCors("AllowVueApp")]
     public class UsersController : ControllerBase
@@ -22,7 +22,7 @@ namespace OrderProcessor.Web.API.Controllers
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "RequireCustomerRole")]
-        [HttpPost("my-orders")]
+        [HttpPost("customer-orders")]
         public IActionResult CustomerOrders([FromBody] ProtectedRequest protectedRequest)
         {
             try
