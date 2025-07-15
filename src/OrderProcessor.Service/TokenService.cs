@@ -29,9 +29,7 @@ namespace OrderProcessor.Service
                 new Claim(ClaimTypes.Name, user.Email ?? string.Empty),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Role, user.AccountType.ToString()),
-                user.CustomerType.HasValue
-                    ? new Claim("CustomerType", ((int)user.CustomerType).ToString())
-                    : null
+                new Claim("CustomerType", ((int)user.CustomerType!).ToString())
             }.Where(c => c != null).ToList();
 
             var tokenDescriptor = new SecurityTokenDescriptor

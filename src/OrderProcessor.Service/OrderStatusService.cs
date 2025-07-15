@@ -1,6 +1,7 @@
 ﻿using OrderProcessor.BO;
 using OrderProcessor.Service.DTO;
 using OrderProcessor.BO.OrderOptions;
+using OrderProcessor.Common;
 
 namespace OrderProcessor.Service
 {
@@ -8,7 +9,7 @@ namespace OrderProcessor.Service
     {
         #region Public Methods
 
-        public static async Task ProcessPendingOrders(DbStorage dbStorageContext)
+        public static OperationResult ProcessPendingOrders(DbStorage dbStorageContext)
         {
             throw new NotImplementedException("This method is not implemented yet.");
         }
