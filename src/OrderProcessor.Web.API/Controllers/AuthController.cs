@@ -7,7 +7,7 @@ using OrderProcessor.Web.API.CommunicationModels;
 
 namespace OrderProcessor.Web.API.Controllers
 {
-    [Route("api/customer")]
+    [Route("api/auth")]
     [ApiController]
     [EnableCors("AllowVueApp")]
     public class AuthController : ControllerBase
