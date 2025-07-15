@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\lib\OrderProcessor.CommonLibraries\OrderProcessor.CommonLibraries.csproj" />
+    <ProjectReference Include="..\..\lib\OrderProcessor.CommonLibraries\OrderProcessor.Common.csproj" />
     <ProjectReference Include="..\OrderProcessor.BO\OrderProcessor.BO.csproj" />
     <ProjectReference Include="..\OrderProcessor.Service\OrderProcessor.Service.csproj" />
   </ItemGroup>

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using OrderProcessor.BO;
 using OrderProcessor.BO.Entities;
+using OrderProcessor.Common;
 using OrderProcessor.Service.Auth;
 using System.Security.Claims;
 
@@ -9,35 +10,37 @@ namespace OrderProcessor.Service
 {
     public class AuthService
     {
+        private readonly DbStorage _dbContext;
         private readonly TokenService _tokenService;
 
-        public AuthService(TokenService tokenService)
+        public AuthService(DbStorage dbContext, TokenService tokenService)
         {
+            _dbContext = dbContext;
             _tokenService = tokenService;
         }
 
         // This method is just a simplified example of how to authenticate a customer. 
-        public static (bool, User) AuthenticateCustomer(DbStorage dbStorage, string email, string password)
+        public OperationResult AuthenticateCustomer(string email, string password)
         {
             try
             {
-                var existingCustomer = dbStorage.Customers
+                var existingCustomer = _dbContext.Customers
                     .Where(c => c.Email == email && c.Password == password)
                     .FirstOrDefault();
 
                 if (existingCustomer == null)
                 {
-                    return (false, null);
+                    return OperationResult.Failed();
                 }
 
                 existingCustomer.LastLoginAt = DateTime.Now;
-                dbStorage.SaveChanges();
+                _dbContext.SaveChanges();
 
-                return (true, existingCustomer);
+                return OperationResult.Succeeded("User found.", existingCustomer);
             }
-            catch
+            catch (Exception ex)
             {
-                return (false, null);
+                return OperationResult.Failed($"Error occured during authenticationg the customer: {ex.Message}");
             }
         }
 

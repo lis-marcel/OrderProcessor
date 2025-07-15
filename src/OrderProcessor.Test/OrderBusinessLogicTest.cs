@@ -38,7 +38,7 @@
 //        public void Test_IsOrderEligibleForWarehouseProcessing_ReturnFalse()
 //        {
 //            // Arrange
-//            var orderData = OrderData.ToDTO(exampleOrder2);
+//            var orderData = OrderDto.ToDto(exampleOrder2);
 
 //            // Act
 //            bool result = OrderBusinessLogic.IsOrderEligibleForWarehouseProcessing(orderData);
@@ -51,7 +51,7 @@
 //        public void Test_IsOrderEligibleForWarehouseProcessing_ReturnTrue_ForCashUnderThreshold()
 //        {
 //            // Arrange
-//            var orderData = OrderData.ToDTO(exampleOrder1);
+//            var orderData = OrderDto.ToDto(exampleOrder1);
 
 //            // Act
 //            bool result = OrderBusinessLogic.IsOrderEligibleForWarehouseProcessing(orderData);
@@ -64,7 +64,7 @@
 //        public void Test_IsOrderEligibleForWarehouseProcessing_ReturnTrue_ForCreditCardBelowThreshold()
 //        {
 //            // Arrange
-//            var orderData = OrderData.ToDTO(exampleOrder1);
+//            var orderData = OrderDto.ToDto(exampleOrder1);
 
 //            // Act
 //            bool result = OrderBusinessLogic.IsOrderEligibleForWarehouseProcessing(orderData);

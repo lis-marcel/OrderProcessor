@@ -57,52 +57,51 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = authService.isAuthenticated()
-  const userData = authService.getCurrentUser() || {}
-  const userRole = String(userData.role || '1')
-  const isAdmin = userRole === '2'
+  // Debug navigation
+  console.log('Route navigation:', { to: to.path, from: from.path });
+  
+  // Get authentication status
+  const isAuthenticated = authService.isAuthenticated();
+  
+  // Get user role information
+  const userData = authService.getCurrentUser();
+  const isAdmin = authService.isAdmin();
+  
+  console.log('Navigation guard check:', { 
+    isAuthenticated, 
+    userData: userData ? {
+      id: userData.id,
+      email: userData.email,
+      accountType: userData.accountType
+    } : null,
+    isAdmin
+  });
   
   // Case 1: Not authenticated trying to access protected route
   if (to.matched.some(record => record.meta.requiresAuth) && !isAuthenticated) {
-    next({ path: '/login' })
-    return
+    console.log('Redirecting to login: Not authenticated for protected route');
+    next({ path: '/login' });
+    return;
   } 
   
   // Case 2: Authenticated user trying to access login/register
   if ((to.path === '/login' || to.path === '/register') && isAuthenticated) {
-    const redirectPath = isAdmin ? '/all-orders' : '/user-account'
-    next({ path: redirectPath })
-    return
-  } 
-  
-  // Case 3: Check role-based access for authenticated users
-  if (to.meta.requiresAuth && isAuthenticated) {
-    // Admin can access everything
-    if (isAdmin) {
-      next()
-      return
-    }
-    
-    // Check for single role requirement
-    if (to.meta.role && to.meta.role !== userRole) {
-      next({ path: '/user-account' }) // Redirect regular users to their orders
-      return
-    }
-    
-    // Check for multiple roles requirement
-    if (to.meta.roles && Array.isArray(to.meta.roles) && 
-        !to.meta.roles.includes(userRole)) {
-      next({ path: '/user-account' })
-      return
-    }
-    
-    // If no specific role requirements or role checks passed, allow access
-    next()
-    return
+    const redirectPath = isAdmin ? '/all-orders' : '/user-orders';
+    console.log(`Redirecting from auth page to ${redirectPath}`);
+    next({ path: redirectPath });
+    return;
   }
   
-  // Default: allow navigation (for public routes)
-  next()
-})
+  // Case 3: Admin-only routes
+  if (to.meta.role === '2' && !isAdmin && isAuthenticated) {
+    console.log('Access denied: Admin-only route');
+    next({ path: '/user-orders' });
+    return;
+  }
+  
+  // Default: allow navigation
+  console.log('Access granted to:', to.path);
+  next();
+});
 
 export default router

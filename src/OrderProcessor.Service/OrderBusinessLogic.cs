@@ -4,7 +4,7 @@ using OrderProcessor.Service.DTO;
 
 namespace OrderProcessor.Service
 {
-    public class OrderBusinessLogic
+    sealed class OrderBusinessLogic
     {
         private static readonly double cashPaymentThreshold = 2500;
         private static readonly int updateDelay = 4500;
@@ -12,7 +12,7 @@ namespace OrderProcessor.Service
         public OrderBusinessLogic() { }
 
         #region Public Methods
-        public static bool IsOrderEligibleForWarehouseProcessing(OrderData orderData)
+        public static bool IsOrderEligibleForWarehouseProcessing(OrderDto orderData)
         {
             return orderData.PaymentMethod == PaymentMethod.Cash && orderData.Value > cashPaymentThreshold ? false : true;
         }
@@ -28,7 +28,7 @@ namespace OrderProcessor.Service
                     return;
                 }
 
-                var orderData = OrderData.ToDTO(order);
+                var orderData = OrderDto.ToDto(order);
 
                 // Set the order to pending to shipping
                 orderData.Status = OrderStatus.PendingToShipping;

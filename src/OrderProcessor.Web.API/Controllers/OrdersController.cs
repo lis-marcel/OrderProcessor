@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using OrderProcessor.BO;
 using OrderProcessor.Service;
 using OrderProcessor.Service.DTO;
-using OrderProcessor.Web.API.Auth;
 
 namespace OrderProcessor.Web.API.Controllers
 {
@@ -23,52 +22,59 @@ namespace OrderProcessor.Web.API.Controllers
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "RequireAdminOrCustomerRole")]
         [HttpPost("create")]
-        public async Task<IActionResult> CreateOrder([FromBody] OrderCreationData orderCreationData)
+        public async Task<IActionResult> CreateOrder([FromBody] OrderCreationDto orderCreationData)
         {
-            if (orderCreationData == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest("Order creation data is null.");
+                return BadRequest(ModelState);
             }
 
             var result = await OrderService.CreateOrder(_dbStorageContext, orderCreationData);
 
-            if (result)
+            if (result.Success)
             {
                 return Ok("Order created successfully.");
             }
             else
             {
-                return StatusCode(500, "An error occurred while creating the orders.");
+                return StatusCode(500, result.Message);
             }
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "RequireCustomerRole")]
         [HttpGet("{orderId}")]
-        public IActionResult GetOrder(int orderId)
+        public async Task<IActionResult> GetOrder(int orderId)
         {
-            var order = OrderService.GetOrder(_dbStorageContext, orderId);
-            if (order != null)
+            if (!ModelState.IsValid)
             {
-                return Ok(order);
+                return BadRequest(ModelState);
+            }
+
+            var result = await OrderService.GetOrder(_dbStorageContext, orderId);
+
+            if (result.Success)
+            {
+                return Ok(result);
             }
             else
             {
-                return NotFound($"Order with ID {orderId} not found.");
+                return NotFound(result.Message);
             }
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "RequireAdministratorRole")]
-        [HttpPost("all-orders")]
+        [HttpGet("all-orders")]
         public IActionResult GetOrders()
         {
-            var orders = OrderService.GetOrders(_dbStorageContext);
-            if (orders != null)
+            var result = OrderService.GetOrders(_dbStorageContext);
+
+            if (result.Success)
             {
-                return Ok(orders);
+                return Ok(result);
             }
             else
             {
-                return NotFound($"No orders found.");
+                return NotFound(result.Message);
             }
         }
 
@@ -76,14 +82,15 @@ namespace OrderProcessor.Web.API.Controllers
         [HttpDelete("delete/{orderId}")]
         public async Task<IActionResult> DeleteOrder(int orderId)
         {
-            var order = await OrderService.DeleteOrder(_dbStorageContext, orderId);
-            if (order == true)
+            var result = await OrderService.DeleteOrder(_dbStorageContext, orderId);
+
+            if (result.Success)
             {
-                return Ok(order);
+                return Ok(result);
             }
             else
             {
-                return NotFound($"Order with ID {orderId} not found.");
+                return NotFound(result.Message);
             }
         }
 

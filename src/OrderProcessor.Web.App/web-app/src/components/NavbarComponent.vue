@@ -1,12 +1,13 @@
 <template>
     <nav>
         <ul class="navbar">
-            <li v-if="isAuthenticated"><router-link to="/all-orders">All orders</router-link></li>
-            <li v-if="isAuthenticated"><router-link to="/user-orders">User orders</router-link></li>
-            <li v-if="isAuthenticated"><router-link to="/user-account">Account</router-link></li>
+            <li v-if="isAuthenticated && isAdmin"><router-link to="/all-orders">All Orders</router-link></li>
+            <li v-if="isAuthenticated"><router-link to="/user-orders">My Orders</router-link></li>
+            <li v-if="isAuthenticated"><router-link to="/user-account">My Account</router-link></li>
             <li class="auth-links">
               <template v-if="isAuthenticated">
                 <span class="user-name">{{ userName }}</span>
+                <span v-if="isAdmin" class="admin-badge">Admin</span>
                 <button @click="logout" class="logout-btn">Logout</button>
               </template>
               <template v-else>
@@ -37,8 +38,19 @@ export default {
     },
     
     updateAuthState() {
-      this.isAuthenticated = authService.isAuthenticated()
-      this.userName = authService.getCurrentUser()?.name || 'User'
+      const userData = authService.getCurrentUser();
+      this.isAuthenticated = authService.isAuthenticated();
+      this.isAdmin = authService.isAdmin();
+      this.userName = userData?.name || 'User';
+      
+      console.log('Navbar auth state updated:', {
+        userData: userData ? {
+          name: userData.name,
+          accountType: userData.accountType
+        } : null,
+        isAuthenticated: this.isAuthenticated,
+        isAdmin: this.isAdmin
+      });
     }
   },
   created() {
