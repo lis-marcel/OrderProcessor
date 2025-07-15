@@ -76,8 +76,10 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from '../services/axiosConfig.js';
 import authService from '../services/authService.js';
+
+const API_ORDERS_URL = 'https://localhost:7092/api/customer/'
 
 export default {
   name: 'UserOrdersView',
@@ -111,24 +113,57 @@ export default {
         }
         
         const customerEmail = userData.email;
+        console.log('Fetching orders for:', customerEmail);
         
         // Get authentication token
         const token = localStorage.getItem('token');
+        console.log('Using token:', token ? 'Token exists' : 'No token');
         
-        // Make API request with customer ID
-        const response = await axios.post('https://127.0.0.1:7092/api/customer/customer-orders', 
-          { customerEmail },
+        // Debug: Check token payload (don't do this in production!)
+        if (token) {
+          try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            console.log('Token payload:', payload);
+            console.log('Token expires at:', new Date(payload.exp * 1000));
+          } catch (e) {
+            console.error('Invalid token format:', e);
+          }
+        }
+        
+        const response = await axios.post(`${API_ORDERS_URL}customer-orders`, 
+          {},
           {
             headers: {
-              'Authorization': `Bearer ${token}`
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
             }
           }
         );
         
+        console.log('Orders response:', response.data);
         this.orders = response.data;
       } catch (err) {
         console.error('Error fetching user orders:', err);
-        this.error = err.message || 'Failed to load your orders. Please try again.';
+        console.error('Error response:', err.response);
+        
+        if (err.response) {
+          // Server responded with error status
+          const status = err.response.status;
+          const data = err.response.data;
+          
+          if (status === 403) {
+            this.error = 'Access denied. Please log in again.';
+          } else if (status === 401) {
+            this.error = 'Your session has expired. Please log in again.';
+          } else {
+            this.error = data?.message || `Server error (${status}). Please try again.`;
+          }
+        } else if (err.request) {
+          // Network error
+          this.error = 'Network error. Please check your connection and try again.';
+        } else {
+          this.error = err.message || 'Failed to load your orders. Please try again.';
+        }
       } finally {
         this.loading = false;
       }
