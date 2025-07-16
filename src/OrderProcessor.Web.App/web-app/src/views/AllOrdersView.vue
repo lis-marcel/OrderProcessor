@@ -2,7 +2,6 @@
   <div class="all-orders-container">
     <div class="header-actions">
       <h1>All Orders</h1>
-      <router-link to="/create-order" class="create-order-btn">Create New Order</router-link>
     </div>
    
     <!-- Loading indicator -->
@@ -15,24 +14,61 @@
       <p>Error: {{ error }}</p>
       <button @click="fetchOrders">Try Again</button>
     </div>
-    
-    <!-- Orders grid -->
-    <div v-else class="orders-grid">
-      <div v-for="order in orders" :key="order.id" class="order-card">
-        <h3>{{ order.productName }}</h3>
-        <p><strong>Value:</strong> {{ formatCurrency(order.value) }}</p>
-        <p><strong>Quantity:</strong> {{ order.quantity }}</p>
-        <p><strong>Status:</strong> {{ getStatusText(order.status) }}</p>
-        <p><strong>Shipping Address:</strong></p>
-        <p class="address">{{ order.shippingAddress }}</p>
-        <p><strong>Created:</strong> {{ formatDate(order.creationTime) }}</p>
-        <p v-if="order.markToShippingAt">
-          <strong>Shipping Date:</strong> {{ formatDate(order.markToShippingAt) }}
-        </p>
-        <p><strong>Payment:</strong> {{ getPaymentMethodText(order.paymentMethod) }}</p>
-        <p><strong>Customer ID:</strong> {{ order.customerId }}</p>
+
+    <div class="order-stats">
+      <div class="stat-card">
+        <div class="stat-value">{{ orders.length }}</div>
+        <div class="stat-label">Total Orders</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ formatCurrency(getTotalOrderValue()) }}</div>
+        <div class="stat-label">Total Value</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ getActiveOrdersCount() }}</div>
+        <div class="stat-label">Active Orders</div>
       </div>
     </div>
+    
+    <div v-if="orders.length > 0" class="section">
+        <h2 class="section-title">Order History</h2>
+        <div class="table-container">
+          <table class="orders-table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Product</th>
+                <th>Status</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Total</th>
+                <th>Payment</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="order in orders" :key="order.id" :class="getOrderStatusClass(order.status)">
+                <td class="order-id">#{{ order.id }}</td>
+                <td class="product-name">{{ order.productName }}</td>
+                <td>
+                  <span class="status-badge" :class="getStatusBadgeClass(order.status)">
+                    {{ getStatusText(order.status) }}
+                  </span>
+                </td>
+                <td>{{ order.quantity }}</td>
+                <td>{{ formatCurrency(order.value) }}</td>
+                <td class="total-value">{{ formatCurrency(order.value * order.quantity) }}</td>
+                <td>{{ getPaymentMethodText(order.paymentMethod) }}</td>
+                <td>{{ formatDate(order.creationTime) }}</td>
+                <td>
+                  <button class="btn btn-secondary btn-sm">Track</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     
     <!-- No orders message -->
     <div v-if="!loading && !error && orders.length === 0" class="no-orders">
@@ -83,7 +119,6 @@ export default {
       
       try {
         const token = localStorage.getItem('token');
-        console.log('Fetching orders with token:', token ? 'Token exists' : 'No token');
         
         if (!token) {
           throw new Error('Authentication token not found');
@@ -93,12 +128,12 @@ export default {
         
         const response = await axios.get('https://127.0.0.1:7092/api/orders/all-orders', {
           headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
           }
         });
         
-        console.log('Orders API response:', response.data);
-        this.orders = response.data;
+        this.orders = response.data.data;
       } catch (err) {
         console.error('Error fetching all orders:', err);
         this.error = err.message || 'Failed to load orders. Please try again.';
@@ -107,46 +142,80 @@ export default {
       }
     },
     
-    // Add missing utility methods used in the template
     formatCurrency(value) {
-      if (value == null) return '-';
-      return new Intl.NumberFormat('en-US', { 
+      return new Intl.NumberFormat('pl-PL', { 
         style: 'currency', 
-        currency: 'USD'
+        currency: 'PLN' 
       }).format(value);
     },
     
     formatDate(dateString) {
-      if (!dateString) return '-';
+      if (!dateString) return 'N/A';
       const date = new Date(dateString);
-      return new Intl.DateTimeFormat('en-US', {
+      return new Intl.DateTimeFormat('pl-PL', {
         year: 'numeric',
-        month: 'short',
+        month: 'long',
         day: 'numeric',
         hour: '2-digit',
         minute: '2-digit'
       }).format(date);
     },
     
-    getStatusText(status) {
-      const statusMap = {
-        0: 'New',
-        1: 'Processing',
-        2: 'Shipped',
-        3: 'Delivered',
-        4: 'Canceled'
+    getStatusText(statusCode) {
+      const statuses = {
+        1: 'New',
+        2: 'In Warehouse',
+        3: 'Pending to Shipping',
+        4: 'In Shipping',
+        5: 'Returned to Customer',
+        6: 'Error',
+        7: 'Closed'
       };
-      return statusMap[status] || 'Unknown';
+      return statuses[statusCode] || `Unknown (${statusCode})`;
     },
     
-    getPaymentMethodText(method) {
-      const methodMap = {
-        0: 'Credit Card',
-        1: 'PayPal',
-        2: 'Bank Transfer',
-        3: 'Cash on Delivery'
+    getPaymentMethodText(methodCode) {
+      const methods = {
+        1: 'Cash on Delivery',
+        2: 'Credit Card',
       };
-      return methodMap[method] || 'Unknown';
+      return methods[methodCode] || `Unknown (${methodCode})`;
+    },
+    
+    getOrderStatusClass(statusCode) {
+      const classes = {
+        1: 'badge-new',
+        2: 'badge-in-warehouse',
+        3: 'badge-pending-to-shipping',
+        4: 'badge-in-shipping',
+        5: 'badge-returned-to-customer',
+        6: 'badge-error',
+        7: 'badge-closed'
+      };
+      return classes[statusCode] || '';
+    },
+    
+    getStatusBadgeClass(statusCode) {
+      const classes = {
+        1: 'badge-new',
+        2: 'badge-in-warehouse',
+        3: 'badge-pending-to-shipping',
+        4: 'badge-in-shipping',
+        5: 'badge-returned-to-customer',
+        6: 'badge-error',
+        7: 'badge-closed'
+      };
+      return classes[statusCode] || '';
+    },
+    
+    getTotalOrderValue() {
+      return this.orders.reduce((total, order) => {
+        return total + (order.value * order.quantity);
+      }, 0);
+    },
+    
+    getActiveOrdersCount() {
+      return this.orders.filter(order => order.status !== 3 && order.status !== 4).length;
     }
   }
 };
@@ -160,18 +229,34 @@ export default {
   margin-bottom: 1.5rem;
 }
 
-.create-order-btn {
-  background-color: #4CAF50;
-  color: white;
-  text-decoration: none;
-  padding: 0.75rem 1.25rem;
-  border-radius: 4px;
-  font-weight: bold;
-  transition: background-color 0.2s;
+.order-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
-.create-order-btn:hover {
-  background-color: #3d9c40;
+.stat-card {
+  flex: 1;
+  min-width: 200px;
+  background-color: #fff;
+  padding: 1.25rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: #4CAF50;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  color: #6c757d;
+  font-size: 0.95rem;
 }
 
 .all-orders-container {
@@ -210,31 +295,128 @@ export default {
     grid-template-columns: 1fr;
   }
 }
-
-.order-card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  background-color: white;
-  transition: transform 0.2s, box-shadow 0.2s;
+  
+.table-container {
+  overflow-x: auto;
 }
 
-.order-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+.orders-table {
+  min-width: 800px;
 }
 
-.order-card h3 {
-  margin-top: 0;
+/* Section styling */
+.section {
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
   color: #333;
-  border-bottom: 1px solid #eee;
+  margin-bottom: 1.5rem;
   padding-bottom: 0.5rem;
+  border-bottom: 2px solid #4CAF50;
 }
 
-.address {
-  white-space: pre-line;
-  color: #555;
-  font-style: italic;
+/* Table styling */
+.table-container {
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.orders-table th {
+  background-color: #f8f9fa;
+  color: #495057;
+  font-weight: 600;
+  padding: 1rem 0.75rem;
+  text-align: left;
+  border-bottom: 2px solid #dee2e6;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.orders-table td {
+  padding: 1rem 0.75rem;
+  border-bottom: 1px solid #dee2e6;
+  vertical-align: middle;
+}
+
+.orders-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.orders-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.order-id {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: #007bff;
+}
+
+.product-name {
+  font-weight: 500;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.total-value {
+  font-weight: 600;
+  color: #28a745;
+}
+
+/* Status badges for table */
+.status-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-block;
+  min-width: 80px;
+  text-align: center;
+}
+
+.badge-new {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  border: 1px solid #bbdefb;
+}
+
+.badge-processing {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.badge-shipped {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+
+.badge-delivered {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.badge-canceled {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
 }
 </style>
