@@ -15,6 +15,7 @@ namespace OrderProcessor.Service.DTO
         public string? Name { get; set; }
         public string? Email { get; set; }
         public string? Password { get; set; }
+        public byte[]? Salt { get; set; }
         public DateTime LastLoginAt { get; set; }
         public CustomerType CustomerType { get; set; }
         public AccountType AccountType { get; set; }
@@ -27,6 +28,7 @@ namespace OrderProcessor.Service.DTO
                 Name = customerData.Name,
                 Email = customerData.Email,
                 Password = customerData.Password,
+                Salt = customerData.Salt ?? [],
                 LastLoginAt = customerData.LastLoginAt,
                 CustomerType = customerData.CustomerType,
                 AccountType = customerData.AccountType,
@@ -40,7 +42,6 @@ namespace OrderProcessor.Service.DTO
                 Id = customer.Id,
                 Name = customer.Name,
                 Email = customer.Email,
-                Password = customer.Password,
                 LastLoginAt = customer.LastLoginAt,
                 CustomerType = (CustomerType)customer.CustomerType!,
                 AccountType= customer.AccountType,

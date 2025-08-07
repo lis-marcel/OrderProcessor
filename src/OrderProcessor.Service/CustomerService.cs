@@ -68,7 +68,7 @@ namespace OrderProcessor.Service
 
                 if (!authResult.Success)
                 {
-                    return OperationResult.Failed("Failed to authenticate customer.");
+                    return OperationResult.Failed("Failed to authenticate user.");
                 }
 
                 // Generate JWT token

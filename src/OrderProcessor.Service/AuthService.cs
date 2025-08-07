@@ -1,9 +1,11 @@
 ﻿// OrderProcessor.Service/AuthService.cs
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using OrderProcessor.BO;
 using OrderProcessor.BO.Entities;
 using OrderProcessor.Common;
 using OrderProcessor.Service.Auth;
+using OrderProcessor.Service.Helpers;
 using System.Security.Claims;
 
 namespace OrderProcessor.Service
@@ -25,12 +27,19 @@ namespace OrderProcessor.Service
             try
             {
                 var existingCustomer = _dbContext.Customers
-                    .Where(c => c.Email == email && c.Password == password)
+                    .Where(c => c.Email == email)
                     .FirstOrDefault();
 
                 if (existingCustomer == null)
                 {
-                    return OperationResult.Failed("Invalid email or password.");
+                    return OperationResult.Failed("Users with provided email doesn't exist");
+                }
+
+                var verifiedPassword = PasswordFunctionalities.VerifyPassword(password, existingCustomer.Password!, existingCustomer.Salt);
+
+                if (!verifiedPassword)
+                {
+                    return OperationResult.Failed("Invalid password.");
                 }
 
                 existingCustomer.LastLoginAt = DateTime.Now;
