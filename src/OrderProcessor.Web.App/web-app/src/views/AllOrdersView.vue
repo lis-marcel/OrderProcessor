@@ -12,7 +12,7 @@
     <!-- Error message -->
     <div v-else-if="error" class="error">
       <p>Error: {{ error }}</p>
-      <button @click="fetchOrders">Try Again</button>
+      <button @click="fetchAllOrders">Try Again</button>
     </div>
 
     <div class="order-stats">
@@ -62,7 +62,18 @@
                 <td>{{ getPaymentMethodText(order.paymentMethod) }}</td>
                 <td>{{ formatDate(order.creationTime) }}</td>
                 <td>
-                  <button class="btn btn-secondary btn-sm">Track</button>
+                  <div class="action-buttons">
+                    <button 
+                      @click="editOrder(order.id)" 
+                      class="btn btn-primary btn-sm"
+                      title="Edit Order"
+                    >
+                      Edit
+                    </button>
+                    <button class="btn btn-secondary btn-sm" title="Track Order">
+                      Track
+                    </button>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -216,6 +227,10 @@ export default {
     
     getActiveOrdersCount() {
       return this.orders.filter(order => order.status !== 3 && order.status !== 4).length;
+    },
+
+    editOrder(orderId) {
+      this.$router.push(`/edit-order/${orderId}`);
     }
   }
 };
@@ -418,5 +433,47 @@ export default {
   background-color: #f8d7da;
   color: #721c24;
   border: 1px solid #f5c6cb;
+}
+
+/* Action buttons */
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.btn {
+  padding: 0.375rem 0.75rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.15s ease-in-out;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #545b62;
 }
 </style>

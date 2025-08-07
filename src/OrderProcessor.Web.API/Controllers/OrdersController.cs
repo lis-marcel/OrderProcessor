@@ -78,6 +78,27 @@ namespace OrderProcessor.Web.API.Controllers
             }
         }
 
+        [Authorize]
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateOrder([FromBody] OrderDto updatedOrderData)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await OrderService.UpdateOrder(_dbStorageContext, updatedOrderData);
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound(result.Message);
+            }
+        }
+
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "RequireAdministratorRole")]
         [HttpDelete("delete/{orderId}")]
         public async Task<IActionResult> DeleteOrder(int orderId)

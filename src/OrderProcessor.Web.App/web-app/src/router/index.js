@@ -3,6 +3,7 @@ import AllOrdersView from '@/views/AllOrdersView.vue'
 import UserOrdersView from '@/views/UserOrdersView.vue'
 import UserAccountView from '@/views/UserAccountView.vue'
 import CreateOrderView from '@/views/CreateOrderView.vue'
+import EditOrderView from '@/views/EditOrderView.vue'
 import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import authService from '../services/authService.js'
@@ -38,6 +39,12 @@ const routes = [
     name: 'create-order',
     component: CreateOrderView,
     meta: { requiresAuth: true } // All authenticated users
+  },
+  {
+    path: '/edit-order/:id',
+    name: 'edit-order',
+    component: EditOrderView,
+    meta: { requiresAuth: true, role: '2' } // Admin only
   },
   {
     path: '/login',

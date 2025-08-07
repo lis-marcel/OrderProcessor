@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OrderProcessor.BO;
+using OrderProcessor.BO.Entities;
 using OrderProcessor.Common;
 using OrderProcessor.Service.DTO;
 
@@ -46,6 +47,43 @@ namespace OrderProcessor.Service
             catch
             {
                 return OperationResult.Failed("Error occured during order searching.");
+            }
+        }
+
+        public static async Task<OperationResult> UpdateOrder(DbStorage dbStorageContext, OrderDto updatedOrderData)
+        {
+            try
+            {
+                var order = await dbStorageContext.Orders.FindAsync(updatedOrderData.Id);
+
+                if (order == null)
+                {
+                    return OperationResult.Failed("Order not found for given ID.");
+                }
+
+                var ordersDiffer = OrderUtility.OrdersDiffer(order, updatedOrderData);
+
+                if (!ordersDiffer)
+                {
+                    return OperationResult.Succeeded("No differences detected.");
+                }
+
+                order.Value = updatedOrderData.Value;
+                order.ProductName = updatedOrderData.ProductName;
+                order.ShippingAddress = updatedOrderData.ShippingAddress;
+                order.Quantity = updatedOrderData.Quantity;
+                order.MarkToShippingAt = updatedOrderData.MarkToShippingAt;
+                order.Status = updatedOrderData.Status;
+                order.CustomerId = updatedOrderData.CustomerId;
+                order.PaymentMethod = updatedOrderData.PaymentMethod;
+
+                await dbStorageContext.SaveChangesAsync();
+
+                return OperationResult.Succeeded("Order updated successfully.", order);
+            }
+            catch
+            {
+                return OperationResult.Failed("Error occured during order update.");
             }
         }
 
