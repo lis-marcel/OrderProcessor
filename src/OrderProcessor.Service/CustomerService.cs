@@ -41,7 +41,7 @@ namespace OrderProcessor.Service
             { 
                 var customerData = CustomerUtility.CreateCustomerDetails(customerRegistrationDto);
 
-                await _dbContext.Customers.AddAsync(UserDto.ToBo(customerData));
+                await _dbContext.Customers.AddAsync(UserAllDataDto.ToBo(customerData));
                 await _dbContext.SaveChangesAsync();
 
                 return OperationResult.Succeeded("User created successfully.", customerData);
@@ -92,7 +92,7 @@ namespace OrderProcessor.Service
                 var loginData = new
                 {
                     Token = token,
-                    User = UserDto.ToDto(user)
+                    User = UserAccountDto.ToDto(user)
                 };
 
                 return OperationResult.Succeeded("Login successful", loginData);
@@ -129,7 +129,7 @@ namespace OrderProcessor.Service
             }
         }
 
-        public static UserDto? GetCustomerData(DbStorage dbStorageContext, string email)
+        public static UserAllDataDto? GetCustomerData(DbStorage dbStorageContext, string email)
         {
             try
             {
@@ -143,11 +143,53 @@ namespace OrderProcessor.Service
                     return null;
                 }
 
-                return UserDto.ToDto(user);
+                return UserAllDataDto.ToDto(user);
             }
             catch
             {
                 return null;
+            }
+        }
+
+        public async Task<OperationResult> ChangePassword(UserChangePasswordDto newPasswordDto)
+        {
+            if (string.IsNullOrEmpty(newPasswordDto.Email) ||
+                string.IsNullOrEmpty(newPasswordDto.CurrentPassword) ||
+                string.IsNullOrEmpty(newPasswordDto.NewPassword))
+            {
+                return OperationResult.Failed("Username, password, and new password are required.");
+            }
+
+            try
+            {
+                var user = _dbContext.Customers
+                    .Where(c => c.Email == newPasswordDto.Email)
+                    .FirstOrDefault();
+
+                if (user == null)
+                {
+                    return OperationResult.Failed("User with provided email doesn't exist.");
+                }
+
+                var verifiedPassword = PasswordFunctionalities.VerifyPassword(
+                    newPasswordDto.CurrentPassword, user.Password!, user.Salt);
+
+                if (!verifiedPassword)
+                {
+                    return OperationResult.Failed("Invalid current password.");
+                }
+
+                user.Password = PasswordFunctionalities.HashPassword(newPasswordDto.NewPassword, out byte[] salt);
+                user.Salt = salt;
+                user.LastLoginAt = DateTime.Now;
+
+                await _dbContext.SaveChangesAsync();
+
+                return OperationResult.Succeeded("Password changed successfully.");
+            }
+            catch (Exception ex)
+            {
+                return OperationResult.Failed($"Error occurred during changing the password: {ex.Message}");
             }
         }
 

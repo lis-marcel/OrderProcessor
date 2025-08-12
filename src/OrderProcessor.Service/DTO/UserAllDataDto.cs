@@ -1,15 +1,9 @@
 ﻿using OrderProcessor.BO.Entities;
 using OrderProcessor.BO.OrderOptions;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OrderProcessor.Service.DTO
 {
-    public class UserDto
+    public class UserAllDataDto
     {
         public int Id { get; set; }
         public string? Name { get; set; }
@@ -20,7 +14,7 @@ namespace OrderProcessor.Service.DTO
         public CustomerType CustomerType { get; set; }
         public AccountType AccountType { get; set; }
 
-        public static User ToBo(UserDto customerData)
+        public static User ToBo(UserAllDataDto customerData)
         {
             return new User
             {
@@ -35,9 +29,9 @@ namespace OrderProcessor.Service.DTO
             };
         }
 
-        public static UserDto ToDto(User customer)
+        public static UserAllDataDto ToDto(User customer)
         {
-            return new UserDto
+            return new UserAllDataDto
             {
                 Id = customer.Id,
                 Name = customer.Name,

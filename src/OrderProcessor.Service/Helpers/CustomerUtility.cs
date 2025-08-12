@@ -4,7 +4,7 @@ namespace OrderProcessor.Service.Helpers
 {
     public class CustomerUtility
     {
-        public static UserDto CreateCustomerDetails(CustomerRegistrationDto customerCreationData)
+        public static UserAllDataDto CreateCustomerDetails(CustomerRegistrationDto customerCreationData)
         {
             return new()
             {
