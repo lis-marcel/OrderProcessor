@@ -53,7 +53,7 @@
       
       <div class="profile-actions">
         <button class="btn btn-primary" @click="editProfile">Edit Profile</button>
-        <button class="btn btn-secondary" @click="changePassword">Change Password</button>
+        <router-link to="/change-password" class="btn btn-secondary">Change Password</router-link>
       </div>
     </div>
   </div>
@@ -133,11 +133,6 @@ export default {
     editProfile() {
       // Placeholder for future implementation
       alert('Profile editing will be implemented in a future update.')
-    },
-    
-    changePassword() {
-      // Placeholder for future implementation
-      alert('Password change will be implemented in a future update.')
     }
   }
 }

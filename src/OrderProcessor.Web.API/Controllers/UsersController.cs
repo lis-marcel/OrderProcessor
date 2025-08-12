@@ -98,14 +98,14 @@ namespace OrderProcessor.Web.API.Controllers
                     return Unauthorized();
                 }
 
-                var orders = await _customerService.ChangePassword(newPasswordDto);
+                var result = await _customerService.ChangePassword(newPasswordDto);
 
-                if (orders == null)
+                if (result == null)
                 {
                     return NotFound($"Customer with email {email} not found.");
                 }
 
-                return Ok(orders);
+                return Ok(result);
             }
             catch
             {

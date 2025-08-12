@@ -47,6 +47,30 @@ export default {
     }
   },
 
+  // Add this method to the authService
+  async changePassword(passwordData) {
+    try {
+      const response = await fetch('https://127.0.0.1:7092/api/customer/change-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(passwordData)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to change password');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Password change error:', error);
+      throw error;
+    }
+  },
+
   async logout() {
     localStorage.removeItem('token')
     localStorage.removeItem('user')
@@ -75,4 +99,5 @@ export default {
   isAuthenticated() {
     return !!localStorage.getItem('token')
   },
+
 }

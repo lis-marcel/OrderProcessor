@@ -7,6 +7,7 @@ import EditOrderView from '@/views/EditOrderView.vue'
 import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import authService from '../services/authService.js'
+import ChangePasswordView from '@/views/ChangePasswordView.vue'
 
 const routes = [
   {
@@ -55,6 +56,12 @@ const routes = [
     path: '/register',
     name: 'Register',
     component: RegisterView
+  },
+  {
+    path: '/change-password',
+    name: 'ChangePassword',
+    component: ChangePasswordView,
+    meta: { requiresAuth: true }
   }
 ]
 
