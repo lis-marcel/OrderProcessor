@@ -113,5 +113,34 @@ namespace OrderProcessor.Web.API.Controllers
             }
         }
 
+        [Authorize]
+        [HttpPost("edit-profile")]
+        public async Task<IActionResult> EditUserProfile([FromBody] EditUserDto editUserDto)
+        {
+            try
+            {
+                // Get user email from claims
+                var email = User.FindFirst(ClaimTypes.Name)?.Value;
+
+                if (string.IsNullOrEmpty(email))
+                {
+                    return Unauthorized();
+                }
+
+                var result = await _customerService.UpdateCustomerData(editUserDto);
+
+                if (result == null)
+                {
+                    return NotFound($"Customer with email {email} not found.");
+                }
+
+                return Ok(result);
+            }
+            catch
+            {
+                return StatusCode(500, "An error occurred while retrieving customer orders.");
+            }
+        }
+
     }
 }

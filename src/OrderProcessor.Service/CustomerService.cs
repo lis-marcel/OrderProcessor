@@ -129,6 +129,37 @@ namespace OrderProcessor.Service
             }
         }
 
+        public async Task<OperationResult> UpdateCustomerData(EditUserDto editUserDto)
+        {
+            if (editUserDto == null || string.IsNullOrEmpty(editUserDto.CurrentEmail))
+            {
+                return OperationResult.Failed("User data is required.");
+            }
+
+            try
+            {
+                var existingUser = await _dbContext.Customers
+                    .Where(c => c.Email == editUserDto.CurrentEmail)
+                    .FirstOrDefaultAsync();
+
+                if (existingUser == null)
+                {
+                    return OperationResult.Failed("User with provided email doesn't exist.");
+                }
+
+                existingUser.Name = editUserDto.NewName;
+                existingUser.Email = editUserDto.NewEmail;
+
+                await _dbContext.SaveChangesAsync();
+
+                return OperationResult.Succeeded("User data updated successfully.");
+            }
+            catch (Exception ex)
+            {
+                return OperationResult.Failed($"Error occurred during updating the user data: {ex.Message}");
+            }
+        }
+
         public static UserAllDataDto? GetCustomerData(DbStorage dbStorageContext, string email)
         {
             try
