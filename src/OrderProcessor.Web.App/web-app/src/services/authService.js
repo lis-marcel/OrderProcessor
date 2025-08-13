@@ -71,6 +71,38 @@ export default {
     }
   },
 
+  // Add this method to your authService
+  async updateUserProfile(profileData) {
+    try {
+      const response = await fetch('https://127.0.0.1:7092/api/customer/edit-profile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(profileData)
+      });
+
+      console.log('Update profile response:', response);
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update profile');
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      throw error;
+    }
+  },
+
+  updateCurrentUser(userData) {
+    // Update the stored user data (implementation depends on how you're storing user data)
+    // For example, if storing in localStorage:
+    localStorage.setItem('user', JSON.stringify(userData));
+  },
+
   async logout() {
     localStorage.removeItem('token')
     localStorage.removeItem('user')

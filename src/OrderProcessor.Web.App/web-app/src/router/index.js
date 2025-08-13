@@ -6,6 +6,7 @@ import CreateOrderView from '@/views/CreateOrderView.vue'
 import EditOrderView from '@/views/EditOrderView.vue'
 import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
+import EditProfileView from '../views/EditProfileView.vue'
 import authService from '../services/authService.js'
 import ChangePasswordView from '@/views/ChangePasswordView.vue'
 
@@ -61,6 +62,12 @@ const routes = [
     path: '/change-password',
     name: 'ChangePassword',
     component: ChangePasswordView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/edit-profile',
+    name: 'EditProfile',
+    component: EditProfileView,
     meta: { requiresAuth: true }
   }
 ]
