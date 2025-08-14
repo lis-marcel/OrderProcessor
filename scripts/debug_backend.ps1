@@ -11,11 +11,3 @@ if ($vsProcess) {
 
 Add-Type -AssemblyName System.Windows.Forms
 [System.Windows.Forms.SendKeys]::SendWait("{F5}")
-
-# Start Vue frontend
-Write-Host "Starting Vue frontend..." -ForegroundColor White
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '..\src\OrderProcessor.Web.App\web-app'; npm run serve"
-
-Write-Host "Ready!" -ForegroundColor Green
-Write-Host "Backend: Debugging started in Visual Studio -> https://127.0.0.1:7092" -ForegroundColor Green
-Write-Host "Frontend: https://127.0.0.1:8081" -ForegroundColor Green

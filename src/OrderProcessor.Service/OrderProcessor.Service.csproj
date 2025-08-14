@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CompareNETObjects" Version="4.84.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\lib\OrderProcessor.CommonLibraries\OrderProcessor.Common.csproj" />
     <ProjectReference Include="..\OrderProcessor.BO\OrderProcessor.BO.csproj" />
   </ItemGroup>

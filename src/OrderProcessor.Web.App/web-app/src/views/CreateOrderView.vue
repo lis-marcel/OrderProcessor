@@ -112,12 +112,13 @@
             <label for="PaymentMethod">Select Payment Method*</label>
             <select 
               id="PaymentMethod" 
-              v-model="orderData.PaymentMethod" 
+              v-model.number="orderData.PaymentMethod" 
               required
               :class="{ 'error': validationErrors.PaymentMethod }"
             >
-              <option value="0">Cash on Delivery</option>
-              <option value="1">Credit Card</option>
+              <option value="">Select Payment Method</option>
+              <option :value="1">Cash on Delivery</option>
+              <option :value="2">Credit Card</option>
             </select>
             <div v-if="validationErrors.PaymentMethod" class="error-message">
               {{ validationErrors.PaymentMethod }}
@@ -187,7 +188,7 @@
         <h2>Order Created Successfully!</h2>
         <p>Your order has been submitted.</p>
         <div class="success-actions">
-          <router-link to="/" class="btn btn-primary">Back to Orders</router-link>
+          <router-link to="/user-orders" class="btn btn-primary">Back to Orders</router-link>
           <button @click="resetForm" class="btn btn-secondary">Create Another Order</button>
         </div>
       </div>
@@ -215,7 +216,7 @@
           ShippingAddress: '',
           Quantity: 1,
           CustomerId: '',
-          PaymentMethod: 0,
+          PaymentMethod: null,
         },
         validationErrors: {},
         submitting: false,
@@ -287,7 +288,7 @@
         
         // Step 4: Payment validation
         if (this.currentStep === 3) {
-          if (this.orderData.PaymentMethod === null || this.orderData.PaymentMethod === undefined) {
+          if (this.orderData.PaymentMethod === null || this.orderData.PaymentMethod === undefined || this.orderData.PaymentMethod === '') {
             this.validationErrors.PaymentMethod = 'Payment method is required';
             isValid = false;
           }
@@ -304,13 +305,30 @@
         this.submitting = true;
         
         try {
-          await axios.post('https://127.0.0.1:7092/api/create', this.orderData);
+          const token = localStorage.getItem('token');
+
+          await axios.post('https://127.0.0.1:7092/api/orders/create', 
+          {
+            Value: parseFloat(this.orderData.Value),
+            ProductName: this.orderData.ProductName,
+            ShippingAddress: this.orderData.ShippingAddress,
+            Quantity: parseInt(this.orderData.Quantity),
+            CustomerId: parseInt(this.orderData.CustomerId),
+            PaymentMethod: parseInt(this.orderData.PaymentMethod),
+          },
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          }
+        );
           this.submitting = false;
           this.orderSubmitted = true;
         } catch (error) {
           console.error('Error creating order:', error);
           this.submitting = false;
-          alert('Failed to create order. Please try again.');
+          console.error('Failed to create order. Please try again.');
         }
       },
       
@@ -321,7 +339,7 @@
           Quantity: 1,
           ShippingAddress: '',
           CustomerId: '',
-          PaymentMethod: 0,
+          PaymentMethod: null,
           creationTime: new Date().toISOString()
         };
         this.currentStep = 0;

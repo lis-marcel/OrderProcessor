@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using OrderProcessor.BO;
 using OrderProcessor.Service;
+using OrderProcessor.Service.DTO;
 using OrderProcessor.Web.API.CommunicationModels;
 using System.Security.Claims;
 
@@ -15,10 +16,19 @@ namespace OrderProcessor.Web.API.Controllers
     public class UsersController : ControllerBase
     {
         private readonly DbStorage _dbStorageContext;
+        private readonly TokenService _tokenService;
+        private readonly AuthService _authService;
+        private readonly CustomerService _customerService;
 
-        public UsersController(DbStorage dbStorageContext)
+        public UsersController(DbStorage dbStorageContext,
+            TokenService tokenService,
+            AuthService authService,
+            CustomerService customerService)
         {
             _dbStorageContext = dbStorageContext;
+            _tokenService = tokenService;
+            _authService = authService;
+            _customerService = customerService;
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "RequireCustomerRole")]
@@ -67,6 +77,64 @@ namespace OrderProcessor.Web.API.Controllers
                 }
 
                 return Ok(orders);
+            }
+            catch
+            {
+                return StatusCode(500, "An error occurred while retrieving customer orders.");
+            }
+        }
+
+        [Authorize]
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangeUserPassword([FromBody] UserChangePasswordDto newPasswordDto)
+        {
+            try
+            {
+                // Get user email from claims
+                var email = User.FindFirst(ClaimTypes.Name)?.Value;
+
+                if (string.IsNullOrEmpty(email))
+                {
+                    return Unauthorized();
+                }
+
+                var result = await _customerService.ChangePassword(newPasswordDto);
+
+                if (result == null)
+                {
+                    return NotFound($"Customer with email {email} not found.");
+                }
+
+                return Ok(result);
+            }
+            catch
+            {
+                return StatusCode(500, "An error occurred while retrieving customer orders.");
+            }
+        }
+
+        [Authorize]
+        [HttpPost("edit-profile")]
+        public async Task<IActionResult> EditUserProfile([FromBody] EditUserDto editUserDto)
+        {
+            try
+            {
+                // Get user email from claims
+                var email = User.FindFirst(ClaimTypes.Name)?.Value;
+
+                if (string.IsNullOrEmpty(email))
+                {
+                    return Unauthorized();
+                }
+
+                var result = await _customerService.UpdateCustomerData(editUserDto);
+
+                if (result == null)
+                {
+                    return NotFound($"Customer with email {email} not found.");
+                }
+
+                return Ok(result);
             }
             catch
             {

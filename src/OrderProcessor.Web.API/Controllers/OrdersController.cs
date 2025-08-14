@@ -20,7 +20,7 @@ namespace OrderProcessor.Web.API.Controllers
             _dbStorageContext = dbStorageContext;
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "RequireAdminOrCustomerRole")]
+        [Authorize]
         [HttpPost("create")]
         public async Task<IActionResult> CreateOrder([FromBody] OrderCreationDto orderCreationData)
         {
@@ -41,7 +41,7 @@ namespace OrderProcessor.Web.API.Controllers
             }
         }
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "RequireCustomerRole")]
+        [Authorize]
         [HttpGet("{orderId}")]
         public async Task<IActionResult> GetOrder(int orderId)
         {
@@ -67,6 +67,27 @@ namespace OrderProcessor.Web.API.Controllers
         public IActionResult GetOrders()
         {
             var result = OrderService.GetOrders(_dbStorageContext);
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return NotFound(result.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateOrder([FromBody] OrderDto updatedOrderData)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await OrderService.UpdateOrder(_dbStorageContext, updatedOrderData);
 
             if (result.Success)
             {

@@ -15,6 +15,7 @@ namespace OrderProcessor.BO.Entities
 
         [Required]
         public string? Password { get; set; }
+        public byte[] Salt { get; set; } = []; // Salt for password hashing
 
         public DateTime LastLoginAt { get; set; }
         public AccountType AccountType { get; set; }

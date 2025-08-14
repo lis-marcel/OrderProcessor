@@ -3,9 +3,12 @@ import AllOrdersView from '@/views/AllOrdersView.vue'
 import UserOrdersView from '@/views/UserOrdersView.vue'
 import UserAccountView from '@/views/UserAccountView.vue'
 import CreateOrderView from '@/views/CreateOrderView.vue'
+import EditOrderView from '@/views/EditOrderView.vue'
 import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
+import EditProfileView from '../views/EditProfileView.vue'
 import authService from '../services/authService.js'
+import ChangePasswordView from '@/views/ChangePasswordView.vue'
 
 const routes = [
   {
@@ -40,6 +43,12 @@ const routes = [
     meta: { requiresAuth: true } // All authenticated users
   },
   {
+    path: '/edit-order/:id',
+    name: 'edit-order',
+    component: EditOrderView,
+    meta: { requiresAuth: true, role: '2' } // Admin only
+  },
+  {
     path: '/login',
     name: 'Login',
     component: LoginView
@@ -48,6 +57,18 @@ const routes = [
     path: '/register',
     name: 'Register',
     component: RegisterView
+  },
+  {
+    path: '/change-password',
+    name: 'ChangePassword',
+    component: ChangePasswordView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/edit-profile',
+    name: 'EditProfile',
+    component: EditProfileView,
+    meta: { requiresAuth: true }
   }
 ]
 

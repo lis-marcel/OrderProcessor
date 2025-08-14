@@ -4,15 +4,17 @@ namespace OrderProcessor.Service.Helpers
 {
     public class CustomerUtility
     {
-        public static UserDto CreateCustomerDetails(CustomerRegistrationDto customerCreationData)
+        public static UserAllDataDto CreateCustomerDetails(CustomerRegistrationDto customerCreationData)
         {
             return new()
             {
                 Name = customerCreationData.Name,
                 Email = customerCreationData.Email!,
-                Password = customerCreationData.Password!,
+                Password = PasswordFunctionalities.HashPassword(customerCreationData.Password!, out var salt),
+                Salt = salt,
                 LastLoginAt = DateTime.Now,
-                CustomerType = customerCreationData.CustomerType
+                CustomerType = customerCreationData.CustomerType,
+                AccountType = BO.OrderOptions.AccountType.Customer, 
             };
         }
     }

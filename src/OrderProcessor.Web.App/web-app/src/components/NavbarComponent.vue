@@ -2,12 +2,13 @@
     <nav>
         <ul class="navbar">
             <li v-if="isAuthenticated && isAdmin"><router-link to="/all-orders">All Orders</router-link></li>
-            <li v-if="isAuthenticated"><router-link to="/user-orders">My Orders</router-link></li>
+            <li v-if="isAuthenticated && !isAdmin"><router-link to="/user-orders">My Orders</router-link></li>
             <li v-if="isAuthenticated"><router-link to="/user-account">My Account</router-link></li>
             <li class="auth-links">
               <template v-if="isAuthenticated">
                 <span class="user-name">{{ userName }}</span>
                 <span v-if="isAdmin" class="admin-badge">Admin</span>
+                <span v-if="!isAdmin" class="customer-badge">Customer</span>
                 <button @click="logout" class="logout-btn">Logout</button>
               </template>
               <template v-else>
@@ -122,6 +123,32 @@ export default {
 .user-name {
   color: white;
   margin-right: 10px;
+}
+
+.admin-badge {
+  background: #ff9500;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8em;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-right: 10px;
+  border: 1px solid #ff7700;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.customer-badge {
+  background: #0044aa;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8em;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-right: 10px;
+  border: 1px solid #00aa;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .logout-btn {

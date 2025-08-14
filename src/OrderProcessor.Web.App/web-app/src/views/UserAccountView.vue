@@ -52,8 +52,8 @@
       </div>
       
       <div class="profile-actions">
-        <button class="btn btn-primary" @click="editProfile">Edit Profile</button>
-        <button class="btn btn-secondary" @click="changePassword">Change Password</button>
+        <router-link to="/edit-profile" class="btn btn-primary">Edit Profile</router-link>
+        <router-link to="/change-password" class="btn btn-secondary">Change Password</router-link>
       </div>
     </div>
   </div>
@@ -68,8 +68,7 @@ export default {
     return {
       userData: null,
       loading: true,
-      error: null,
-      editMode: false
+      error: null
     }
   },
   created() {
@@ -128,16 +127,6 @@ export default {
         hour: '2-digit',
         minute: '2-digit'
       }).format(date)
-    },
-    
-    editProfile() {
-      // Placeholder for future implementation
-      alert('Profile editing will be implemented in a future update.')
-    },
-    
-    changePassword() {
-      // Placeholder for future implementation
-      alert('Password change will be implemented in a future update.')
     }
   }
 }

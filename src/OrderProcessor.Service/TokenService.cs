@@ -26,10 +26,10 @@ namespace OrderProcessor.Service
 
             var claims = new List<Claim>
             {
-                new(ClaimTypes.Name, user.Email ?? string.Empty),
-                new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new(ClaimTypes.Role, user.AccountType.ToString()),
-                new("CustomerType", ((int)user.CustomerType!).ToString())
+                new Claim(ClaimTypes.Name, user.Email ?? string.Empty),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Role, user.AccountType.ToString()),
+                new Claim("CustomerType", ((int)user.CustomerType!).ToString())
             }.Where(c => c != null).ToList();
 
             var tokenDescriptor = new SecurityTokenDescriptor
